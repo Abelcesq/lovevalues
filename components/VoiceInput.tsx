@@ -3,23 +3,45 @@
 /**
  * VoiceInput — speak-to-type on every answer field.
  *
- * Modeled on the founder's EZAITASK pattern: every field where a user must
- * input information offers a microphone alongside the keyboard, so they can
- * speak instead of type. Speech is transcribed into the same textarea the
- * user can then edit by hand — voice is an input method, never a separate
- * channel, so nothing is lost if dictation misfires.
+ * Every field where a user must input information offers a microphone
+ * alongside the keyboard, so they can speak instead of type. Speech is
+ * transcribed into the same textarea the user can then edit by hand — voice is
+ * an input method, never a separate channel, so nothing is lost if dictation
+ * misfires.
  *
- * Uses the Web Speech API (SpeechRecognition), which runs in the browser.
- * If the browser does not support it, the mic is hidden entirely and the
- * field degrades to a plain textarea — no error, no nag.
+ * Uses the Web Speech API, which runs in the browser. No audio is uploaded. If
+ * the browser lacks it (Firefox), the mic is hidden entirely and the field
+ * degrades to a plain textarea — no error, no nag.
  *
- * NOTE (CEO decision #2): pending access to the EZAITASK repo, this matches
- * the described behavior rather than the exact visual layout. Once the repo
- * is available, revisit spacing/iconography to match precisely.
+ * ── THE RESULT-BASELINE MODEL ─────────────────────────────────────────────
+ * The naive implementation of this component reads `event.resultIndex` and
+ * appends the new finals to what it already has. That works on desktop Chrome
+ * and is wrong everywhere else, because the `results` array is not the
+ * append-only log it appears to be:
+ *
+ *   - Engines re-fire results that were already final, and reset `resultIndex`
+ *     to 0 when they do — so an appending reader double-counts and the user
+ *     watches their sentence duplicate itself.
+ *   - iOS Safari silently restarts recognition mid-session (most often in
+ *     standalone PWA mode), which SHRINKS the array. A cursor held past the
+ *     new end then matches nothing, and the field simply stops updating while
+ *     the user keeps talking.
+ *
+ * So: hold a `resultBaseline` index, ignore everything before it, and RECOMPUTE
+ * the transcript from scratch on every event rather than accumulating. Re-fires
+ * and array mutations then self-correct. Committing (the user typed, or moved
+ * on) means folding the current text into the base and bumping the baseline to
+ * the array's current length — a clean slate with zero audio lost, which
+ * calling stop()/start() would not give us.
+ *
+ * This model, and the three iOS quirks it defends against, are lifted from
+ * EZAITASK's production implementation (see skills/voice-input/SKILL.md).
+ * They were learned there against real devices, not derived here.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { screenForDistress, type CareLevel } from '@/lib/care';
+import { joinSpoken, preferredLang } from '@/lib/speech';
 import CarePrompt from './CarePrompt';
 
 type Props = {
@@ -36,10 +58,12 @@ type Props = {
 type SpeechRecognitionLike = {
   continuous: boolean;
   interimResults: boolean;
+  maxAlternatives: number;
   lang: string;
   start: () => void;
   stop: () => void;
   abort: () => void;
+  onstart: (() => void) | null;
   onresult: ((event: any) => void) | null;
   onerror: ((event: any) => void) | null;
   onend: (() => void) | null;
@@ -69,10 +93,13 @@ export default function VoiceInput({
   const [careDismissed, setCareDismissed] = useState(false);
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
-  /** Text as it stood when dictation began — new speech is appended to this. */
+  /** Committed text — everything dictated finals are appended to. */
   const baseTextRef = useRef('');
-  /** The last value this component itself emitted, used to tell our own writes
-      apart from everyone else's. */
+  /** Ignore results before this index; see the result-baseline model above. */
+  const resultBaselineRef = useRef(0);
+  /** Largest results.length seen, used to detect an engine restart. */
+  const lastResultsLengthRef = useRef(0);
+  /** The last value we emitted, to tell our writes from everyone else's. */
   const lastEmittedRef = useRef(value);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -80,28 +107,25 @@ export default function VoiceInput({
     setSupported(getRecognitionCtor() !== null);
   }, []);
 
-  /* Re-sync the dictation base whenever the value changes from anywhere other
-     than dictation itself — the user typing a correction mid-sentence, the
-     field being reset, navigating to another question.
-       Without this, the snapshot taken at start() goes stale and the next
-     spoken phrase is appended to text that is no longer there, silently
-     wiping whatever the user typed. In continuous mode the mic often stays
-     live across exactly those moments, so this is the common path, not a
-     corner case.
-       This is the bug EZAITASK hit and documented as gotcha #10 ("the chat
-     panel mic was repopulating old transcripts after Add") — same root cause,
-     a capture that outlives the text it captured. */
+  /* Commit whenever the value changes from anywhere other than dictation —
+     the user typing a correction mid-sentence, the field being reset, moving
+     between questions. Folding it into the base and bumping the baseline means
+     the next spoken phrase extends what is actually there instead of
+     resurrecting a stale snapshot over the top of it. Without this the mic,
+     which in continuous mode routinely stays live across exactly those
+     moments, silently wipes the typed edit. */
   useEffect(() => {
     if (value !== lastEmittedRef.current) {
       baseTextRef.current = value;
       lastEmittedRef.current = value;
+      resultBaselineRef.current = lastResultsLengthRef.current;
     }
   }, [value]);
 
   /* Screen after the user pauses, never mid-word — a card that appears while
      someone is still typing a sentence reads as being watched. Escalation is
-     allowed after a dismissal (gentle → urgent), but a dismissed level never
-     comes back. */
+     allowed after a dismissal (gentle → urgent); a dismissed level never
+     returns. */
   useEffect(() => {
     const timer = setTimeout(() => {
       const level = screenForDistress(value);
@@ -125,38 +149,58 @@ export default function VoiceInput({
 
     setError(null);
     baseTextRef.current = value;
+    lastEmittedRef.current = value;
+    /* Fresh session — some browsers reuse the object across sessions, so do
+       not rely on the engine to reset these for us. */
+    resultBaselineRef.current = 0;
+    lastResultsLengthRef.current = 0;
 
     const recognition = new Ctor();
+    /* Continuous: the browser keeps listening through pauses and the user ends
+       it by tapping the mic again. These answers have thinking pauses in them;
+       auto-ending on silence would cut people off mid-thought. */
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang =
-      typeof navigator !== 'undefined' ? navigator.language || 'en-US' : 'en-US';
+    recognition.maxAlternatives = 1;
+    recognition.lang = preferredLang(typeof navigator !== 'undefined' ? navigator.language : '');
+
+    recognition.onstart = () => setListening(true);
 
     recognition.onresult = (event: any) => {
-      let finalChunk = '';
-      let interimChunk = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) finalChunk += transcript;
-        else interimChunk += transcript;
+      /* The array shrank, so the engine restarted itself and our baseline now
+         points past the end. Without this reset every new utterance is skipped
+         and the field never updates again. */
+      if (event.results.length < lastResultsLengthRef.current) {
+        resultBaselineRef.current = 0;
+      }
+      lastResultsLengthRef.current = event.results.length;
+
+      /* Recompute from the baseline. `event.resultIndex` is deliberately
+         ignored — engines reset it to 0 after a restart and re-fire finals. */
+      let finalAcc = '';
+      let interimAcc = '';
+      for (let i = resultBaselineRef.current; i < event.results.length; i++) {
+        const result = event.results[i];
+        if (!result) continue;
+        const transcript = (result[0] && result[0].transcript) || '';
+        if (result.isFinal) finalAcc = joinSpoken(finalAcc, transcript);
+        else interimAcc = joinSpoken(interimAcc, transcript);
       }
 
-      if (finalChunk) {
-        const base = baseTextRef.current;
-        const needsSpace = base.length > 0 && !/\s$/.test(base);
-        baseTextRef.current = base + (needsSpace ? ' ' : '') + finalChunk.trim();
-        /* Record it as ours before emitting, so the re-sync effect above does
-           not mistake our own write for an outside edit. */
-        lastEmittedRef.current = baseTextRef.current;
-        onChange(baseTextRef.current);
+      /* Collapse accidental double spaces but never trim — a trailing space
+         the user dictated is theirs to keep. */
+      const next = joinSpoken(baseTextRef.current, finalAcc).replace(/[ \t]{2,}/g, ' ');
+      if (next !== lastEmittedRef.current) {
+        lastEmittedRef.current = next;
+        onChange(next);
       }
-      setInterim(interimChunk);
+      setInterim(interimAcc);
     };
 
     recognition.onerror = (event: any) => {
-      // "aborted" fires on a normal user-initiated stop — not worth surfacing.
+      /* "aborted" fires on a normal user-initiated stop. */
       if (event?.error === 'aborted') return;
-      if (event?.error === 'not-allowed') {
+      if (event?.error === 'not-allowed' || event?.error === 'service-not-allowed') {
         setError('Microphone access is blocked. You can allow it in your browser settings — or just type.');
       } else if (event?.error === 'no-speech') {
         setError('We didn’t catch anything. Try again, or type instead.');
@@ -177,6 +221,7 @@ export default function VoiceInput({
       recognition.start();
       setListening(true);
     } catch {
+      /* Throws if start() is called twice in quick succession. */
       setError('Dictation could not start. You can type instead.');
       setListening(false);
     }
@@ -191,6 +236,16 @@ export default function VoiceInput({
 
   const toggle = () => (listening ? stop() : start());
 
+  /* Advertise the mic in the placeholder rather than relying on the icon
+     alone — from EZAITASK ("Add a task — type or tap the mic…"), where it is
+     what actually makes voice discoverable. Only when speech is available, so
+     unsupported browsers are never told about a control they do not have. */
+  const shownPlaceholder = listening
+    ? 'Listening — tap the mic when you’re done…'
+    : supported && placeholder
+      ? `${placeholder} or tap the mic to speak.`
+      : placeholder;
+
   return (
     <div className={`vi ${listening ? 'vi-live' : ''}`}>
       <textarea
@@ -199,14 +254,7 @@ export default function VoiceInput({
         className="vi-field"
         value={value}
         rows={rows}
-        /* Advertise the mic in the placeholder rather than relying on the icon
-           alone — lifted from EZAITASK ("Add a task — type or tap the mic…"),
-           where it is the thing that actually makes voice discoverable. Only
-           when speech is available, so unsupported browsers are never told
-           about a control they do not have. */
-        placeholder={
-          supported && placeholder ? `${placeholder} or tap the mic to speak.` : placeholder
-        }
+        placeholder={shownPlaceholder}
         aria-labelledby={ariaLabelledBy}
         onChange={(e) => onChange(e.target.value)}
       />
@@ -225,6 +273,7 @@ export default function VoiceInput({
             onClick={toggle}
             aria-pressed={listening}
             aria-label={listening ? 'Stop speaking' : 'Speak your answer'}
+            title={listening ? 'Listening… tap to stop' : 'Speak your answer'}
           >
             <MicIcon />
             <span>{listening ? 'Listening — tap to stop' : 'Speak your answer'}</span>
@@ -252,12 +301,19 @@ function wordCount(s: string): number {
 function MicIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.7" />
       <path
-        d="M5 11a7 7 0 0 0 14 0M12 18v3"
+        d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
         stroke="currentColor"
-        strokeWidth="1.7"
+        strokeWidth="1.8"
         strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

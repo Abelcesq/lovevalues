@@ -64,32 +64,53 @@ childhood is a far more sensitive data category than the transcript. It requires
 its own CEO decision and its own disclosure — do not treat it as an
 implementation detail.
 
-## What EZAITASK confirmed — CEO decision #2, resolved
+## What EZAITASK taught — CEO decision #2, closed
 
-EZAITASK's handoff doc and a screenshot of the live app were reviewed
-2026-07-26. Confirmed: Web Speech API, **continuous mode**, mic present on both
-the task bar and the chat input, always visible rather than revealed on hover
-or focus.
+The live page source was reviewed 2026-07-26. Its `setupVoiceInput` is the
+reference implementation for this component, and reading it changed the code
+here materially. **Four device-level lessons were adopted, all of which this
+app had wrong**, and all of which fail silently and only on a phone:
 
-**Adopted here:**
+1. **`event.resultIndex` is untrustworthy — recompute, never accumulate.**
+   Engines re-fire results that were already final and reset `resultIndex` to
+   0 when they do. An appending reader double-counts and the user watches
+   their sentence duplicate itself. Hold a `resultBaseline`, ignore everything
+   before it, and rebuild the transcript from scratch on every event so
+   re-fires self-correct.
+2. **iOS Safari restarts recognition mid-session** — most often in standalone
+   PWA mode — which *shrinks* the `results` array. A baseline held past the new
+   end matches nothing and the field stops updating while the user keeps
+   talking. Detect it (`results.length` shrank) and reset the baseline to 0.
+3. **iOS returns transcripts with no leading whitespace.** "hello" then "milk"
+   becomes `hellomilk`. Desktop Chrome supplies the space itself, which is
+   exactly why naive concatenation looks correct until someone opens it on an
+   iPhone. See `joinSpoken` in `lib/speech.ts`.
+4. **`navigator.language` often returns a bare `"en"`**, and engines — iOS
+   especially — recognize considerably better given a full locale tag. Upgrade
+   anything shorter. See `preferredLang` in `lib/speech.ts`.
 
-- **The placeholder advertises the mic** — EZAITASK's field reads *"Add a task
-  — type or tap the mic…"*. This, not the icon, is what makes voice
-  discoverable; an icon alone reads as decoration. Appended automatically in
-  `VoiceInput`, and only when speech is actually supported.
-- **Gotcha #10** (see hard gotcha 3) — found a real shipped bug here.
+Also adopted: `maxAlternatives = 1`; treating `service-not-allowed` as a
+permission failure alongside `not-allowed`; swapping the placeholder to
+"Listening…" while recording; and **the placeholder advertising the mic**
+("Add a task — type or tap the mic…"), which is what actually makes voice
+discoverable — an icon alone reads as decoration.
+
+Lessons 3 and 4 are pure functions in `lib/speech.ts` with tests in
+`tests/speech.test.mjs`, deliberately, so they cannot silently regress.
+
+**Committing without stopping.** On commit, EZAITASK bumps the baseline to the
+current `results.length` rather than calling `stop()`/`start()` — same clean
+slate, but no audio lost in the restart gap. This component does the same when
+the value changes from outside dictation.
 
 **Deliberately not adopted:**
 
-- **The bare circular icon button.** EZAITASK's field is a one-line task entry,
-  where a compact adjacent icon is right. Love Values' fields are multi-line
-  reflections, and the control sits in a bar beneath the textarea — where a
-  labelled button ("Speak your answer") beats a bare glyph for someone
-  answering a hard question for the first time. Same pattern, different
-  ergonomics.
-- **The light cream/peach theme.** Different brand entirely; Love Values is the
-  approved dark palette.
-
-Still unknown: the exact inline JS. The repository (`abelcesq/ezaitask`) still
-contains only `.gitattributes`. If the source is ever pushed, the file to read
-is `todos/templates/todos/list.html`.
+- **`autoSubmit` on `onend`.** Right for a one-line task entry; wrong here,
+  where an answer is a paragraph and silence usually means thinking.
+- **Interim text written into the field.** EZAITASK renders interim inline;
+  this component shows it beneath instead, so a long reflection is not churned
+  under the user's cursor while they read it back.
+- **The bare circular icon button.** Its field is one-line; ours is
+  multi-line, where a labelled control beats a bare glyph for someone
+  answering a hard question for the first time.
+- **The cream/peach theme.** Different brand.
