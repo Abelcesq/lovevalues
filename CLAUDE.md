@@ -81,8 +81,11 @@ worth paying for. Not scale. Not marketing. One honest validation.
    (browser `localStorage`). No account system, no server-side storage of a
    user's answers. This needs a CEO decision before Phase 1 payment testing,
    because payment implies accounts.
-6. **Open — payment.** $9.99/mo (30 days waived), $29.99 one-time profile,
-   $9.99/user match analysis. No processor integrated yet.
+6. **Hosting + processor** ✅ **decided — Heroku, existing Stripe account.**
+   Pricing unchanged: $9.99/mo (30 days waived), $29.99 one-time profile,
+   $9.99/user match analysis. Nothing integrated yet, deliberately — deploy and
+   run the stranger test first. See `skills/deploy-and-payments/SKILL.md`,
+   which carries the `www.`-webhook trap and the rest.
 
 ## The board
 

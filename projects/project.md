@@ -39,22 +39,31 @@ exists. Specifically, watch for:
 
 ## Open CEO decisions
 
-1. **Accounts and persistence.** Payment implies accounts, and accounts imply
-   storing this data category on a server. Needs a decision — and a security
-   professional — before a single real user pays.
-2. **Payment processor.** Nothing integrated.
+1. **Accounts and persistence — still open, and now the most consequential
+   one.** Payment implies accounts, and accounts imply storing psyche-level
+   answers on a server. Today they live only in the user's browser, which is
+   the strongest privacy posture this product will ever have. Giving that up
+   needs a decision, a security professional, and everything in
+   `skills/legal-duty-of-care`. **Do not let a Stripe integration drag this in
+   behind it.**
+2. ~~**Hosting and payment processor.**~~ ✅ **Decided 2026-07-26 — Heroku, and
+   the existing Stripe account.** Same account, but Love Values needs its own
+   Products/Prices and its own webhook endpoint and secret. `Procfile` and
+   `engines` are in the repo and a build/start cycle is verified.
+
+   **Sequencing, which is the part that matters:** deploying needs no accounts
+   and no database, so it can happen now and unblocks the stranger test.
+   Payments should follow that test, not precede it — a paywall in front of an
+   unvalidated method just buys faster proof it wasn't ready. Gotchas already
+   paid for (the `www.` webhook trap above all) are in
+   `skills/deploy-and-payments/SKILL.md`.
 3. ~~**EZAITASK reference.**~~ ✅ Resolved from its handoff doc + a screenshot.
    Its voice gotcha #10 found a real shipped bug here. Details in
    `skills/voice-input/SKILL.md`.
 
-   **Worth a real decision: EZAITASK is a live Django/Heroku app with working
-   Stripe billing, and Love Values is Next.js on nothing yet.** That is a
-   genuine fork, not a detail. Building Phase 1 payments on the stack Abel
-   already operates — and has already debugged in production — is a materially
-   cheaper path than standing up a second stack he has never run. Against
-   that: this app is already built and working in Next.js. The question to
-   answer before payment work starts is which stack the CEO wants to be
-   operating in a year, not which one is faster this month.
+   Its production source also supplied the voice recognition model this app
+   now uses, and the Stripe/Heroku gotchas in
+   `skills/deploy-and-payments/SKILL.md`.
 4. **Trademark search** on "Love Values" before heavy brand spend.
 5. ~~**Distress-detection UI path.**~~ ✅ **Built.** Always-visible support link
    and `/support` page, local-only screening while writing, and an engine-side

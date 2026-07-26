@@ -10,7 +10,14 @@ Almost every dating app starts with a face. This one starts with what you value.
 npm install
 cp .env.example .env.local   # add your ANTHROPIC_API_KEY
 npm run dev                  # http://localhost:3000
-npm test                     # duty-of-care screening suite
+npm test                     # duty-of-care screening + speech-helper suites
+```
+
+On Windows, create the env file with PowerShell instead of `cp` — and run it as
+its own command, not chained onto another:
+
+```powershell
+Set-Content -Path .env.local -Value "ANTHROPIC_API_KEY=sk-ant-..." -Encoding utf8
 ```
 
 ### Testing on a phone
@@ -19,8 +26,18 @@ npm test                     # duty-of-care screening suite
 npm run dev:phone
 ```
 
-Then open the **Network** URL it prints (e.g. `https://192.168.1.42:3000`) on a
-phone on the same Wi-Fi, and accept the certificate warning once.
+This binds all interfaces, so Next prints `https://0.0.0.0:3000` — which is not
+an address you can type. Get the real one:
+
+```powershell
+ipconfig | Select-String "IPv4"      # Windows
+```
+```bash
+ipconfig getifaddr en0               # macOS
+```
+
+Then open `https://<that-address>:3000` on a phone on the same Wi-Fi and accept
+the certificate warning once.
 
 Use this rather than plain `npm run dev` whenever you are testing on a device:
 **the Web Speech API requires a secure context**, so the microphone silently
@@ -94,7 +111,27 @@ the user explicitly generates a profile — used once, never written to our disk
 - ⬜ Crisis numbers are US/UK-centric and need verifying before launch
 - ⬜ **Not tested on a single stranger**, which is the only thing that matters next
 
+## Deploying
+
+Heroku, on its own app (separate from any other project). The `Procfile` and
+pinned `engines` are in the repo; the Node buildpack runs `next build` for you.
+
+```bash
+heroku create lovevalues
+heroku config:set ANTHROPIC_API_KEY=sk-ant-... -a lovevalues
+git push heroku HEAD:main
+```
+
+Deploying needs no accounts and no database — the app is local-first, so a
+stranger can complete the whole journey with nothing of theirs on our server.
+That is deliberate, and it is what makes the stranger test cheap to run now.
+
+See `skills/deploy-and-payments/SKILL.md` before touching payments; it carries
+the Stripe and Heroku gotchas already paid for elsewhere, and the reason
+payments should follow the stranger test rather than precede it.
+
 ## Stack
 
 Next.js 15 (App Router) · TypeScript · plain CSS · `@anthropic-ai/sdk`
-(`claude-opus-5`). Native mobile via Expo / React Native is Phase 2.
+(`claude-opus-5`). Hosted on Heroku. Native mobile via Expo / React Native is
+Phase 2 — the app is already mobile-responsive in the browser.
