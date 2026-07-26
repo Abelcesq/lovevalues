@@ -72,6 +72,19 @@ heroku config:set NPM_CONFIG_PRODUCTION=false -a lovevalues-app
 git commit --allow-empty -m "rebuild" ; git push heroku claude/new-app-voice-input-0q1w0a:main
 ```
 
+**What success looks like.** The push streams a build log for one to three
+minutes and ends with `Verifying deploy... done.` and a line reading
+`* [new branch]  HEAD -> main`. Those two lines are the confirmation.
+
+> ⚠️ Those are *output to read*, not commands to run. Pasting a line beginning
+> `remote:` back into PowerShell produces a red
+> `The term 'remote:' is not recognized` error, which looks alarming and means
+> nothing — the deploy already succeeded.
+
+**After a successful deploy, hard-refresh the browser** (Ctrl+Shift+R). Heroku's
+"Welcome to your new app!" placeholder caches, so a normal reload can keep
+showing it after your app is live.
+
 **Watch the logs** if anything looks wrong:
 
 ```powershell
