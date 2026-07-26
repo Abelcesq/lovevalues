@@ -27,6 +27,19 @@ also complete it without ever touching the microphone. Neither path is degraded.
 3. **Never lose typed text.** Dictation appends to what is already there — it
    captures the field's value at start and appends finals to that snapshot.
    Overwriting a user's typed paragraph with a transcript is unforgivable here.
+   **The snapshot must be re-synced whenever the value changes from anywhere
+   other than dictation itself** — the user typing a correction mid-sentence,
+   the field being reset, moving between questions. Otherwise the capture
+   outlives the text it captured and the next spoken phrase silently wipes the
+   typed edit. In continuous mode the mic routinely stays live across exactly
+   those moments, so this is the common path, not a corner case.
+
+   *This one is borrowed knowledge.* EZAITASK hit it and wrote it down as its
+   gotcha #10 — "the chat panel mic was repopulating old transcripts after Add,
+   because the Web Speech API `finalText` closure variable persists across form
+   submits in continuous mode." Same root cause, different framework. Love
+   Values shipped with the bug and it was found by reading that note, not by
+   testing. Assume any new voice surface has it until proven otherwise.
 4. **Never leave the mic hot.** Abort recognition on unmount. A relationship
    confidant that keeps listening after you navigate away is the single worst
    trust failure this product could have.
@@ -51,10 +64,32 @@ childhood is a far more sensitive data category than the transcript. It requires
 its own CEO decision and its own disclosure — do not treat it as an
 implementation detail.
 
-## Open item — CEO decision #2
+## What EZAITASK confirmed — CEO decision #2, resolved
 
-The EZAITASK repository (`abelcesq/ezaitask`) is attached to the session but is
-empty — one commit containing only `.gitattributes`. This component was
-therefore built from the described behavior, not the actual EZAITASK layout.
-Revisit spacing, iconography, and control placement once the real code is
-pushed.
+EZAITASK's handoff doc and a screenshot of the live app were reviewed
+2026-07-26. Confirmed: Web Speech API, **continuous mode**, mic present on both
+the task bar and the chat input, always visible rather than revealed on hover
+or focus.
+
+**Adopted here:**
+
+- **The placeholder advertises the mic** — EZAITASK's field reads *"Add a task
+  — type or tap the mic…"*. This, not the icon, is what makes voice
+  discoverable; an icon alone reads as decoration. Appended automatically in
+  `VoiceInput`, and only when speech is actually supported.
+- **Gotcha #10** (see hard gotcha 3) — found a real shipped bug here.
+
+**Deliberately not adopted:**
+
+- **The bare circular icon button.** EZAITASK's field is a one-line task entry,
+  where a compact adjacent icon is right. Love Values' fields are multi-line
+  reflections, and the control sits in a bar beneath the textarea — where a
+  labelled button ("Speak your answer") beats a bare glyph for someone
+  answering a hard question for the first time. Same pattern, different
+  ergonomics.
+- **The light cream/peach theme.** Different brand entirely; Love Values is the
+  approved dark palette.
+
+Still unknown: the exact inline JS. The repository (`abelcesq/ezaitask`) still
+contains only `.gitattributes`. If the source is ever pushed, the file to read
+is `todos/templates/todos/list.html`.

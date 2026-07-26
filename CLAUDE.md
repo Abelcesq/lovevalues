@@ -62,11 +62,19 @@ worth paying for. Not scale. Not marketing. One honest validation.
 
 1. ~~Confirm the name~~ ✅ **Love Values / lovevalues.com (secured).**
    Trademark search still recommended before heavy brand spend.
-2. **EZAITASK reference** — `abelcesq/ezaitask` is now attached to the session
-   but the repository is **empty** (one commit, `.gitattributes` only). The
-   voice-input and editable-responses UI in this app is built from the described
-   behavior, not the actual EZAITASK layout. Revisit `components/VoiceInput.tsx`
-   and `app/review/page.tsx` once the real code is pushed.
+2. ~~**EZAITASK reference**~~ ✅ **Resolved 2026-07-26** via its handoff doc and
+   a screenshot of the live app. Adopted: the placeholder advertises the mic,
+   and its voice gotcha #10, which found a real shipped bug in
+   `components/VoiceInput.tsx`. Not adopted: the bare circular icon (its field
+   is one-line, ours is multi-line) or the cream theme. See
+   `skills/voice-input/SKILL.md`. The repo itself still holds only
+   `.gitattributes`, so the inline JS was never read.
+
+   **EZAITASK is also the closest thing this project has to a proven template
+   for Phase 1 monetization** — live Stripe with tiers, cancel/reactivate,
+   top-ups, metered usage, Resend email, and a documented set of Stripe
+   gotchas. When payment is decided (open item 6), read its `CLAUDE.md` first
+   rather than starting cold.
 3. **Home page** ✅ built and approved; now ported to `app/page.tsx`.
 4. **Values card sort (Module 1)** ✅ built — `components/ValuesCardSort.tsx`.
 5. **Open — accounts & persistence.** The MVP is deliberately local-first

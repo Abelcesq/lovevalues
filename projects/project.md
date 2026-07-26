@@ -43,10 +43,18 @@ exists. Specifically, watch for:
    storing this data category on a server. Needs a decision — and a security
    professional — before a single real user pays.
 2. **Payment processor.** Nothing integrated.
-3. **EZAITASK reference.** `abelcesq/ezaitask` is attached to the session but
-   empty (one commit, `.gitattributes` only). The voice-input and
-   editable-responses UI was built from the described behavior, not the actual
-   layout. Push the real code and this can be matched precisely.
+3. ~~**EZAITASK reference.**~~ ✅ Resolved from its handoff doc + a screenshot.
+   Its voice gotcha #10 found a real shipped bug here. Details in
+   `skills/voice-input/SKILL.md`.
+
+   **Worth a real decision: EZAITASK is a live Django/Heroku app with working
+   Stripe billing, and Love Values is Next.js on nothing yet.** That is a
+   genuine fork, not a detail. Building Phase 1 payments on the stack Abel
+   already operates — and has already debugged in production — is a materially
+   cheaper path than standing up a second stack he has never run. Against
+   that: this app is already built and working in Next.js. The question to
+   answer before payment work starts is which stack the CEO wants to be
+   operating in a year, not which one is faster this month.
 4. **Trademark search** on "Love Values" before heavy brand spend.
 5. ~~**Distress-detection UI path.**~~ ✅ **Built.** Always-visible support link
    and `/support` page, local-only screening while writing, and an engine-side
