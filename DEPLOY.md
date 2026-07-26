@@ -113,6 +113,36 @@ into the void. This cost real debugging time on ezaitask.com.
 **Every** webhook URL — Stripe above all — must use `https://www.lovevalues.com/...`,
 never the bare apex. Same for any callback URL you register anywhere.
 
+## Common stumbles
+
+**"fatal: not a git repository"** — you are not in the project folder. Every
+`git` command has to run from the repo; `heroku` commands work anywhere as long
+as they carry `-a <app>`.
+
+```powershell
+cd "$env:USERPROFILE\OneDrive\Desktop\CODING PROJECTS\lovevalues"
+```
+
+**No `heroku` git remote** — `heroku create` only adds the remote when it is run
+*inside* a git repo. If it was run elsewhere, wire it up after the fact:
+
+```powershell
+heroku git:remote -a lovevalues
+git remote -v          # should now list a heroku remote
+```
+
+**The key got set to the placeholder.** Pasting the command with `sk-ant-...`
+still left in stores the literal dots, and Heroku happily reports success. The
+app then fails at synthesis time with an authentication error that looks like a
+code bug. Always read it back:
+
+```powershell
+heroku config:get ANTHROPIC_API_KEY -a lovevalues
+```
+
+That must print a long `sk-ant-api03-...` string. If it prints `sk-ant-...`,
+set it again with the real value.
+
 ## 6. Verify
 
 - [ ] Home page loads over `https://www.lovevalues.com`
