@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /journey
+Disallow: /review
+Disallow: /profile
+Disallow: /api/
+
+Sitemap: https://lovevalues.com/sitemap.xml

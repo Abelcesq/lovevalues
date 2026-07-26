@@ -1,0 +1,49 @@
+# Love Values
+
+> A faith-inclusive, values-first AI relationship confidant. It guides a single
+> person to get clear on the values that actually matter to them, surface the
+> roots, patterns, and habits shaping how they show up in love, and find a
+> partner who can truly see them.
+
+Almost every dating product starts with a photograph. Physical appearance has
+near-zero correlation with core values, yet most people cannot name their own
+values — let alone a partner's. Love Values starts there instead.
+
+## The method
+
+Four modules, in order:
+
+1. **Values** — a card sort narrowing a master list to 3–5 core values, then
+   operationalizing each into a definition, do's, and boundaries. Includes a
+   faith branch that is asked, never assumed.
+2. **Roots** — concrete childhood questions, including the genuinely good
+   qualities in each parent and the traits that were not conducive to
+   relationship, held without blame.
+3. **Patterns** — how the person actually shows up in love: the gifts they
+   bring and the habits that get in the way of them.
+4. **Habits** — the daily practices that support or sabotage their stated
+   values, measured by trigger rather than frequency.
+
+The AI then reflects it all back as a mirror, not a verdict, and asks whether
+it resonates.
+
+## What it is not
+
+Not therapy, psychiatry, counseling, coaching, or mentoring. Not a
+compatibility score. Not a grade. The content is AI-generated and may be wrong.
+
+## Pages
+
+- [Home](https://lovevalues.com/): the thesis and how it works
+- [Begin](https://lovevalues.com/begin): the intro and legal disclosure gate
+- [Journey](https://lovevalues.com/journey): the four-module guided path
+- [Review](https://lovevalues.com/review): every question, editable at any time
+- [Profile](https://lovevalues.com/profile): the synthesis, and "does this resonate?"
+- [Privacy](https://lovevalues.com/privacy): where answers live, in plain language
+- [Terms](https://lovevalues.com/terms): what this is and what it isn't
+
+## Notes
+
+Answers are stored in the user's own browser. They are sent to the server only
+on an explicit request to generate a profile, used once, and not retained.
+Voice transcription happens in-browser; no audio is uploaded.
