@@ -113,7 +113,7 @@ export const MODULES: ModuleDef[] = [
     blurb:
       'Gently explore where your ways of loving began — the good you inherited, and the patterns you didn’t choose but may still carry.',
     opening:
-      'This part asks about childhood. Go only as far as you want to go today. Nothing here is a diagnosis, and nothing you write is used to judge you.',
+      'Before you ever chose a relationship, you watched one. This part is about what you saw between the adults who raised you — how they treated each other — because that was the model of partnership you absorbed long before you were old enough to evaluate it.',
   },
   {
     id: 'patterns',
@@ -216,36 +216,63 @@ export const QUESTIONS: Question[] = [
     showIf: { questionId: 'faith-important', equals: 'yes' },
   },
 
-  /* ---------- MODULE 2: ROOTS ---------- */
+  /* ---------- MODULE 2: ROOTS ----------
+     The subject of this module is THE PARTNERSHIP THE USER WATCHED — how the
+     adults who raised them treated each other. It is not an inventory of harm
+     done to the user, and the wording must not invite one. Every question here
+     points at the dynamic between the two adults; the payoff is the final
+     question, where the user considers which of those dynamics they carried
+     forward without choosing to. */
   {
     id: 'roots-home',
     moduleId: 'roots',
     kind: 'long-text',
-    prompt: 'What was the feeling of the home you grew up in? Describe an ordinary evening.',
-    helper: 'Concrete detail helps more than adjectives. What did the room sound like?',
-    placeholder: 'Who was there, what was happening, how it felt to be you in it…',
+    prompt:
+      'Describe an ordinary evening in the home you grew up in, with the adults who raised you both in the room.',
+    helper:
+      'Not a big occasion — a normal Tuesday. Concrete detail helps more than adjectives.',
+    placeholder: 'Where each of them was, what they were doing, what the room was like…',
   },
   {
     id: 'roots-affection',
     moduleId: 'roots',
     kind: 'long-text',
-    prompt: 'How was affection shown in your family — or how was it withheld?',
-    placeholder: 'Words, touch, provision, silence — whatever it actually was…',
+    prompt: 'How did they show affection to each other?',
+    helper:
+      'Between the two of them, not toward you. Words, touch, teasing, small courtesies — or none of it. All of those are real answers.',
+    placeholder: 'What you actually saw pass between them…',
   },
   {
     id: 'roots-conflict',
     moduleId: 'roots',
     kind: 'long-text',
-    prompt: 'When the adults in your home disagreed, what happened?',
-    helper: 'Most of us learned how to handle conflict long before we chose how to handle it.',
-    placeholder: 'What it looked like, and what you did while it happened…',
+    prompt: 'When they disagreed, what happened?',
+    helper: 'Most people can picture this one instantly. Loud, silent, settled, or buried?',
+    placeholder: 'How a disagreement between them actually went…',
+  },
+  {
+    id: 'roots-repair',
+    moduleId: 'roots',
+    kind: 'long-text',
+    prompt: 'And afterward — how did they come back to each other, if they did?',
+    helper:
+      'Repair is the part of partnership most people never got to watch, and the part most couples most need. If you never saw it, that is worth knowing too.',
+    placeholder: 'What happened after the disagreement was over…',
+  },
+  {
+    id: 'roots-decisions',
+    moduleId: 'roots',
+    kind: 'long-text',
+    prompt: 'How were decisions made between them — money, work, where to live, how to raise you?',
+    helper: 'Who deferred, who decided, and whether it seemed to sit well with both of them.',
+    placeholder: 'How the two of them actually ran things…',
   },
   {
     id: 'roots-parent-1-good',
     moduleId: 'roots',
     kind: 'long-text',
-    prompt: 'Name some genuinely great qualities in your first parent or primary caregiver.',
-    helper: 'We start with the good on purpose. Almost everyone gave you something real.',
+    prompt: 'Name some genuinely great qualities in the first of them.',
+    helper: 'We start with the good on purpose. Almost everyone brought something real.',
     placeholder: 'What you can honestly admire in them…',
   },
   {
@@ -254,14 +281,15 @@ export const QUESTIONS: Question[] = [
     kind: 'long-text',
     prompt:
       'And which of their character or personality traits do you believe were not conducive to a healthy relationship?',
-    helper: 'This is not an invitation to blame them. It is an invitation to see clearly.',
-    placeholder: 'What made loving them, or being loved by them, harder…',
+    helper:
+      'Traits, not verdicts — and we mean as a partner. This is not an invitation to blame them. It is an invitation to see clearly.',
+    placeholder: 'What made partnership harder — for them, or for the person with them…',
   },
   {
     id: 'roots-parent-2-good',
     moduleId: 'roots',
     kind: 'long-text',
-    prompt: 'Now the same for your second parent or caregiver — the qualities you can genuinely acknowledge.',
+    prompt: 'Now the same for the second — the qualities you can genuinely acknowledge.',
     optional: true,
     placeholder: 'What was good in them…',
   },
@@ -271,16 +299,25 @@ export const QUESTIONS: Question[] = [
     kind: 'long-text',
     prompt: 'And the traits in them you believe were not conducive to relationship.',
     optional: true,
-    placeholder: 'What was hard…',
+    placeholder: 'What made partnership harder…',
+  },
+  {
+    id: 'roots-model',
+    moduleId: 'roots',
+    kind: 'long-text',
+    prompt: 'What did their relationship teach you a partnership is supposed to look like?',
+    helper:
+      'Not what you believe now — what you absorbed then, before anyone asked your opinion.',
+    placeholder: 'The picture you ended up with…',
   },
   {
     id: 'roots-inheritance',
     moduleId: 'roots',
     kind: 'long-text',
     prompt:
-      'Looking at what you just wrote — do you see any of those harder traits showing up in how you love people now?',
+      'Looking at what you just wrote — do you see any of those same dynamics showing up in how you show up in a relationship now?',
     helper:
-      'Almost everyone does, and noticing it is not a failure. It’s the first thing that makes it changeable. Many people carry an inherited pattern without ever having named it.',
+      'Almost everyone does, and noticing it is not a failure. It is the first thing that makes it changeable. Many people carry an inherited pattern for years without ever having named it.',
     placeholder: 'Be as honest as you can be today…',
   },
 

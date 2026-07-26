@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Suspense, useCallback, useState } from 'react';
+import CarePrompt from '@/components/CarePrompt';
 import { Footer, Nav } from '@/components/Chrome';
 import VoiceInput from '@/components/VoiceInput';
 import {
@@ -110,6 +111,11 @@ function Profile() {
 
           {s && !loading && (
             <>
+              {/* Duty of care comes before the analysis, never after it. */}
+              {s.careFlag && s.careFlag !== 'none' && (
+                <CarePrompt level={s.careFlag} onDismiss={() => {}} persistent />
+              )}
+
               <div className="framing">{MIRROR_FRAMING}</div>
 
               <section className="syn-section">

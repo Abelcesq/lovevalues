@@ -16,6 +16,8 @@ import type { SortBucket } from './method';
 const KEY = 'lovevalues.profile.v1';
 
 export type Synthesis = {
+  /** Duty-of-care routing set by the engine. See lib/care.ts. */
+  careFlag?: 'none' | 'gentle' | 'urgent' | 'safety';
   coreValues: { value: string; whyItMatters: string }[];
   operatingSystem: string;
   howYouPresent: string;

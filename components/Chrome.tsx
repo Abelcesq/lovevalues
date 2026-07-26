@@ -32,6 +32,11 @@ export function Nav({ cta = true }: { cta?: boolean }) {
           </span>
         </Link>
         <nav className="nav-actions">
+          {/* Always reachable, never loud. Someone who needs this should not
+              have to hunt for it, and should not have to trip a screen first. */}
+          <Link className="login care-link" href="/support">
+            Talk to someone
+          </Link>
           <Link className="login" href="/review">
             Your answers
           </Link>
@@ -58,12 +63,18 @@ export function Footer() {
             </span>
           </Link>
           <nav className="foot-links">
+            <Link className="care-link" href="/support">
+              Talk to someone
+            </Link>
             <Link href="/review">Your answers</Link>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
           </nav>
         </div>
-        <p className="disclaimer">{LEGAL_DISCLOSURE} If you are in distress, please reach out to a qualified professional or a trusted person in your life.</p>
+        <p className="disclaimer">
+          {LEGAL_DISCLOSURE} If you are in distress, please reach out to a qualified professional or
+          a trusted person in your life — or <Link href="/support">see who you can talk to</Link>.
+        </p>
         <p className="copy">© 2026 Love Values · lovevalues.com</p>
       </div>
     </footer>

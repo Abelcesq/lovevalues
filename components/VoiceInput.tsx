@@ -19,6 +19,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { screenForDistress, type CareLevel } from '@/lib/care';
+import CarePrompt from './CarePrompt';
 
 type Props = {
   id: string;
@@ -62,6 +64,10 @@ export default function VoiceInput({
   const [interim, setInterim] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  /* Duty of care. Screening is local-only and never leaves the browser. */
+  const [care, setCare] = useState<CareLevel>('none');
+  const [careDismissed, setCareDismissed] = useState(false);
+
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   /** Text as it stood when dictation began — new speech is appended to this. */
   const baseTextRef = useRef('');
@@ -70,6 +76,21 @@ export default function VoiceInput({
   useEffect(() => {
     setSupported(getRecognitionCtor() !== null);
   }, []);
+
+  /* Screen after the user pauses, never mid-word — a card that appears while
+     someone is still typing a sentence reads as being watched. Escalation is
+     allowed after a dismissal (gentle → urgent), but a dismissed level never
+     comes back. */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const level = screenForDistress(value);
+      setCare((previous) => {
+        if (level !== previous && level !== 'none') setCareDismissed(false);
+        return level;
+      });
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [value]);
 
   const stop = useCallback(() => {
     recognitionRef.current?.stop();
@@ -185,6 +206,10 @@ export default function VoiceInput({
       </div>
 
       {error && <p className="vi-error">{error}</p>}
+
+      {care !== 'none' && !careDismissed && (
+        <CarePrompt level={care} onDismiss={() => setCareDismissed(true)} />
+      )}
     </div>
   );
 }

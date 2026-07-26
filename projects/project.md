@@ -19,7 +19,7 @@ buys faster proof it isn't ready.
 | AI Synthesis Engine | ✅ Built. Empathy rule + mirror framing enforced server-side. Needs `ANTHROPIC_API_KEY` |
 | Product / UX | ✅ Voice input on every field; full editable-responses review; living document |
 | Data / Privacy / Security | ⬜ Local-first only. No accounts, no server persistence, no privacy wall implementation |
-| Legal / Compliance | 🟡 Disclosure at gate + on every report. No consent records, no deletion SLA, no breach process |
+| Legal / Compliance | 🟡 Disclosure at gate + on every report. Distress path live in three layers. No consent records, no deletion SLA, no breach process |
 | Growth / Marketing | ⬜ Not started, correctly |
 
 ## The one thing that matters next
@@ -48,9 +48,12 @@ exists. Specifically, watch for:
    editable-responses UI was built from the described behavior, not the actual
    layout. Push the real code and this can be matched precisely.
 4. **Trademark search** on "Love Values" before heavy brand spend.
-5. **Distress-detection UI path.** Currently only a model-side instruction.
-   A tool that surfaces childhood wounds carries responsibility; this should not
-   ship to strangers without a real path.
+5. ~~**Distress-detection UI path.**~~ ✅ **Built.** Always-visible support link
+   and `/support` page, local-only screening while writing, and an engine-side
+   `careFlag`. Two things still need a human: **verify every crisis number
+   before launch and re-verify on a schedule** (a dead line is worse than none,
+   because it is trusted), and decide whether the US/UK-centric list is
+   sufficient for your first users.
 6. **32 cards may be too many** for a first pass. Worth testing a shorter list
    against completion rate.
 
@@ -62,6 +65,10 @@ exists. Specifically, watch for:
   in the Roots module because it went deeper than a free web app earned the
   right to go. Second most likely — a data incident with psyche-level content
   and no security posture. Both are addressable now and cheap to address now.
-- **Duty-of-Care seat:** the gap between "we say we're not therapy" and "we
-  behave like we're not therapy" is the distress path. It is the only open item
-  on this list that could actually hurt someone.
+- **Duty-of-Care seat:** the distress path is now built, and the design
+  constraint that mattered most was counter-intuitive — the screen had to be
+  *quiet*. Module 2 asks people to describe their parents' marriage, and plenty
+  of honest answers there describe one that failed. A screen firing on those
+  would train every user to dismiss it, and it would then be dismissed the one
+  time it mattered. Restraint is the safety feature. What remains human work:
+  verifying the crisis numbers stay live.

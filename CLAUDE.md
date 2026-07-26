@@ -26,19 +26,34 @@ worth paying for. Not scale. Not marketing. One honest validation.
 1. **Standalone brand.** No reference to Abel Calderón, *My Path to Me*, or any
    personal brand appears anywhere user-facing. Ever.
 2. **Empathy hard rule.** All feedback, questions, and analysis — especially
-   anything touching childhood — is delivered in a loving, empathetic tone. The
-   method gently reflects and asks whether it resonates. It never diagnoses,
+   anything touching family history — is delivered in a loving, empathetic tone.
+   The method gently reflects and asks whether it resonates. It never diagnoses,
    judges, or declares. This is enforced in `app/api/synthesize/route.ts`.
-3. **Mirror, never verdict.** Every output carries the framing: *this is not a
+3. **Roots is about the parents' partnership, not the user's trauma.** Module 2
+   asks what the user observed *between* the two adults who raised them — how
+   they treated each other — because that is the model of partnership the user
+   absorbed before they could evaluate it. It is **not** an abuse inventory and
+   must never be worded, analyzed, or described as one. Never recast "my parents
+   argued badly and never repaired it" into a story about a wounded child. If a
+   user volunteers something that happened *to* them, meet it with care — but
+   never go looking for it. This is enforced in the questions themselves
+   (`lib/method.ts`) and in the synthesis system prompt.
+4. **Mirror, never verdict.** Every output carries the framing: *this is not a
    final analysis; if the information changes, the analysis can change.* Then it
    asks: does this resonate? (Yes / Partly / No — and tell us what to correct.)
-4. **Not therapy.** The product is not, and must never present as, therapy.
-   Anyone in distress is routed to real human help.
-5. **Legal disclosure** appears at signup and on every report. Canonical text
+5. **Not therapy.** The product is not, and must never present as, therapy.
+   Anyone in distress is routed to real human help — implemented in three
+   layers: an always-visible "Talk to someone" link and `/support` page,
+   local-only screening while writing (`lib/care.ts`), and a `careFlag` the
+   synthesis engine must return. Screening never leaves the browser; do not add
+   telemetry to it. The false-positive corpus in `tests/care.test.mjs` is
+   load-bearing — a screen that fires on ordinary Roots answers trains users to
+   dismiss it, and then it fails the one time it matters.
+6. **Legal disclosure** appears at signup and on every report. Canonical text
    lives in `lib/method.ts` as `LEGAL_DISCLOSURE` — do not paraphrase it.
-6. **Faith posture.** Open to all faiths and to the non-religious. Faith is
+7. **Faith posture.** Open to all faiths and to the non-religious. Faith is
    honored deeply for those who hold it, never imposed on those who don't.
-7. **Privacy wall (Phase 2, match feature).** The compatibility engine receives
+8. **Privacy wall (Phase 2, match feature).** The compatibility engine receives
    only general personality/characteristic traits. It must never access or
    disclose either person's childhood details or past-relationship content.
    This must be enforced at the data layer, not merely promised.
@@ -88,14 +103,19 @@ app/
   journey/              The 4-module guided path
   review/               Every question, editable — the living document
   profile/              AI synthesis + "Does this resonate?"
+  support/              Crisis + safety resources. Always one click away
   api/synthesize/       The synthesis engine (server-side; key never client-side)
 components/
-  VoiceInput.tsx        Speak-to-type — on every answer field
+  VoiceInput.tsx        Speak-to-type + distress screening — every answer field
+  CarePrompt.tsx        The quiet, dismissible support card
   ValuesCardSort.tsx    Module 1, the crown jewel in action
   QuestionField.tsx     One question, any input kind
 lib/
   method.ts             THE METHOD — all values, modules, questions, disclosures
+  care.ts               Duty of care — screening + resources. Local-only
   store.ts              Local-first persistence (single seam to replace)
+tests/
+  care.test.mjs         The false-positive corpus. Most important test here
 knowledge/              about-me, project-purpose, board-analysis
 skills/                 One SKILL.md each (gotchas live here)
 projects/               project.md = the container + dashboard
@@ -108,6 +128,10 @@ projects/               project.md = the container + dashboard
 - ✅ Method encoded, all four modules, faith branch, card sort
 - ✅ Voice input on every field; full editable-answers review
 - ✅ Synthesis engine with empathy rule enforced in the system prompt
+- ✅ Distress path in all three layers, with a regression suite (`npm test`)
+- ⬜ Crisis resources are US/UK-centric beyond findahelpline.com; verify every
+  number before launch and on a schedule — a dead crisis line is worse than none
+- ⬜ Screening is English-only and pattern-based; it will miss indirect phrasing
 - ⬜ No accounts, no payments, no server-side persistence
 - ⬜ No match feature (Phase 2) and no privacy wall implementation yet
 - ⬜ Not tested on a single stranger — which is the only thing that matters next
