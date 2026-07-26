@@ -1,8 +1,14 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+/* Canonical origin. Set NEXT_PUBLIC_SITE_URL on Heroku to whichever host you
+   actually serve — if the apex forwards to www (the GoDaddy pattern), the
+   canonical is the www host, and hardcoding the apex here would advertise a
+   URL that only ever redirects. */
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.lovevalues.com';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://lovevalues.com'),
+  metadataBase: new URL(SITE_URL),
   title: 'Love Values — know what you value, be truly seen',
   description:
     'A private, AI-guided confidant that helps you discover your core values, understand the patterns you bring to love, and find a partner who can truly see you.',
@@ -10,7 +16,7 @@ export const metadata: Metadata = {
     title: 'Love Values — know what you value, be truly seen',
     description:
       'Almost every dating app starts with a face. This one starts with what you value — because that is what actually makes love last.',
-    url: 'https://lovevalues.com',
+    url: SITE_URL,
     siteName: 'Love Values',
     type: 'website',
   },

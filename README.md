@@ -117,10 +117,13 @@ Heroku, on its own app (separate from any other project). The `Procfile` and
 pinned `engines` are in the repo; the Node buildpack runs `next build` for you.
 
 ```bash
-heroku create lovevalues
-heroku config:set ANTHROPIC_API_KEY=sk-ant-... -a lovevalues
+heroku create lovevalues-app
+heroku config:set ANTHROPIC_API_KEY=sk-ant-... -a lovevalues-app
+heroku config:set NEXT_PUBLIC_SITE_URL=https://www.lovevalues.com -a lovevalues-app
 git push heroku HEAD:main
 ```
+
+**Full step-by-step, including connecting lovevalues.com: [`DEPLOY.md`](DEPLOY.md).**
 
 Deploying needs no accounts and no database — the app is local-first, so a
 stranger can complete the whole journey with nothing of theirs on our server.
