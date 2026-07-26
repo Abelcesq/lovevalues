@@ -13,6 +13,20 @@ npm run dev                  # http://localhost:3000
 npm test                     # duty-of-care screening suite
 ```
 
+### Testing on a phone
+
+```bash
+npm run dev:phone
+```
+
+Then open the **Network** URL it prints (e.g. `https://192.168.1.42:3000`) on a
+phone on the same Wi-Fi, and accept the certificate warning once.
+
+Use this rather than plain `npm run dev` whenever you are testing on a device:
+**the Web Speech API requires a secure context**, so the microphone silently
+does not appear over `http://` on anything other than `localhost`. Voice would
+look broken on the phone for a reason that has nothing to do with the code.
+
 The app works without an API key — you can walk the entire four-module journey.
 Only the AI synthesis needs one, and it fails with a clear message rather than
 breaking.
