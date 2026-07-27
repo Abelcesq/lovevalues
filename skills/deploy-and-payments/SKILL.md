@@ -91,7 +91,7 @@ Lite/Pro:
 | Item | Price |
 |---|---|
 | Values profile | $29.99 one-time |
-| Living profile + match analysis | $9.99 / month, first 30 days waived |
+| Living profile + match analysis | $9.99 / month, first 7 days waived |
 | Match compatibility analysis | $9.99 per user |
 
 Put these constants in **one file** and import them everywhere — templates,
@@ -120,3 +120,37 @@ Before that changes, `skills/legal-duty-of-care/SKILL.md` has to be satisfied:
 consent records, a deletion path, a breach process, and a security
 professional. None of those exist yet. Do not let a Stripe integration quietly
 drag server-side persistence in behind it.
+
+
+## The checkout route (added 2026-07-27)
+
+`app/api/checkout/route.ts` creates a Stripe Checkout Session and returns its
+URL. Three things about it that are decisions, not accidents:
+
+- **Stripe-hosted Checkout, not an inline card form.** A card field we render is
+  a card field we are responsible for, and it drags this app into PCI scope for
+  no benefit. Do not "improve" it into an inline form.
+- **It calls Stripe's REST API with `fetch`** rather than adding the `stripe`
+  SDK. One less dependency, and the request is four lines of `URLSearchParams`.
+- **It 503s with a reason when unconfigured**, and the client turns that into a
+  working 7-day trial rather than a dead end. A pay wall that cannot take
+  payment, in front of a method nobody has validated, is the worst of both
+  worlds — it blocks the stranger test *and* earns nothing.
+
+Config it needs:
+
+```
+STRIPE_SECRET_KEY      sk_live_… or sk_test_…
+STRIPE_PRICE_MONTHLY   price_… recurring $9.99/mo
+STRIPE_PRICE_ONCE      price_… one-time $29.99
+```
+
+The trial is `subscription_data[trial_period_days]=7` and only exists on the
+subscription — the one-time $29.99 profile is charged immediately, which is
+worth saying out loud on the page before anyone clicks.
+
+**Still missing before this can take real money:** the webhook endpoint (mind
+the `www.` trap above), a real account system to attach a subscription to, and
+a decision on what happens when a trial lapses mid-journey. Today `plan` is a
+string in `localStorage` — it gates nothing and must never be described as if
+it does.

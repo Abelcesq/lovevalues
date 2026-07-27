@@ -6,7 +6,7 @@ export const metadata = { title: 'Terms — Love Values' };
 export default function Terms() {
   return (
     <>
-      <Nav cta={false} />
+      <Nav />
       <main className="journey">
         <div className="read">
           <div className="module-open">
@@ -54,7 +54,7 @@ export default function Terms() {
           <section className="syn-section">
             <h2>Pricing</h2>
             <p>
-              Free for the first 30 days. Your full values profile is $29.99, once. Keeping it
+              Free for the first 7 days. Your full values profile is $29.99, once. Keeping it
               living, with match analysis, is $9.99 per month. Cancel anytime. Payment is not
               enabled yet in this build.
             </p>

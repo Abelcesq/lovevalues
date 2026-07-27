@@ -15,7 +15,16 @@ export function Mark() {
   );
 }
 
-export function Nav({ cta = true }: { cta?: boolean }) {
+/**
+ * `variant` controls what the nav offers, because the three contexts want
+ * different things:
+ *
+ *   'splash' — a visitor who has not signed up. Log in + Sign up.
+ *   'flow'   — mid sign-up. Nothing but the mark and the care link; a nav full
+ *              of exits during a three-step flow is just leak.
+ *   'app'    — inside the product. Their answers, and no CTA to start.
+ */
+export function Nav({ variant = 'app' }: { variant?: 'splash' | 'flow' | 'app' }) {
   return (
     <header className="nav">
       <div className="wrap navbar">
@@ -26,16 +35,30 @@ export function Nav({ cta = true }: { cta?: boolean }) {
         <nav className="nav-actions">
           {/* Always reachable, never loud. Someone who needs this should not
               have to hunt for it, and should not have to trip a screen first.
-              It is also the one nav link that survives at phone widths. */}
+              It is also the one nav link that survives at phone widths — and
+              it survives the sign-up flow too, where someone is most likely to
+              be alone with a hard question. */}
           <Link className="login care-link" href="/support">
             Talk to someone
           </Link>
-          <Link className="login" href="/review">
-            Your answers
-          </Link>
-          {cta && (
-            <Link className="btn btn-primary" href="/begin">
-              Begin
+
+          {variant === 'splash' && (
+            <>
+              <Link className="login" href="/how-it-works">
+                How it works
+              </Link>
+              <Link className="login" href="/login">
+                Log in
+              </Link>
+              <Link className="btn btn-primary" href="/signup">
+                Get started
+              </Link>
+            </>
+          )}
+
+          {variant === 'app' && (
+            <Link className="login" href="/review">
+              Your answers
             </Link>
           )}
         </nav>

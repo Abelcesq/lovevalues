@@ -91,10 +91,31 @@ worth paying for. Not scale. Not marketing. One honest validation.
    `skills/design-system/SKILL.md`, which carries the palette contract and five
    gotchas including the Tailwind `svg { display: block }` trap.
 4. **Values card sort (Module 1)** ✅ built — `components/ValuesCardSort.tsx`.
-5. **Open — accounts & persistence.** The MVP is deliberately local-first
-   (browser `localStorage`). No account system, no server-side storage of a
-   user's answers. This needs a CEO decision before Phase 1 payment testing,
-   because payment implies accounts.
+5. **Accounts & persistence** 🟡 **CEO decided the flow on 2026-07-27; the
+   backend is still open.** The requested order is now
+   **splash → sign up → plan + payment → the method**, with a 7-day trial
+   (down from 30). Built: `/` splash, `/signup`, `/login`, `/checkout`, and
+   `app/api/checkout/route.ts` (Stripe-hosted Checkout, inert without keys).
+
+   **What is NOT yet true, and must not be described as if it were:**
+   `lib/account.ts` writes to `localStorage`. It is not authentication, it
+   gates nothing, and it does not sync between devices. Both `/signup` and
+   `/privacy` say so on the page, in plain words, because someone is typing a
+   password they probably reuse. Replacing that file is the whole job when the
+   backend lands — nothing else calls storage directly.
+
+   Still needed: a server + database, real password hashing (argon2/bcrypt, not
+   browser SHA-256), OAuth apps for Google and Meta (Instagram login runs
+   through Meta now — one integration, not two, and it carries app review), the
+   Stripe webhook, and a decision on what happens when a trial lapses
+   mid-journey.
+
+   **The sequencing risk is on the record.** `projects/project.md` and the
+   Munger seat both hold that a paywall in front of an unvalidated method buys
+   faster proof it wasn't ready. The CEO has weighed that and chosen this flow;
+   the checkout page therefore falls through to a working trial when Stripe is
+   unconfigured, so the stranger test is never blocked by a pay screen that
+   cannot take payment.
 6. **Open models** ✅ **added 2026-07-27 as a resilience lane only** —
    DeepSeek-R1 (MIT) via OpenRouter, retrying a *failed* Anthropic call so the
    profile degrades instead of going dark. Claude stays primary; healthy calls
@@ -106,7 +127,8 @@ worth paying for. Not scale. Not marketing. One honest validation.
    call), so nothing was built for it. Revisit if Phase 2 match analysis creates
    real volume.
 7. **Hosting + processor** ✅ **decided — Heroku, existing Stripe account.**
-   Pricing unchanged: $9.99/mo (30 days waived), $29.99 one-time profile,
+   Pricing: $9.99/mo (first 7 days waived — changed from 30 on 2026-07-27),
+   $29.99 one-time profile,
    $9.99/user match analysis. Nothing integrated yet, deliberately — deploy and
    run the stranger test first. See `skills/deploy-and-payments/SKILL.md`,
    which carries the `www.`-webhook trap and the rest.
@@ -133,13 +155,17 @@ unclear, ask Abel rather than guessing. *The board advises; the CEO commands.*
 
 ```
 app/
-  page.tsx              Home (approved design)
-  begin/                Intro + legal disclosure gate
+  page.tsx              Splash — short pitch, one next step
+  how-it-works/         The long-form editorial explanation (was the home page)
+  signup/  login/       Step 1 — account (email or social)
+  checkout/             Step 2 — plan + 7-day trial, Stripe-hosted payment
+  begin/                Step 3 — intro + legal disclosure gate
   journey/              The 4-module guided path
   review/               Every question, editable — the living document
   profile/              AI synthesis + "Does this resonate?"
   support/              Crisis + safety resources. Always one click away
   api/synthesize/       The synthesis engine (server-side; key never client-side)
+  api/checkout/         Stripe Checkout session; 503s until keys are set
 components/
   VoiceInput.tsx        Speak-to-type + distress screening — every answer field
   CarePrompt.tsx        The quiet, dismissible support card
@@ -147,9 +173,12 @@ components/
   QuestionField.tsx     One question, any input kind
   Chrome.tsx            Nav + footer. "Talk to someone" survives every breakpoint
   Toc.tsx               The home page's sticky table of contents
-  BeginCta.tsx          Entry fork — Begin vs. Continue, from localStorage
+  SplashCta.tsx         Entry fork — new / mid-signup / returning
+  SocialButtons.tsx     Google · Facebook · Instagram (rendered, not yet wired)
+  Steps.tsx             Account → Plan → Begin progress rail
   ResumeNotice.tsx      The same fork, at the top of the /begin gate
 lib/
+  account.ts            Accounts — LOCAL ONLY. Not auth. Read its header first
   method.ts             THE METHOD — all values, modules, questions, disclosures
   care.ts               Duty of care — screening + resources. Local-only
   llm.ts                Resilience lane — open-model fallback. Inert by default

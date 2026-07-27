@@ -32,7 +32,7 @@ export default function ReviewPage() {
   if (!hydrated) {
     return (
       <>
-        <Nav cta={false} />
+        <Nav />
         <main className="journey">
           <div className="loading">
             <span className="dot" />
@@ -54,7 +54,7 @@ export default function ReviewPage() {
 
   return (
     <>
-      <Nav cta={false} />
+      <Nav />
       <main className="journey">
         <div className="wrap">
           <div className="module-open">

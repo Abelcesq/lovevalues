@@ -52,9 +52,9 @@ export default function Toc({ entries }: { entries: TocEntry[] }) {
         ))}
       </ul>
       <div className="rail-cta">
-        <p>Free for your first 30 days.</p>
-        <Link className="btn btn-primary" href="/begin">
-          Begin
+        <p>Free for your first 7 days.</p>
+        <Link className="btn btn-primary" href="/signup">
+          Get started
         </Link>
       </div>
     </aside>

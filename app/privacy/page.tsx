@@ -6,7 +6,7 @@ export const metadata = { title: 'Privacy — Love Values' };
 export default function Privacy() {
   return (
     <>
-      <Nav cta={false} />
+      <Nav />
       <main className="journey">
         <div className="read">
           <div className="module-open">
@@ -20,6 +20,14 @@ export default function Privacy() {
             <p>
               Right now, your answers are stored in your own browser on this device. They are not
               sent to us as you type, and we do not keep a copy on our servers.
+            </p>
+            <p>
+              Your <strong>account</strong> — your name, your email — is a separate thing from your
+              answers, and during the beta it is also stored only in this browser. Your password is
+              scrambled before it is saved and is never transmitted. This means your account does
+              not sync between devices yet, and it is not a security barrier: anyone with your
+              unlocked device can open your profile. When real accounts arrive, this page will be
+              rewritten before they ship, not after.
             </p>
             <p>
               The one exception is when you press <strong>Generate my profile</strong>. At that
@@ -43,6 +51,15 @@ export default function Privacy() {
               Because everything lives on your device, clearing your browser data will erase your
               profile — and we will not be able to recover it. Use <strong>Download my data</strong>{' '}
               on the review page to keep your own copy.
+            </p>
+          </section>
+
+          <section className="syn-section">
+            <h2>Payment</h2>
+            <p>
+              If and when you enter card details, they go directly to Stripe on Stripe&apos;s own
+              pages. We never see, handle, or store a card number. We are told only whether a
+              subscription is active.
             </p>
           </section>
 
@@ -75,9 +92,10 @@ export default function Privacy() {
           <section className="syn-section">
             <h2>Honestly, where we are</h2>
             <p>
-              This is an early product. There are no accounts yet, which means there is nothing for
-              anyone to break into — but it also means there is no sync between your devices. When
-              accounts arrive, this page will be rewritten before they ship, not after.
+              This is an early product. Nothing you write is on a server we control, which means
+              there is very little for anyone to break into — but it also means there is no sync
+              between your devices, and clearing your browser data is permanent. We would rather
+              tell you that than let a sign-up screen imply a safety net that does not exist yet.
             </p>
           </section>
 

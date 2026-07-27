@@ -98,8 +98,9 @@ exists. Specifically, watch for:
 
 ## Board notes
 
-- **Hormozi:** the offer is free-for-30-days then $29.99 once. Prove it before
-  scaling anything. Do not spend on acquisition yet.
+- **Hormozi:** the offer is free-for-7-days then $29.99 once (the CEO shortened
+  the trial from 30 days on 2026-07-27). Prove it before scaling anything. Do
+  not spend on acquisition yet.
 - **Munger (inversion):** how does this fail? Most likely — a stranger abandons
   in the Roots module because it went deeper than a free web app earned the
   right to go. Second most likely — a data incident with psyche-level content

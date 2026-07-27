@@ -84,7 +84,7 @@ function Journey() {
 
   return (
     <>
-      <Nav cta={false} />
+      <Nav />
       <main className="journey">
         <div className="wrap">
           {/* module rail */}

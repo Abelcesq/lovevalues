@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Footer, Nav } from '@/components/Chrome';
 import ResumeNotice from '@/components/ResumeNotice';
+import Steps from '@/components/Steps';
 import { LEGAL_DISCLOSURE } from '@/lib/method';
 
 export const metadata = { title: 'Begin — Love Values' };
@@ -8,9 +9,11 @@ export const metadata = { title: 'Begin — Love Values' };
 export default function Begin() {
   return (
     <>
-      <Nav cta={false} />
+      <Nav variant="flow" />
       <main className="journey">
         <div className="read">
+          <Steps current={3} />
+
           <ResumeNotice />
 
           <div className="module-open">

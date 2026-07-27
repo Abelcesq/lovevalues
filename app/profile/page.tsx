@@ -81,7 +81,7 @@ function Profile() {
 
   return (
     <>
-      <Nav cta={false} />
+      <Nav />
       <main className="journey">
         <div className="wrap">
           <div className="module-open">

@@ -10,7 +10,7 @@ export const metadata = {
 export default function Support() {
   return (
     <>
-      <Nav cta={false} />
+      <Nav />
       <main className="journey">
         <div className="read">
           <div className="module-open">
