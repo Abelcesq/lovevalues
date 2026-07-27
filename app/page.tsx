@@ -1,232 +1,313 @@
+import { ArrowRight, Check, Mic, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import BeginCta from '@/components/BeginCta';
 import { Footer, Nav } from '@/components/Chrome';
-import Reveal from '@/components/Reveal';
+import Toc, { type TocEntry } from '@/components/Toc';
 import { MODULES } from '@/lib/method';
+
+/**
+ * The home page, written as a long-form editorial page rather than a landing
+ * page assembled from panels.
+ *
+ * Two reasons, and the second is the one that matters:
+ *
+ * 1. The panel layout — hero box, three feature cards, colour slab, pricing
+ *    table — is what every AI-built site looks like right now, and it is what
+ *    the CEO's other sites already look like.
+ * 2. This product asks a stranger to write down what their parents' marriage
+ *    was like. A page that sells in three-word cards has not earned that. A
+ *    page that explains itself in plain paragraphs, tells you what it costs
+ *    before you ask, and says out loud what it is not — that has a chance.
+ *
+ * So: one column, one canvas, no boxed sections, a sticky map on the left,
+ * and CTAs dropped inline between sections instead of parked in slabs.
+ */
+
+const SECTIONS: TocEntry[] = [
+  { id: 'what', label: 'What Love Values is' },
+  { id: 'why', label: 'Why values, not photos' },
+  { id: 'how', label: 'How the four parts work' },
+  { id: 'mirror', label: 'A mirror, not a verdict' },
+  { id: 'voice', label: 'You can just talk' },
+  { id: 'privacy', label: 'What happens to what you write' },
+  { id: 'not', label: 'What this is not' },
+  { id: 'cost', label: 'What it costs' },
+  { id: 'match', label: 'When you’re ready to be seen' },
+];
 
 export default function Home() {
   return (
     <>
       <Nav />
-      <Reveal />
       <main>
-        {/* HERO */}
-        <section className="hero">
-          <div className="glow" aria-hidden="true" />
-          <div className="wrap">
-            <div className="hero-inner">
-              <span className="eyebrow">Your relationship confidant</span>
-              <h1>
-                Know what you truly value —<br />
-                and be <span className="soft">truly seen.</span>
-              </h1>
-            </div>
-            <div className="reflection" aria-hidden="true">
-              Know what you truly value —<br />
-              and be <span className="soft">truly seen.</span>
-            </div>
-            <div className="hero-inner">
-              <p className="lede">
-                A private, AI-guided confidant that helps you discover the values that matter most,
-                understand the patterns you bring to love, and find a partner who can meet them —
-                with honesty, and without judgment.
-              </p>
-              <div className="hero-cta">
-                <Link className="btn btn-primary btn-lg" href="/begin">
-                  Begin — free for 30 days
-                </Link>
-                <a className="btn btn-ghost btn-lg" href="#how">
-                  See how it works
-                </a>
-              </div>
-              <p className="assurance">
-                Private and encrypted · No credit card for your first 30 days
-              </p>
-            </div>
-          </div>
-        </section>
+        <div className="wrap article">
+          <Toc entries={SECTIONS} />
 
-        {/* THESIS */}
-        <section className="thesis">
-          <div className="wrap">
-            <p>
-              Almost every dating app starts with a face. This one starts with{' '}
-              <span className="u">what you value</span> — because that&apos;s what actually makes
-              love last.
+          <article className="article-body">
+            <h1>
+              Know what you actually value. Then be <span className="hl">seen</span> for it.
+            </h1>
+            <p className="standfirst">
+              Love Values is a private, AI-guided confidant. It walks one person through the
+              handful of values they truly build a life around, the patterns they picked up
+              before they could choose them, and how both show up in love.
             </p>
-          </div>
-        </section>
-
-        {/* HOW IT WORKS */}
-        <section className="section" id="how">
-          <div className="wrap">
-            <div className="section-head reveal">
-              <span className="eyebrow">How it works</span>
-              <h2>Four steps to real clarity</h2>
-              <p>
-                A guided path inward — gentle, honest, and entirely your own. You can speak your
-                answers aloud, and revise them anytime.
-              </p>
-            </div>
-            <div className="steps">
-              {MODULES.map((m) => (
-                <div className="step reveal" key={m.id}>
-                  <span className="num">{m.number}</span>
-                  <div>
-                    <h3>{m.title}</h3>
-                    <p>{m.blurb}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="steps-note reveal">
-              Then your confidant reflects it all back — as a <b>mirror, not a verdict</b> — and
-              asks, gently: does this resonate?
+            <p className="byline">
+              <ShieldCheck aria-hidden="true" />
+              Private by default · No account · Free for 30 days
             </p>
-          </div>
-        </section>
 
-        <hr className="divider" />
-
-        {/* PILLARS */}
-        <section className="section">
-          <div className="wrap">
-            <div className="section-head reveal">
-              <span className="eyebrow">Why it&apos;s different</span>
-              <h2>Built to be honest, and kind</h2>
+            <div className="takeaways">
+              <h2>The short version</h2>
+              <ul>
+                <li>
+                  <Check aria-hidden="true" />
+                  <span>
+                    <b>Four guided parts</b> — Values, Roots, Patterns, Habits. Around an hour if
+                    you do it in one sitting, and you don&apos;t have to.
+                  </span>
+                </li>
+                <li>
+                  <Check aria-hidden="true" />
+                  <span>
+                    <b>You can speak every answer aloud</b> instead of typing it. Most people say
+                    more that way, and say it more honestly.
+                  </span>
+                </li>
+                <li>
+                  <Check aria-hidden="true" />
+                  <span>
+                    <b>Your answers stay in your browser.</b> There is no account, and nothing is
+                    stored on our servers.
+                  </span>
+                </li>
+                <li>
+                  <Check aria-hidden="true" />
+                  <span>
+                    <b>What you get back is a mirror, not a verdict</b> — and it asks you whether
+                    it got you right.
+                  </span>
+                </li>
+                <li>
+                  <Check aria-hidden="true" />
+                  <span>
+                    <b>Free for 30 days.</b> The full profile is $29.99 once. Nothing is charged
+                    to begin.
+                  </span>
+                </li>
+              </ul>
             </div>
-            <div className="pillars">
-              <div className="pillar reveal">
-                <svg className="p-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <ellipse cx="12" cy="12" rx="10" ry="6.5" stroke="currentColor" strokeWidth="1.6" />
-                  <circle cx="12" cy="12" r="2.6" fill="currentColor" />
-                </svg>
-                <h3>A mirror, not a verdict</h3>
-                <p>
-                  We reflect what your answers reveal and ask if it&apos;s true. You&apos;re never
-                  graded, and nothing is final — your clarity grows as you do.
-                </p>
-              </div>
-              <div className="pillar reveal">
-                <svg className="p-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M12 20s-7-4.4-7-9.2A4 4 0 0 1 12 8a4 4 0 0 1 7 2.8C19 15.6 12 20 12 20Z"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <h3>Values over appearance</h3>
-                <p>
-                  What someone looks like tells you almost nothing about whether you&apos;ll last.
-                  What they value tells you almost everything.
-                </p>
-              </div>
-              <div className="pillar reveal">
-                <svg className="p-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <h3>For every faith, and none</h3>
-                <p>
-                  Faith matters deeply to some and not at all to others. You decide how much it
-                  matters in love — and we honor exactly that.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* MATCH */}
-        <section className="section">
-          <div className="wrap">
-            <div className="match reveal">
-              <span className="eyebrow">When you&apos;re ready</span>
-              <h2>Invite someone to be seen, too</h2>
+            <section className="prose" id="what">
+              <h2>What Love Values is</h2>
               <p>
-                Share an honest look at where you fit and where you&apos;ll need to grow together —
-                drawn only from your values and character, never your private history.
+                Most people can tell you what they want in a partner. Far fewer can tell you what
+                they themselves value — not the words that sound good, but the three or four
+                things that actually win when two good things collide. Loyalty or honesty, when
+                being honest would hurt someone. Stability or adventure, when the offer comes in.
+                Family or ambition, when the job is in another city.
               </p>
-              <p className="consent">Only ever with both people&apos;s consent.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* TRUST */}
-        <div className="wrap">
-          <div className="trust reveal">
-            <div className="item">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 3l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V6l7-3Z"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Private and encrypted
-            </div>
-            <div className="item">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M4 20h16M6 16l9-9 3 3-9 9H6v-3Z"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              You own your words — edit or delete anytime
-            </div>
-            <div className="item">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
-                <path
-                  d="M12 8h.01M11 12h1v4h1"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Not therapy or medical advice
-            </div>
-          </div>
-        </div>
-
-        {/* PRICING */}
-        <section className="section">
-          <div className="wrap">
-            <div className="price reveal">
-              <div className="free">
-                Start <b>free</b> for 30 days.
-              </div>
-              <p className="terms">
-                Your full values profile — <span>$29.99, once.</span>
-                <br />
-                Keep it living, and add match analysis — <span>$9.99 / month.</span>
+              <p>
+                That&apos;s the gap this closes. Love Values takes one person — you, alone, with
+                nobody watching — through a structured conversation about what you value, where
+                your instincts about partnership came from, how you actually behave in
+                relationships, and which daily habits are quietly helping or hurting. Then it
+                reflects the whole thing back to you in plain language.
               </p>
-              <Link className="btn btn-primary btn-lg" href="/begin">
-                Begin your profile
+              <p>
+                It is deliberately not a dating app. There is no feed, no swiping, and nobody else
+                can see you. It is the work you would want to have done <em>before</em> you met
+                someone worth keeping.
+              </p>
+            </section>
+
+            <section className="prose" id="why">
+              <h2>Why values, and not photos</h2>
+              <p>
+                Nearly every way people meet now starts with a face. Appearance is genuinely
+                information — it is just almost none of the information that determines whether a
+                relationship lasts. What someone looks like tells you very little about how
+                they&apos;ll handle money, a sick parent, a broken promise, or a Tuesday.
+              </p>
+              <p>
+                What someone values tells you nearly all of it. And two people can be enormously
+                attracted to each other and still be structurally incompatible, in a way that only
+                becomes visible three years in — usually as a fight about something that was never
+                really about that thing.
+              </p>
+              <p>
+                Starting from values doesn&apos;t make attraction irrelevant. It makes it
+                second — which is the order that actually holds up.
+              </p>
+            </section>
+
+            <section className="prose" id="how">
+              <h2>How the four parts work</h2>
+              <p>
+                The method runs in four modules, in this order, because each one only makes sense
+                on top of the one before it. You can stop at any point and come back; everything
+                you&apos;ve written is waiting.
+              </p>
+              <ol>
+                {MODULES.map((m) => (
+                  <li key={m.id}>
+                    <b>{m.title}.</b> {m.blurb}
+                  </li>
+                ))}
+              </ol>
+              <p>
+                A word about the second one, because it is the part people brace for. Roots is not
+                an inventory of what happened to you. It asks what you observed{' '}
+                <strong>between the two adults who raised you</strong> — how they treated each
+                other — because that was the model of partnership you absorbed before you were old
+                enough to evaluate it. Plenty of honest answers there describe a marriage that
+                didn&apos;t work. That is useful information about you, and it is not a diagnosis
+                of you.
+              </p>
+            </section>
+
+            <div className="cta-inline">
+              <h3>Start with the part almost nobody has done.</h3>
+              <p>
+                Module one is a card sort: thirty-two values, narrowed to the three to five that
+                win when they collide. It takes about fifteen minutes and it&apos;s the piece
+                people tell us they wish they&apos;d done years ago.
+              </p>
+              <Link className="btn btn-invert btn-lg" href="/begin">
+                Begin — free for 30 days <ArrowRight aria-hidden="true" />
               </Link>
-              <p className="cancel">Cancel anytime. Your data stays yours.</p>
+              <p className="fine">No card, no account. Your answers stay on this device.</p>
             </div>
-          </div>
-        </section>
 
-        {/* FINAL */}
-        <section className="final">
-          <div className="wrap">
-            <span className="eyebrow">The first step</span>
-            <h2>Ready to be seen?</h2>
-            <p>It begins, quietly, with knowing yourself.</p>
-            <Link className="btn btn-primary btn-lg" href="/begin">
-              Begin — free for 30 days
-            </Link>
-          </div>
-        </section>
+            <section className="prose" id="mirror">
+              <h2>A mirror, not a verdict</h2>
+              <p>
+                Every reflection this produces carries the same framing, and it is not
+                boilerplate: <strong>this is not a final analysis.</strong> It is what the method
+                assessed from what you gave it. If the information changes, the analysis changes.
+              </p>
+              <p>
+                So the last thing your profile does is ask you a question — does this resonate?
+                Yes, partly, or no. If it&apos;s wrong, you say what it got wrong, correct the
+                answers underneath it, and generate it again. Your profile is a living document
+                that follows you, not a score you were assigned.
+              </p>
+              <p>
+                It also never diagnoses, never grades, and never tells you what a thing about you
+                means. It reflects, and then it asks.
+              </p>
+            </section>
+
+            <section className="prose" id="voice">
+              <h2>
+                <Mic className="h-glyph" aria-hidden="true" /> You can just talk
+              </h2>
+              <p>
+                Every answer field has a microphone. Tap it and speak; the words appear as you go,
+                and you can edit them afterwards like anything you typed. This matters more than
+                it sounds — people write carefully and speak honestly, and the questions here
+                reward honesty far more than they reward polish.
+              </p>
+              <p>
+                Transcription happens inside your browser. We never receive an audio recording of
+                you.
+              </p>
+            </section>
+
+            <section className="prose" id="privacy">
+              <h2>What happens to what you write</h2>
+              <p>
+                Your answers are stored in this browser, on this device. There is no account
+                system, and we do not keep a copy on our servers. Nothing is sent anywhere as you
+                type.
+              </p>
+              <p>
+                The single exception is the moment you press <strong>Generate my profile</strong>.
+                Your answers are sent once, passed to the AI that writes your reflection, and then
+                discarded — not written to a database, not written to a log. The full detail,
+                including exactly which companies are involved, is on the{' '}
+                <Link href="/privacy">privacy page</Link>, written plainly rather than in the usual
+                hedging.
+              </p>
+              <p>
+                Because everything lives on your device, clearing your browser data erases your
+                profile and we cannot recover it. You can export the whole thing as a file you own
+                outright, at any time, from the review page.
+              </p>
+            </section>
+
+            <section className="prose" id="not">
+              <h2>What this is not</h2>
+              <p>
+                This is not therapy, and it must never be used as a substitute for it. It is not
+                psychological, psychiatric, coaching, or medical advice. The content is
+                AI-generated and can be wrong.
+              </p>
+              <p>
+                If you are in distress, the right next step is a person, not an app. There is a{' '}
+                <Link href="/support">Talk to someone</Link> link in the header of every page and
+                at the bottom of every page, with real crisis lines behind it. It is there whether
+                or not anything you write triggers it, because you should never have to justify
+                yourself to software to reach help.
+              </p>
+            </section>
+
+            <section className="prose" id="cost">
+              <h2>What it costs</h2>
+              <p>
+                Plainly, with no card required to start:
+              </p>
+              <ul>
+                <li>
+                  <b>Free for 30 days.</b> The whole method, all four parts, the full profile.
+                </li>
+                <li>
+                  <b>$29.99, once</b> — your complete values profile, yours to keep.
+                </li>
+                <li>
+                  <b>$9.99 a month</b> — keeps the profile living, and adds match analysis when it
+                  ships.
+                </li>
+              </ul>
+              <p className="note">
+                Cancel any time. Your data stays yours, and you can export it whenever you like.
+              </p>
+            </section>
+
+            <section className="prose" id="match">
+              <h2>When you&apos;re ready to be seen</h2>
+              <p>
+                Everything above is about one person. The next step — sharing an honest look at
+                where you and someone else fit, and where you&apos;d have to grow together — is
+                being built, and it comes with two rules that are not negotiable.
+              </p>
+              <p>
+                It requires both people to agree: the sender to send, and the recipient to
+                receive. And it can only ever see general character and values traits. Your
+                childhood and your past relationships are structurally out of its reach, enforced
+                in the data layer rather than promised in a policy.
+              </p>
+            </section>
+
+            <div className="cta-inline">
+              <h3>Ready to find out what you actually value?</h3>
+              <p>
+                It begins quietly, with knowing yourself. Nobody sees it but you, and you can stop
+                and come back whenever you want.
+              </p>
+              <BeginCta />
+            </div>
+
+            <p className="article-end">
+              This application, its information, and its content are not, and are not intended to
+              be construed as, psychological, psychiatric, therapy, mentoring, coaching, or advice
+              of any kind. The content is AI-generated and may be wrong, inaccurate, or
+              misleading. If you are in distress, please reach out to a qualified professional or a
+              trusted person in your life — or <Link href="/support">see who you can talk to</Link>
+              .
+            </p>
+          </article>
+        </div>
       </main>
       <Footer />
     </>

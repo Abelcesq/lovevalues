@@ -24,7 +24,7 @@ export default function Support() {
           </div>
 
           <div className="framing">
-            <strong style={{ color: 'var(--ivory)' }}>If you are in immediate danger,</strong> call
+            <strong>If you are in immediate danger,</strong> call
             your local emergency number — 911 in the US and Canada, 999 in the UK, 112 across the EU
             and much of the world.
           </div>

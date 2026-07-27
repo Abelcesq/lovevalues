@@ -1,18 +1,83 @@
-/* Love Values — design system.
-   Tokens carried verbatim from the approved home page. */
+@import 'tailwindcss';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOVE VALUES — DESIGN SYSTEM
+
+   Tokens and typographic discipline are borrowed from the Aurora design system
+   (NowTrendin), so the CEO's products read as one house:
+
+     · ONE type family. No serif/sans pairing.
+     · A fixed type scale — 12 / 14 / 16 / 18 / 22 / 28 / 32 / 44. Nothing else.
+       (Deviation: the landing page needs a display size, so 56–72 exists for
+       the opening line only. Product pages stay inside the scale.)
+     · Semantic tokens only. Never a raw hex in a component.
+     · "Don't make me think" — lead with the answer, one obvious next action.
+
+   TWO DELIBERATE DEVIATIONS FROM AURORA, both because this is a website people
+   meet on a laptop rather than a touch-only app:
+
+   1. Hover states stay. Aurora forbids them. Here they are colour changes
+      only — never motion that makes the page jump.
+
+   2. THE LANDING PAGE DOES NOT USE PANELS. Aurora composes everything from
+      cards, which is correct inside a form-driven product and wrong for a page
+      a stranger reads top to bottom. The home page is a continuous editorial
+      scroll: one white canvas, a reading column, hierarchy from type and
+      whitespace, hairlines instead of filled boxes. Nothing is parked in a
+      container. Card classes below are for /journey, /review and /profile —
+      the app — not for /.
+
+   The palette is our own. Aurora is midnight navy + red; the previous Love
+   Values palette was navy + gold, which is also what the CEO's other sites
+   use. This is deliberately neither: a white canvas, near-black ink, and one
+   electric indigo doing all the work.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ---- surfaces ---- */
+  --color-canvas: #ffffff;
+  --color-card: #f4f4f7;
+  --color-card-2: #ececf2;
+  --color-line: #e5e5ec;
+
+  /* ---- text ---- */
+  --color-ink: #0a0a12;
+  --color-secondary: #3f4155;
+  --color-muted: #83849a;
+  --color-on-brand: #ffffff;
+
+  /* ---- brand ---- */
+  --color-brand: #4f46e5;
+  --color-brand-press: #4038c9;
+  --color-brand-soft: #eef0ff;
+  --color-brand-ink: #251f7a;
+
+  /* ---- accent. Used sparingly: care, warmth, one underline. ---- */
+  --color-accent: #ff5c38;
+  --color-accent-soft: #fff0ec;
+
+  /* ---- type ---- */
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --text-12: 0.75rem;
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-18: 1.125rem;
+  --text-22: 1.375rem;
+  --text-28: 1.75rem;
+  --text-32: 2rem;
+  --text-44: 2.75rem;
+
+  --radius-card: 1.5rem;
+  --radius-tile: 1.125rem;
+}
 
 :root {
-  --night: #171334;
-  --night-2: #211a45;
-  --night-3: #2b2258;
-  --ivory: #f6efe7;
-  --body: #dbd3ea;
-  --muted: #9a8fc4;
-  --rose: #e9a6af;
-  --gold: #ebc489;
-  --line: rgba(246, 239, 231, 0.12);
-  --maxw: 1120px;
+  --maxw: 1140px;
   --readw: 720px;
+  /* The landing reading column. Wider than the app's, because it carries
+     display type as well as prose. */
+  --floww: 760px;
 }
 
 * {
@@ -24,10 +89,10 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  background: var(--night);
-  color: var(--body);
-  font-family: 'Instrument Sans', system-ui, sans-serif;
-  font-size: 17px;
+  background: var(--color-canvas);
+  color: var(--color-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-16);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -35,13 +100,11 @@ body {
 h1,
 h2,
 h3,
-h4,
-.display {
-  font-family: 'Fraunces', Georgia, serif;
-  color: var(--ivory);
-  font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: -0.01em;
+h4 {
+  color: var(--color-ink);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 a {
   color: inherit;
@@ -50,63 +113,78 @@ a {
 .wrap {
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 0 28px;
+  padding: 0 24px;
 }
 .read {
   max-width: var(--readw);
   margin: 0 auto;
-  padding: 0 28px;
+  padding: 0 24px;
 }
+
+/* Eyebrows are uppercase and letter-spaced — Aurora's rule, and the fastest
+   way to signal hierarchy without adding a second typeface. */
 .eyebrow {
-  font-size: 0.74rem;
-  letter-spacing: 0.22em;
+  font-size: var(--text-12);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--rose);
-  font-weight: 600;
+  color: var(--color-brand);
+  font-weight: 700;
 }
 
 /* ---------- nav ---------- */
 header.nav {
-  position: relative;
-  z-index: 5;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--color-canvas) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--color-line);
 }
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 26px 0;
+  padding: 14px 0;
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
-  font-family: 'Fraunces', serif;
-  color: var(--ivory);
-  font-size: 1.18rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  gap: 10px;
+  color: var(--color-ink);
+  font-size: var(--text-18);
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 .brand .mark {
   width: 30px;
   height: 30px;
   flex: 0 0 auto;
+  border-radius: 9px;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  display: grid;
+  place-items: center;
 }
-.brand em {
-  font-style: normal;
-  color: var(--gold);
+.brand .mark svg {
+  width: 17px;
+  height: 17px;
 }
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 6px;
 }
 .nav-actions .login {
-  color: var(--body);
-  font-size: 0.95rem;
-  font-weight: 500;
+  color: var(--color-secondary);
+  font-size: var(--text-14);
+  font-weight: 600;
+  padding: 0.5em 0.85em;
+  border-radius: 999px;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 .nav-actions .login:hover {
-  color: var(--ivory);
+  color: var(--color-ink);
+  background: var(--color-card);
 }
 
 /* ---------- buttons ---------- */
@@ -115,377 +193,623 @@ header.nav {
   align-items: center;
   justify-content: center;
   gap: 0.5em;
-  font-family: 'Instrument Sans', sans-serif;
-  font-weight: 600;
-  font-size: 0.98rem;
-  padding: 0.72em 1.35em;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: var(--text-14);
+  letter-spacing: 0.01em;
+  padding: 0.75em 1.3em;
   border-radius: 999px;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: transform 0.18s ease, box-shadow 0.25s ease, background 0.25s ease;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.btn svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
 }
 .btn-primary {
-  color: #241a2e;
-  background: linear-gradient(180deg, var(--gold), var(--rose));
-  box-shadow: 0 10px 30px -12px rgba(233, 166, 175, 0.7);
+  color: var(--color-on-brand);
+  background: var(--color-brand);
+  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--color-brand) 70%, transparent);
 }
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 38px -12px rgba(233, 166, 175, 0.8);
+  background: var(--color-brand-press);
 }
+/* Outlined rather than filled, deliberately: a ghost button sits on the canvas
+   in some places and on a card in others, and a card-coloured fill makes it
+   vanish on the second. The ring reads on both. */
 .btn-ghost {
-  color: var(--ivory);
-  border-color: var(--line);
-  background: rgba(246, 239, 231, 0.02);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  box-shadow: inset 0 0 0 1px var(--color-line);
 }
 .btn-ghost:hover:not(:disabled) {
-  border-color: rgba(246, 239, 231, 0.32);
-  background: rgba(246, 239, 231, 0.06);
+  background: var(--color-card);
+  box-shadow: inset 0 0 0 1px var(--color-muted);
 }
 .btn-lg {
-  padding: 0.9em 1.7em;
-  font-size: 1.05rem;
+  padding: 0.9em 1.6em;
+  font-size: var(--text-16);
 }
 .btn:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 a:focus-visible,
 button:focus-visible,
 textarea:focus-visible,
 input:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
+  outline: 3px solid color-mix(in srgb, var(--color-brand) 45%, transparent);
+  outline-offset: 2px;
 }
 
-/* ---------- hero ---------- */
-.hero {
-  position: relative;
-  text-align: center;
-  padding: 72px 0 30px;
+/* A text link that reads as a next step without becoming a second button.
+   Used inline in the flow, where a row of two buttons would look like a panel. */
+.textlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-brand);
+  font-weight: 700;
+  font-size: var(--text-16);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-brand) 35%, transparent);
+  padding-bottom: 1px;
+  transition: border-color 0.18s ease, color 0.18s ease;
 }
-.glow {
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  transform: translate(-50%, -50%);
-  width: min(1200px, 140vw);
-  height: 760px;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(
-      60% 52% at 50% 62%,
-      rgba(235, 196, 137, 0.34),
-      rgba(233, 166, 175, 0.2) 42%,
-      transparent 72%
-    ),
-    radial-gradient(46% 40% at 50% 78%, rgba(233, 166, 175, 0.3), transparent 70%);
-  filter: blur(6px);
-  animation: breathe 9s ease-in-out infinite;
+.textlink:hover {
+  color: var(--color-brand-press);
+  border-color: var(--color-brand-press);
 }
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.85;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -51%) scale(1.04);
-  }
-}
-.hero-inner {
-  position: relative;
-  z-index: 2;
-  max-width: 820px;
-  margin: 0 auto;
-}
-.hero .eyebrow {
-  display: block;
-  margin-bottom: 22px;
-}
-.hero h1 {
-  font-size: clamp(2.5rem, 6.2vw, 4.55rem);
-  line-height: 1.08;
-}
-.hero h1 .soft {
-  color: var(--gold);
-  font-style: italic;
-  font-weight: 400;
-}
-.reflection {
-  position: relative;
-  z-index: 1;
-  max-width: 820px;
-  margin: 6px auto 0;
-  font-family: 'Fraunces', serif;
-  font-weight: 500;
-  color: var(--ivory);
-  font-size: clamp(2.5rem, 6.2vw, 4.55rem);
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-  text-align: center;
-  transform: scaleY(-1);
-  opacity: 0.1;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 62%);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 62%);
-  filter: blur(1px);
-  pointer-events: none;
-  user-select: none;
-}
-.reflection .soft {
-  color: var(--gold);
-  font-style: italic;
-  font-weight: 400;
-}
-.hero p.lede {
-  position: relative;
-  z-index: 2;
-  max-width: 600px;
-  margin: 26px auto 0;
-  color: var(--body);
-  font-size: 1.12rem;
-}
-.hero-cta {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 34px;
-}
-.assurance {
-  position: relative;
-  z-index: 2;
-  margin-top: 20px;
-  font-size: 0.9rem;
-  color: var(--muted);
+.textlink svg {
+  width: 16px;
+  height: 16px;
 }
 
-/* ---------- landing sections ---------- */
-.thesis {
-  padding: 26px 0 6px;
-  text-align: center;
-}
-.thesis p {
-  max-width: 680px;
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE LANDING FLOW
+
+   One column, one canvas, top to bottom. No panels — a reader should never
+   feel handed from one box to the next. Separation is whitespace first and a
+   hairline second.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.flow {
+  max-width: var(--floww);
   margin: 0 auto;
-  font-family: 'Fraunces', serif;
-  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
-  color: var(--ivory);
-  font-weight: 400;
-  line-height: 1.4;
+  padding: 0 24px;
 }
-.thesis .u {
-  color: var(--rose);
-  font-style: italic;
+.flow > * + * {
+  margin-top: 22px;
 }
-.section {
-  padding: 88px 0;
-  position: relative;
+
+/* The opening. Left-aligned, not centred — centred display type over a glow is
+   exactly the shape every other site in the portfolio already uses. */
+.open {
+  padding: 84px 0 64px;
 }
-.section-head {
-  max-width: 640px;
-  margin: 0 auto 52px;
-  text-align: center;
+.open h1 {
+  font-size: clamp(2.6rem, 6.4vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  max-width: 15ch;
 }
-.section-head h2 {
-  font-size: clamp(1.9rem, 4vw, 2.7rem);
-  margin-top: 14px;
+.open h1 .hl {
+  color: var(--color-brand);
 }
-.section-head p {
-  margin-top: 16px;
-  color: var(--body);
+.open .lede {
+  font-size: var(--text-22);
+  line-height: 1.5;
+  color: var(--color-secondary);
+  max-width: 34ch;
+  margin-top: 24px;
 }
-.divider {
-  border: 0;
-  border-top: 1px solid var(--line);
-}
-.steps {
-  display: grid;
-  gap: 18px;
-  max-width: 760px;
-  margin: 0 auto;
-}
-.step {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 24px;
-  align-items: baseline;
-  padding: 26px 30px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  background: linear-gradient(180deg, rgba(246, 239, 231, 0.035), rgba(246, 239, 231, 0.01));
-  transition: border-color 0.3s ease, transform 0.3s ease;
-}
-.step:hover {
-  border-color: rgba(233, 166, 175, 0.4);
-  transform: translateY(-3px);
-}
-.step .num {
-  font-family: 'Fraunces', serif;
-  font-size: 1.5rem;
-  color: var(--gold);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-.step h3 {
-  font-size: 1.28rem;
-  margin-bottom: 6px;
-}
-.step p {
-  color: var(--body);
-  font-size: 1rem;
-}
-.steps-note {
-  max-width: 640px;
-  margin: 34px auto 0;
-  text-align: center;
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  color: var(--muted);
-  font-size: 1.15rem;
-}
-.steps-note b {
-  color: var(--rose);
-  font-style: normal;
-  font-weight: 500;
-}
-.pillars {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-}
-.pillar {
-  padding: 34px 30px;
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: rgba(246, 239, 231, 0.02);
-}
-.pillar .p-mark {
-  width: 34px;
-  height: 34px;
-  margin-bottom: 18px;
-  color: var(--rose);
-}
-.pillar h3 {
-  font-size: 1.3rem;
-  margin-bottom: 10px;
-}
-.pillar p {
-  color: var(--body);
-  font-size: 0.98rem;
-}
-.match {
-  max-width: 820px;
-  margin: 0 auto;
-  text-align: center;
-  border: 1px solid var(--line);
-  border-radius: 26px;
-  padding: 52px 40px;
-  background: radial-gradient(120% 140% at 50% 0%, rgba(233, 166, 175, 0.1), transparent 60%);
-}
-.match .eyebrow {
+.open .eyebrow {
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
-.match h2 {
-  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
-}
-.match p {
-  max-width: 560px;
-  margin: 16px auto 0;
-  color: var(--body);
-}
-.match .consent {
-  margin-top: 18px;
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-.price {
-  max-width: 560px;
-  margin: 0 auto;
-  text-align: center;
-  border: 1px solid var(--line);
-  border-radius: 26px;
-  padding: 46px 40px;
-  background: linear-gradient(180deg, rgba(246, 239, 231, 0.045), rgba(246, 239, 231, 0.01));
-}
-.price .free {
-  font-family: 'Fraunces', serif;
-  color: var(--ivory);
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
-  font-weight: 500;
-}
-.price .free b {
-  color: var(--gold);
-  font-weight: 500;
-}
-.price .terms {
-  margin-top: 16px;
-  color: var(--body);
-  font-size: 1.02rem;
-}
-.price .terms span {
-  color: var(--ivory);
-  font-weight: 500;
-}
-.price .btn {
-  margin-top: 28px;
-}
-.price .cancel {
-  margin-top: 14px;
-  font-size: 0.86rem;
-  color: var(--muted);
-}
-.trust {
-  display: flex;
-  gap: 14px 40px;
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: 40px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.trust .item {
+.cta-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--muted);
-  font-size: 0.92rem;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 32px;
 }
-.trust .item svg {
-  width: 18px;
-  height: 18px;
-  color: var(--rose);
+.assurance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-14);
+  color: var(--color-muted);
+  margin-top: 22px;
+}
+.assurance svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-brand);
   flex: 0 0 auto;
 }
-.final {
-  text-align: center;
-  padding: 100px 0;
+
+/* A hairline, with air on both sides. This is the only separator the page
+   uses; there are no filled bands and no boxed sections. */
+.rule {
+  border: 0;
+  border-top: 1px solid var(--color-line);
+  max-width: var(--floww);
+  margin: 60px auto;
 }
-.final .eyebrow {
+.rule-tight {
+  margin: 40px auto;
+}
+
+/* Section openings sit in the same column as the prose — no centred header
+   block, because a centred header announces a new panel. */
+.beat-head {
+  margin-top: 8px;
+}
+.beat-head .eyebrow {
   display: block;
+  margin-bottom: 14px;
+}
+.beat-head h2 {
+  font-size: clamp(1.75rem, 4vw, var(--text-44));
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  max-width: 20ch;
+}
+.flow p {
+  font-size: var(--text-18);
+  line-height: 1.65;
+  color: var(--color-secondary);
+}
+.flow p strong,
+.flow p b {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+.flow .mark-u {
+  color: var(--color-ink);
+  font-weight: 700;
+  box-shadow: inset 0 -0.5em 0 color-mix(in srgb, var(--color-brand) 14%, transparent);
+}
+
+/* A numbered beat in the flow. The label runs inline above the heading rather
+   than in a gutter, so at any width the page stays one column. */
+.beat {
+  margin-top: 52px;
+}
+.beat-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--text-12);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 12px;
+}
+.beat-label svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-brand);
+  flex: 0 0 auto;
+}
+.beat-label .n {
+  color: var(--color-brand);
+  font-variant-numeric: tabular-nums;
+}
+.beat h3 {
+  font-size: var(--text-28);
+  letter-spacing: -0.03em;
+  margin-bottom: 10px;
+}
+.beat p {
+  font-size: var(--text-18);
+  color: var(--color-secondary);
+}
+
+/* A statement that carries weight without becoming a box. Left rule only. */
+.pull {
+  border-left: 3px solid var(--color-brand);
+  padding-left: 24px;
+  margin: 44px 0;
+}
+.pull p {
+  font-size: clamp(1.35rem, 2.8vw, var(--text-28));
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-ink);
+}
+.pull .attr {
+  margin-top: 12px;
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--color-muted);
+  letter-spacing: 0;
+}
+
+/* Cost, written as a sentence rather than drawn as a pricing table. */
+.cost {
+  margin-top: 34px;
+}
+.cost-line {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--color-line);
+}
+.cost-line:first-of-type {
+  border-top: 1px solid var(--color-line);
+}
+.cost-line .n {
+  font-size: var(--text-28);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--color-ink);
+  min-width: 5.5ch;
+}
+.cost-line .n.free {
+  color: var(--color-brand);
+}
+.cost-line .what {
+  font-size: var(--text-16);
+  color: var(--color-secondary);
+  flex: 1 1 260px;
+}
+.cost-line .what b {
+  color: var(--color-ink);
+}
+
+/* The closing. Bigger type, more air, one action. */
+.close {
+  padding: 84px 0 96px;
+}
+.close h2 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  max-width: 16ch;
+}
+.close p {
+  margin-top: 18px;
+  font-size: var(--text-22);
+  color: var(--color-secondary);
+  max-width: 34ch;
+}
+
+/* The three assurances, run as a line rather than three cards. */
+.assurances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin-top: 30px;
+}
+.assurances .item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-secondary);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+.assurances .item svg {
+  width: 17px;
+  height: 17px;
+  color: var(--color-brand);
+  flex: 0 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE ARTICLE LAYOUT
+
+   The home page is written and laid out as a long-form editorial page, not a
+   landing page made of panels. Structure, after the VIDA Select reference the
+   CEO supplied:
+
+     · A sticky table of contents in a left rail, tracking the active section.
+     · One continuous prose column on the right. Sections are an <h2> followed
+       by paragraphs — there is no card, border, or filled block wrapping any
+       of them, so the reader is never handed from one box to the next.
+     · CTAs appear INLINE between sections, as an occasional interruption in
+       the flow. That is the one place a filled block is allowed, and it is
+       deliberately styled to read as an insert rather than as the page's
+       structure.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.article {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 64px;
+  padding-top: 44px;
+  padding-bottom: 96px;
+  align-items: start;
+}
+.article-body {
+  max-width: 720px;
+  min-width: 0;
+}
+
+/* ---- the rail ---- */
+.toc-rail {
+  position: sticky;
+  top: 84px;
+}
+.toc-label {
+  font-size: var(--text-12);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+.toc-list {
+  list-style: none;
+  display: grid;
+  gap: 2px;
+  margin-bottom: 28px;
+}
+.toc-list a {
+  display: block;
+  font-size: var(--text-14);
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--color-muted);
+  padding: 7px 0 7px 14px;
+  border-left: 3px solid var(--color-line);
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.toc-list a:hover {
+  color: var(--color-ink);
+}
+.toc-list a.on {
+  color: var(--color-ink);
+  border-left-color: var(--color-brand);
+}
+.rail-cta {
+  padding: 22px 20px;
+  border-radius: var(--radius-tile);
+  background: var(--color-brand-soft);
+}
+.rail-cta p {
+  font-size: var(--text-16);
+  font-weight: 700;
+  color: var(--color-brand-ink);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-bottom: 14px;
+}
+.rail-cta .btn {
+  width: 100%;
+}
+
+/* ---- the opening of the article ---- */
+.article-body h1 {
+  font-size: clamp(2.2rem, 4.6vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+.article-body h1 .hl {
+  color: var(--color-brand);
+}
+.standfirst {
+  margin-top: 20px;
+  font-size: var(--text-22);
+  line-height: 1.5;
+  color: var(--color-secondary);
+}
+.byline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  font-size: var(--text-12);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+.byline svg {
+  width: 15px;
+  height: 15px;
+  color: var(--color-brand);
+  flex: 0 0 auto;
+}
+
+/* The short-answer block. Reads first, answers the whole page — Aurora's
+   "lead with the answer" rule, in an editorial register. */
+.takeaways {
+  margin-top: 34px;
+  padding: 26px 0;
+  border-top: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+}
+.takeaways h2 {
+  font-size: var(--text-12);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+.takeaways ul {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.takeaways li {
+  display: flex;
+  gap: 11px;
+  font-size: var(--text-16);
+  color: var(--color-secondary);
+  line-height: 1.55;
+}
+.takeaways li svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  margin-top: 4px;
+  color: var(--color-brand);
+}
+.takeaways li b {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+/* ---- prose ---- */
+.prose {
+  margin-top: 52px;
+  scroll-margin-top: 90px;
+}
+.prose h2 {
+  font-size: clamp(1.6rem, 3.2vw, var(--text-32));
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  margin-bottom: 16px;
+}
+/* Tailwind's preflight sets `svg { display: block }`, which drops an inline
+   glyph onto its own line. Anything meant to sit inside a line of text has to
+   say so explicitly. */
+.prose h2 .h-glyph {
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  color: var(--color-brand);
+  vertical-align: -0.02em;
+  margin-right: 0.24em;
+}
+.prose h3 {
+  font-size: var(--text-22);
+  letter-spacing: -0.025em;
+  margin: 30px 0 8px;
+}
+.prose p {
+  font-size: var(--text-18);
+  line-height: 1.65;
+  color: var(--color-secondary);
   margin-bottom: 18px;
 }
-.final h2 {
-  font-size: clamp(2.1rem, 5vw, 3.4rem);
+.prose p:last-child {
+  margin-bottom: 0;
 }
-.final p {
-  margin: 18px auto 0;
-  max-width: 520px;
-  color: var(--body);
+.prose strong {
+  color: var(--color-ink);
+  font-weight: 700;
 }
-.final .btn {
-  margin-top: 34px;
+.prose a:not(.btn):not(.textlink) {
+  color: var(--color-brand);
+  font-weight: 600;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent);
+}
+.prose ol,
+.prose ul {
+  margin: 0 0 18px;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 18px;
+  counter-reset: step;
+}
+.prose ol > li {
+  counter-increment: step;
+  padding-left: 46px;
+  position: relative;
+  font-size: var(--text-18);
+  line-height: 1.6;
+}
+.prose ol > li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  font-size: var(--text-14);
+  font-weight: 800;
+  color: var(--color-brand);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.prose ul > li {
+  padding-left: 24px;
+  position: relative;
+  font-size: var(--text-18);
+  line-height: 1.6;
+}
+.prose ul > li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-brand);
+}
+.prose li b {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+.prose .note {
+  font-size: var(--text-14);
+  color: var(--color-muted);
+}
+
+/* ---- the inline CTA ----
+   The only filled block on the page, and it interrupts the flow rather than
+   containing it. */
+.cta-inline {
+  margin: 52px 0;
+  padding: 34px 36px;
+  border-radius: 26px;
+  background: var(--color-ink);
+  color: color-mix(in srgb, #fff 66%, var(--color-ink));
+}
+.cta-inline h3 {
+  color: #fff;
+  font-size: clamp(1.4rem, 3vw, var(--text-28));
+  letter-spacing: -0.03em;
+  margin-bottom: 10px;
+}
+.cta-inline p {
+  font-size: var(--text-16);
+  margin-bottom: 22px;
+  max-width: 46ch;
+}
+.cta-inline .btn-invert {
+  color: var(--color-ink);
+  background: #fff;
+}
+.cta-inline .btn-invert:hover:not(:disabled) {
+  background: var(--color-brand-soft);
+}
+.cta-inline .fine {
+  margin: 14px 0 0;
+  font-size: var(--text-12);
+  color: color-mix(in srgb, #fff 45%, var(--color-ink));
+}
+
+.article-end {
+  margin-top: 44px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-line);
+  font-size: var(--text-12);
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+.article-end a {
+  color: var(--color-brand);
+  font-weight: 600;
 }
 
 /* ---------- footer ---------- */
 footer {
-  padding: 56px 0 46px;
-  border-top: 1px solid var(--line);
+  padding: 52px 0 44px;
+  border-top: 1px solid var(--color-line);
 }
 .foot-top {
   display: flex;
@@ -493,37 +817,50 @@ footer {
   align-items: center;
   gap: 24px;
   flex-wrap: wrap;
-  margin-bottom: 30px;
+  margin-bottom: 26px;
 }
 .foot-links {
   display: flex;
-  gap: 26px;
+  gap: 22px;
   flex-wrap: wrap;
-  font-size: 0.95rem;
-  color: var(--body);
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--color-secondary);
 }
 .foot-links a:hover {
-  color: var(--ivory);
+  color: var(--color-ink);
 }
 .disclaimer {
-  font-size: 0.82rem;
-  color: var(--muted);
+  font-size: var(--text-12);
+  color: var(--color-muted);
   line-height: 1.7;
-  max-width: 820px;
+  max-width: 840px;
+}
+.disclaimer a {
+  color: var(--color-brand);
+  font-weight: 600;
 }
 .copy {
-  margin-top: 22px;
-  font-size: 0.82rem;
-  color: var(--muted);
+  margin-top: 18px;
+  font-size: var(--text-12);
+  color: var(--color-muted);
 }
 
-/* ---------- journey shell ---------- */
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE APP — /journey, /review, /profile, /support
+
+   Cards are correct here and only here. This is a form: discrete, repeated,
+   tappable things that benefit from being visibly separate objects. Aurora's
+   borderless-card rule applies in full — separation comes from the surface,
+   never an outline.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .journey {
-  padding: 40px 0 120px;
+  padding: 40px 0 110px;
 }
 .rail {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 44px;
@@ -531,275 +868,395 @@ footer {
 .rail-item {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   padding: 0.5em 1em;
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 999px;
-  font-size: 0.86rem;
-  color: var(--muted);
-  background: rgba(246, 239, 231, 0.02);
+  font-family: inherit;
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--color-muted);
+  background: var(--color-card);
   cursor: pointer;
-  transition: border-color 0.25s ease, color 0.25s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 .rail-item:hover {
-  color: var(--ivory);
-  border-color: rgba(246, 239, 231, 0.3);
+  color: var(--color-ink);
+  background: var(--color-card-2);
 }
 .rail-item.active {
-  color: var(--ivory);
-  border-color: rgba(233, 166, 175, 0.55);
-  background: rgba(233, 166, 175, 0.08);
+  color: var(--color-on-brand);
+  background: var(--color-brand);
 }
 .rail-item .n {
-  font-family: 'Fraunces', serif;
-  color: var(--gold);
   font-variant-numeric: tabular-nums;
+  opacity: 0.7;
 }
 .rail-item.done .n::after {
-  content: ' ·';
-  color: var(--rose);
+  content: ' ✓';
+  color: var(--color-brand);
+}
+.rail-item.active .n::after {
+  color: #fff;
 }
 
 .module-open {
   max-width: var(--readw);
-  margin: 0 auto 48px;
-  text-align: center;
+  margin: 0 auto 44px;
 }
 .module-open h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
-  margin: 14px 0 18px;
+  font-size: clamp(1.9rem, 4.4vw, var(--text-44));
+  margin: 12px 0 16px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 .module-open p {
-  color: var(--body);
+  font-size: var(--text-18);
+  color: var(--color-secondary);
 }
 
 .pass-head {
   max-width: var(--readw);
-  margin: 0 auto 34px;
-  text-align: center;
+  margin: 0 auto 32px;
 }
 .pass-head h2 {
-  font-size: clamp(1.6rem, 3.4vw, 2.2rem);
-  margin: 12px 0 14px;
+  font-size: clamp(1.5rem, 3.2vw, var(--text-32));
+  margin: 10px 0 12px;
 }
 .pass-head p {
-  color: var(--body);
+  color: var(--color-secondary);
 }
 .pass-progress {
-  margin-top: 14px;
-  font-size: 0.88rem;
-  color: var(--muted);
+  margin-top: 12px;
+  font-size: var(--text-14);
+  color: var(--color-muted);
   font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* ---------- progress dashboard (/review) ---------- */
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: var(--readw);
+  margin: 0 auto 44px;
+}
+.progress-tile {
+  display: block;
+  padding: 18px 20px;
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
+  transition: background 0.2s ease;
+}
+.progress-tile:hover {
+  background: var(--color-card-2);
+}
+.progress-tile .n {
+  display: block;
+  font-size: var(--text-12);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+.progress-tile .t {
+  display: block;
+  font-size: var(--text-18);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  margin: 2px 0 12px;
+}
+.progress-tile .bar {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-canvas);
+  overflow: hidden;
+}
+.progress-tile .bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-brand);
+  transition: width 0.4s ease;
+}
+.progress-tile .c {
+  display: block;
+  margin-top: 8px;
+  font-size: var(--text-12);
+  font-weight: 600;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+.progress-tile.full .c {
+  color: var(--color-brand);
 }
 
 /* ---------- card sort ---------- */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  gap: 14px;
 }
 .vcard {
   padding: 20px 22px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(246, 239, 231, 0.02);
-  transition: border-color 0.25s ease;
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
+  transition: background 0.2s ease;
 }
 .vcard-set {
-  border-color: rgba(233, 166, 175, 0.35);
+  background: var(--color-brand-soft);
 }
 .vcard h4 {
-  font-size: 1.15rem;
-  margin-bottom: 6px;
+  font-size: var(--text-18);
+  margin-bottom: 4px;
 }
 .vcard p {
-  font-size: 0.92rem;
-  color: var(--muted);
+  font-size: var(--text-14);
+  color: var(--color-muted);
   margin-bottom: 14px;
 }
 .vcard-buckets {
   display: flex;
-  gap: 7px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 .bucket {
   font-family: inherit;
-  font-size: 0.78rem;
+  font-size: var(--text-12);
+  font-weight: 600;
   padding: 0.45em 0.85em;
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--muted);
+  border: 0;
+  background: var(--color-canvas);
+  color: var(--color-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 .bucket:hover {
-  color: var(--ivory);
-  border-color: rgba(246, 239, 231, 0.3);
+  color: var(--color-ink);
 }
 .bucket.sel {
-  background: linear-gradient(180deg, var(--gold), var(--rose));
-  border-color: transparent;
-  color: #241a2e;
-  font-weight: 600;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
 }
 
 .chip-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 11px;
-  justify-content: center;
-  max-width: 820px;
-  margin: 0 auto;
+  gap: 10px;
+  max-width: 860px;
 }
 .chip {
-  font-family: 'Fraunces', serif;
-  font-size: 1rem;
-  padding: 0.6em 1.2em;
+  font-family: inherit;
+  font-size: var(--text-16);
+  font-weight: 600;
+  padding: 0.6em 1.15em;
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: rgba(246, 239, 231, 0.02);
-  color: var(--body);
+  border: 0;
+  background: var(--color-card);
+  color: var(--color-secondary);
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 .chip:hover {
-  color: var(--ivory);
-  border-color: rgba(246, 239, 231, 0.34);
+  color: var(--color-ink);
+  background: var(--color-card-2);
 }
 .chip.sel {
-  background: linear-gradient(180deg, var(--gold), var(--rose));
-  border-color: transparent;
-  color: #241a2e;
-  font-weight: 600;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
 }
 .chip-lg {
-  font-size: 1.15rem;
-  padding: 0.72em 1.5em;
+  font-size: var(--text-18);
+  padding: 0.7em 1.4em;
 }
 
 .op-block {
   max-width: var(--readw);
-  margin: 0 auto 40px;
+  margin: 0 auto 32px;
   padding: 28px 30px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  background: rgba(246, 239, 231, 0.02);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
 }
 .op-block h3 {
-  font-size: 1.4rem;
-  margin-bottom: 18px;
+  font-size: var(--text-22);
+  margin-bottom: 16px;
+}
+/* An inline label inside a body of text — "Do's:", "Don'ts:". */
+.op-inline {
+  color: var(--color-brand);
+  font-weight: 700;
 }
 .op-label {
   display: block;
-  font-size: 0.9rem;
-  color: var(--rose);
-  font-weight: 600;
+  font-size: var(--text-12);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+  font-weight: 800;
   margin: 18px 0 8px;
+}
+
+/* A numbered tile. Used on /begin, where three things have to be read before
+   the disclosure gate. */
+.step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: start;
+  padding: 22px 24px;
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
+}
+.step .num {
+  font-size: var(--text-14);
+  font-weight: 800;
+  color: var(--color-brand);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+}
+.step h3 {
+  font-size: var(--text-18);
+  margin-bottom: 4px;
+}
+.step p {
+  font-size: var(--text-14);
+  color: var(--color-secondary);
+}
+
+/* The resume banner. There are no accounts, so "you were here before" is
+   whatever this browser remembers — but it is still the fork a returning
+   person needs, and a wall of intro copy they have already read is the wrong
+   thing to show them. */
+.resume {
+  max-width: var(--readw);
+  margin: 0 auto 32px;
+  padding: 20px 24px;
+  border-radius: var(--radius-tile);
+  background: var(--color-brand-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.resume p {
+  font-size: var(--text-16);
+  font-weight: 600;
+  color: var(--color-brand-ink);
+}
+.resume p span {
+  display: block;
+  font-size: var(--text-14);
+  font-weight: 500;
+  color: color-mix(in srgb, var(--color-brand-ink) 72%, #fff);
+  margin-top: 2px;
 }
 
 .empty-note {
   max-width: var(--readw);
   margin: 0 auto;
   text-align: center;
-  color: var(--muted);
+  color: var(--color-muted);
   padding: 40px 0;
 }
 
 /* ---------- questions ---------- */
 .q-block {
   max-width: var(--readw);
-  margin: 0 auto 44px;
+  margin: 0 auto 40px;
 }
 .q-prompt {
-  font-family: 'Fraunces', serif;
-  color: var(--ivory);
-  font-size: clamp(1.2rem, 2.6vw, 1.5rem);
+  color: var(--color-ink);
+  font-size: var(--text-22);
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.3;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .q-helper {
-  color: var(--muted);
-  font-size: 0.94rem;
-  margin-bottom: 16px;
+  color: var(--color-muted);
+  font-size: var(--text-14);
+  margin-bottom: 14px;
 }
 .q-optional {
-  font-size: 0.78rem;
+  font-size: var(--text-12);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--color-muted);
+  font-weight: 700;
   margin-bottom: 8px;
   display: block;
 }
 
 .yesno {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 .yesno button {
-  font-family: 'Fraunces', serif;
-  font-size: 1.1rem;
+  font-family: inherit;
+  font-size: var(--text-16);
+  font-weight: 600;
   padding: 0.7em 2em;
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: rgba(246, 239, 231, 0.02);
-  color: var(--body);
+  border: 0;
+  background: var(--color-card);
+  color: var(--color-secondary);
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 .yesno button:hover {
-  color: var(--ivory);
-  border-color: rgba(246, 239, 231, 0.34);
+  color: var(--color-ink);
+  background: var(--color-card-2);
 }
 .yesno button.sel {
-  background: linear-gradient(180deg, var(--gold), var(--rose));
-  border-color: transparent;
-  color: #241a2e;
-  font-weight: 600;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
 }
 
 .scale {
   display: flex;
-  gap: 7px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 .scale button {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: rgba(246, 239, 231, 0.02);
-  color: var(--body);
-  font-family: 'Fraunces', serif;
-  font-size: 1rem;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  border: 0;
+  background: var(--color-card);
+  color: var(--color-secondary);
+  font-family: inherit;
+  font-size: var(--text-16);
+  font-weight: 700;
   cursor: pointer;
   font-variant-numeric: tabular-nums;
-  transition: all 0.2s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 .scale button:hover {
-  color: var(--ivory);
-  border-color: rgba(246, 239, 231, 0.34);
+  color: var(--color-ink);
+  background: var(--color-card-2);
 }
 .scale button.sel {
-  background: linear-gradient(180deg, var(--gold), var(--rose));
-  border-color: transparent;
-  color: #241a2e;
-  font-weight: 600;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
 }
 
 /* ---------- voice input ---------- */
 .vi {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: rgba(246, 239, 231, 0.025);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
+  transition: box-shadow 0.2s ease, background 0.2s ease;
 }
 .vi:focus-within {
-  border-color: rgba(233, 166, 175, 0.45);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 22%, transparent);
 }
 .vi-live {
-  border-color: rgba(233, 166, 175, 0.65);
-  box-shadow: 0 0 0 4px rgba(233, 166, 175, 0.09);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 40%, transparent);
 }
 .vi-field {
   display: block;
@@ -807,9 +1264,9 @@ footer {
   resize: vertical;
   background: transparent;
   border: 0;
-  color: var(--ivory);
+  color: var(--color-ink);
   font-family: inherit;
-  font-size: 1.02rem;
+  font-size: var(--text-16);
   line-height: 1.65;
   padding: 18px 20px 8px;
 }
@@ -817,111 +1274,109 @@ footer {
   outline: none;
 }
 .vi-field::placeholder {
-  color: rgba(154, 143, 196, 0.65);
+  color: var(--color-muted);
 }
 .vi-interim {
   padding: 0 20px 6px;
-  color: var(--muted);
+  color: var(--color-brand);
   font-style: italic;
-  font-size: 0.98rem;
+  font-size: var(--text-16);
 }
 .vi-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 14px 12px 14px;
-  border-top: 1px solid var(--line);
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--color-line);
 }
 .vi-mic {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   font-family: inherit;
-  font-size: 0.88rem;
-  font-weight: 600;
+  font-size: var(--text-14);
+  font-weight: 700;
   padding: 0.5em 1em;
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--body);
+  border: 0;
+  background: var(--color-canvas);
+  color: var(--color-secondary);
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 .vi-mic svg {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
 }
 .vi-mic:hover {
-  color: var(--ivory);
-  border-color: rgba(246, 239, 231, 0.32);
+  color: var(--color-ink);
 }
 .vi-mic.on {
-  background: linear-gradient(180deg, var(--gold), var(--rose));
-  border-color: transparent;
-  color: #241a2e;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
   animation: pulse 1.8s ease-in-out infinite;
 }
 @keyframes pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(233, 166, 175, 0.5);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-brand) 45%, transparent);
   }
   50% {
-    box-shadow: 0 0 0 7px rgba(233, 166, 175, 0);
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-brand) 0%, transparent);
   }
 }
 .vi-note,
 .vi-count {
-  font-size: 0.8rem;
-  color: var(--muted);
+  font-size: var(--text-12);
+  color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 }
 .vi-error {
   padding: 0 20px 14px;
-  font-size: 0.86rem;
-  color: var(--rose);
+  font-size: var(--text-14);
+  color: var(--color-accent);
 }
 
 /* ---------- duty of care ----------
    Warm, never alarming. No red, no sirens, no urgency theatre — a person in
-   distress does not need the interface to panic at them. The rose accent is
-   the same one used throughout, slightly raised. */
+   distress does not need the interface to panic at them. The accent is the
+   softest warm tone in the system, and this is the only place it appears at
+   full strength. */
 .care {
   margin: 14px 0 2px;
-  border: 1px solid rgba(233, 166, 175, 0.45);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(233, 166, 175, 0.13), rgba(233, 166, 175, 0.05));
+  border-radius: var(--radius-tile);
+  background: var(--color-accent-soft);
 }
 .care-urgent,
 .care-safety {
-  border-color: rgba(233, 166, 175, 0.7);
-  background: linear-gradient(180deg, rgba(233, 166, 175, 0.19), rgba(233, 166, 175, 0.07));
+  background: color-mix(in srgb, var(--color-accent) 14%, #fff);
 }
 .care-body {
   padding: 22px 24px;
 }
 .care-body h4 {
-  font-size: 1.14rem;
+  font-size: var(--text-18);
   line-height: 1.35;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .care-body p {
-  color: var(--body);
-  font-size: 0.96rem;
+  color: var(--color-secondary);
+  font-size: var(--text-14);
   margin-bottom: 18px;
 }
 .care-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 .care-dismiss {
   font-family: inherit;
-  font-size: 0.88rem;
-  color: var(--muted);
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--color-muted);
   background: none;
   border: 0;
   cursor: pointer;
@@ -930,151 +1385,147 @@ footer {
   text-underline-offset: 3px;
 }
 .care-dismiss:hover {
-  color: var(--ivory);
+  color: var(--color-ink);
 }
 .care-link {
-  color: var(--rose) !important;
-}
-.care-link:hover {
-  color: var(--gold) !important;
+  color: var(--color-accent) !important;
+  font-weight: 700;
 }
 
 .resource {
   padding: 22px 24px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(246, 239, 231, 0.02);
-  margin-bottom: 14px;
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
+  margin-bottom: 12px;
 }
 .resource-region {
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
+  font-size: var(--text-12);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 600;
+  color: var(--color-muted);
+  font-weight: 800;
   display: block;
   margin-bottom: 8px;
 }
 .resource h3 {
-  font-size: 1.25rem;
-  margin-bottom: 6px;
+  font-size: var(--text-18);
+  margin-bottom: 4px;
 }
 .resource-contact {
-  font-family: 'Fraunces', serif;
-  font-size: 1.3rem;
-  color: var(--gold);
-  margin-bottom: 10px !important;
+  font-size: var(--text-28);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-brand);
+  margin-bottom: 8px !important;
 }
 .resource-link {
   display: inline-block;
-  margin-top: 10px;
-  color: var(--rose);
-  font-size: 0.9rem;
-}
-.resource-link:hover {
-  color: var(--gold);
+  margin-top: 8px;
+  color: var(--color-brand);
+  font-size: var(--text-14);
+  font-weight: 600;
 }
 
 /* ---------- nav controls ---------- */
 .controls {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 48px;
-  padding-top: 34px;
-  border-top: 1px solid var(--line);
+  margin-top: 44px;
+  padding-top: 32px;
+  border-top: 1px solid var(--color-line);
 }
 .save-note {
   text-align: center;
-  margin-top: 18px;
-  font-size: 0.84rem;
-  color: var(--muted);
+  margin-top: 16px;
+  font-size: var(--text-12);
+  color: var(--color-muted);
 }
 
 /* ---------- review ---------- */
 .review-row {
   max-width: var(--readw);
-  margin: 0 auto 28px;
+  margin: 0 auto 20px;
   padding: 22px 24px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(246, 239, 231, 0.02);
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
 }
 .review-row .mod {
-  font-size: 0.74rem;
-  letter-spacing: 0.2em;
+  font-size: var(--text-12);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--rose);
-  font-weight: 600;
+  color: var(--color-brand);
+  font-weight: 800;
   display: block;
   margin-bottom: 8px;
 }
 .review-row .q {
-  font-family: 'Fraunces', serif;
-  color: var(--ivory);
-  font-size: 1.1rem;
+  color: var(--color-ink);
+  font-size: var(--text-18);
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.35;
   margin-bottom: 12px;
 }
 .review-row .a-empty {
-  color: var(--muted);
+  color: var(--color-muted);
   font-style: italic;
 }
 
 /* ---------- profile / synthesis ---------- */
 .framing {
   max-width: var(--readw);
-  margin: 0 auto 40px;
+  margin: 0 auto 36px;
   padding: 20px 24px;
-  border: 1px solid rgba(233, 166, 175, 0.3);
-  border-radius: 16px;
-  background: rgba(233, 166, 175, 0.06);
-  color: var(--body);
-  font-size: 0.95rem;
+  border-radius: var(--radius-tile);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-ink);
+  font-size: var(--text-14);
+  font-weight: 500;
 }
 .syn-section {
   max-width: var(--readw);
-  margin: 0 auto 48px;
+  margin: 0 auto 44px;
 }
 .syn-section h2 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  margin: 10px 0 18px;
+  font-size: clamp(1.5rem, 3vw, var(--text-32));
+  margin: 8px 0 16px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 .syn-section p {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 .syn-value {
   padding: 20px 24px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(246, 239, 231, 0.02);
-  margin-bottom: 14px;
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
+  margin-bottom: 12px;
 }
 .syn-value h3 {
-  font-size: 1.3rem;
-  margin-bottom: 8px;
+  font-size: var(--text-22);
+  margin-bottom: 6px;
 }
 .syn-value .rank {
-  font-family: 'Fraunces', serif;
-  color: var(--gold);
+  color: var(--color-brand);
   font-variant-numeric: tabular-nums;
   margin-right: 10px;
 }
 .syn-practice {
   padding: 18px 22px;
-  border-left: 2px solid var(--rose);
-  margin-bottom: 16px;
-  background: rgba(246, 239, 231, 0.02);
-  border-radius: 0 14px 14px 0;
+  border-left: 3px solid var(--color-brand);
+  margin-bottom: 12px;
+  background: var(--color-card);
+  border-radius: 0 var(--radius-tile) var(--radius-tile) 0;
 }
 .syn-practice h4 {
-  font-size: 1.08rem;
-  margin-bottom: 6px;
+  font-size: var(--text-18);
+  margin-bottom: 4px;
 }
 .syn-practice p {
-  color: var(--muted);
-  font-size: 0.95rem;
+  color: var(--color-secondary);
+  font-size: var(--text-14);
   margin: 0;
 }
 
@@ -1082,43 +1533,41 @@ footer {
   max-width: var(--readw);
   margin: 0 auto;
   padding: 32px 30px;
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(246, 239, 231, 0.045), rgba(246, 239, 231, 0.01));
+  border-radius: var(--radius-card);
+  background: var(--color-card);
   text-align: center;
 }
 .resonance h2 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  margin-bottom: 10px;
+  font-size: clamp(1.5rem, 3vw, var(--text-32));
+  margin-bottom: 8px;
 }
 .resonance > p {
-  color: var(--muted);
-  margin-bottom: 22px;
+  color: var(--color-secondary);
+  margin-bottom: 20px;
 }
 .resonance-choices {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .notice {
   max-width: var(--readw);
-  margin: 0 auto 28px;
+  margin: 0 auto 24px;
   padding: 16px 20px;
-  border-radius: 14px;
-  border: 1px solid rgba(233, 166, 175, 0.4);
-  background: rgba(233, 166, 175, 0.08);
-  color: var(--ivory);
-  font-size: 0.95rem;
+  border-radius: var(--radius-tile);
+  background: var(--color-accent-soft);
+  color: var(--color-ink);
+  font-size: var(--text-14);
 }
 
 .loading {
   max-width: var(--readw);
   margin: 60px auto;
   text-align: center;
-  color: var(--muted);
+  color: var(--color-muted);
 }
 .loading .dot {
   display: inline-block;
@@ -1126,7 +1575,7 @@ footer {
   height: 8px;
   margin: 0 4px;
   border-radius: 50%;
-  background: var(--rose);
+  background: var(--color-brand);
   animation: bounce 1.3s ease-in-out infinite;
 }
 .loading .dot:nth-child(2) {
@@ -1148,37 +1597,61 @@ footer {
   }
 }
 
-/* ---------- reveal ---------- */
+/* ---------- reveal ----------
+   Deliberately small. On a flowing page, a big entrance animation reintroduces
+   exactly the sense of discrete panels the layout is trying to avoid. */
 .reveal {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 .reveal.in {
   opacity: 1;
   transform: none;
 }
 
-@media (max-width: 820px) {
-  .pillars {
-    grid-template-columns: 1fr;
+/* ---------- responsive ---------- */
+@media (max-width: 1040px) {
+  /* The rail is a desktop affordance. On a phone a sticky table of contents
+     eats the screen, and the page is short enough to simply scroll. */
+  .article {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-top: 32px;
   }
-  .nav-actions .login {
+  .toc-rail {
     display: none;
   }
-  .section {
-    padding: 66px 0;
+  .cta-inline {
+    padding: 28px 24px;
   }
-  .step {
-    padding: 22px 22px;
-    gap: 18px;
-  }
+}
+@media (max-width: 980px) {
   .card-grid {
     grid-template-columns: 1fr;
   }
+  .progress-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .open {
+    padding: 56px 0 44px;
+  }
+  .close {
+    padding: 56px 0 72px;
+  }
+  .rule {
+    margin: 44px auto;
+  }
+  .beat {
+    margin-top: 40px;
+  }
+  /* "Talk to someone" is a hard rule — it stays reachable at every width.
+     Only the secondary link collapses. */
+  .nav-actions .login:not(.care-link) {
+    display: none;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .glow,
   .vi-mic.on,
   .loading .dot {
     animation: none;

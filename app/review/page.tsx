@@ -70,6 +70,36 @@ export default function ReviewPage() {
             </p>
           </div>
 
+          {/* Where you actually are, at a glance.
+              Without this, a returning person has to scroll the whole page to
+              work out which module they abandoned — which is the single most
+              likely reason they came back. */}
+          <div className="progress-grid">
+            {MODULES.map((module) => {
+              const qs = QUESTIONS.filter(
+                (q) => q.moduleId === module.id && isQuestionVisible(q, profile.answers),
+              );
+              const done = qs.filter((q) => profile.answers[q.id]?.trim()).length;
+              const pct = qs.length ? Math.round((done / qs.length) * 100) : 0;
+              return (
+                <Link
+                  key={module.id}
+                  className={`progress-tile${pct === 100 ? ' full' : ''}`}
+                  href={`/journey?m=${module.id}`}
+                >
+                  <span className="n">{module.number}</span>
+                  <span className="t">{module.title}</span>
+                  <span className="bar">
+                    <span style={{ width: `${pct}%` }} />
+                  </span>
+                  <span className="c">
+                    {done} of {qs.length}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+
           {MODULES.map((module) => {
             const qs = QUESTIONS.filter(
               (q) => q.moduleId === module.id && isQuestionVisible(q, profile.answers),
@@ -209,13 +239,13 @@ function ValuesSummary({ profile }: { profile: ReturnType<typeof useProfile>['pr
             {v?.definition && <p style={{ whiteSpace: 'pre-wrap' }}>{v.definition}</p>}
             {v?.dos && (
               <p style={{ marginTop: 6 }}>
-                <strong style={{ color: 'var(--rose)' }}>Do&apos;s: </strong>
+                <strong className="op-inline">Do&apos;s: </strong>
                 {v.dos}
               </p>
             )}
             {v?.donts && (
               <p style={{ marginTop: 6 }}>
-                <strong style={{ color: 'var(--rose)' }}>Don&apos;ts: </strong>
+                <strong className="op-inline">Don&apos;ts: </strong>
                 {v.donts}
               </p>
             )}

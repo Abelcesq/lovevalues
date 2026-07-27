@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Footer, Nav } from '@/components/Chrome';
+import ResumeNotice from '@/components/ResumeNotice';
 import { LEGAL_DISCLOSURE } from '@/lib/method';
 
 export const metadata = { title: 'Begin — Love Values' };
@@ -10,6 +11,8 @@ export default function Begin() {
       <Nav cta={false} />
       <main className="journey">
         <div className="read">
+          <ResumeNotice />
+
           <div className="module-open">
             <span className="eyebrow">The first step</span>
             <h1>
@@ -61,7 +64,7 @@ export default function Begin() {
           </div>
 
           <div className="framing">
-            <strong style={{ color: 'var(--ivory)' }}>Please read this.</strong>
+            <strong>Please read this.</strong>
             <p style={{ marginTop: 10 }}>{LEGAL_DISCLOSURE}</p>
             <p style={{ marginTop: 10 }}>
               This is not therapy and does not replace it. Parts of this — especially the questions

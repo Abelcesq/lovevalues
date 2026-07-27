@@ -75,7 +75,21 @@ worth paying for. Not scale. Not marketing. One honest validation.
    top-ups, metered usage, Resend email, and a documented set of Stripe
    gotchas. When payment is decided (open item 6), read its `CLAUDE.md` first
    rather than starting cold.
-3. **Home page** ✅ built and approved; now ported to `app/page.tsx`.
+3. ~~**Home page**~~ ✅ **redesigned 2026-07-27, and the reason matters.** The
+   first version was rejected: *"It looks similar to the abelcalderon.com home
+   page and thedotx.com home page. All the 'claude' sites look the same."*
+   Correct — all three were dark navy + gold + centred serif. Rebuilt on a white
+   canvas with one electric-indigo accent, one geometric sans (Plus Jakarta,
+   shared with NowTrendin for portfolio consistency), Tailwind v4 tokens and
+   Lucide icons.
+
+   The **format** changed as much as the palette. Per the CEO's second
+   reference — vidaselect.com — the home page is a **long-form editorial
+   article, not a panel page**: sticky table of contents, one prose column,
+   sections that flow into each other, CTAs dropped inline between them.
+   Cards survive inside the app, where they are correct. See
+   `skills/design-system/SKILL.md`, which carries the palette contract and five
+   gotchas including the Tailwind `svg { display: block }` trap.
 4. **Values card sort (Module 1)** ✅ built — `components/ValuesCardSort.tsx`.
 5. **Open — accounts & persistence.** The MVP is deliberately local-first
    (browser `localStorage`). No account system, no server-side storage of a
@@ -131,6 +145,10 @@ components/
   CarePrompt.tsx        The quiet, dismissible support card
   ValuesCardSort.tsx    Module 1, the crown jewel in action
   QuestionField.tsx     One question, any input kind
+  Chrome.tsx            Nav + footer. "Talk to someone" survives every breakpoint
+  Toc.tsx               The home page's sticky table of contents
+  BeginCta.tsx          Entry fork — Begin vs. Continue, from localStorage
+  ResumeNotice.tsx      The same fork, at the top of the /begin gate
 lib/
   method.ts             THE METHOD — all values, modules, questions, disclosures
   care.ts               Duty of care — screening + resources. Local-only

@@ -1,5 +1,18 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
+
+/* One type family for the whole product — the Aurora rule. Plus Jakarta Sans
+   is the same family NowTrendin uses, which is deliberate: the CEO's products
+   should read as one house. What distinguishes Love Values is the palette,
+   not a second typeface. Self-hosted by next/font, so there is no render-
+   blocking request to Google and no layout shift. */
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-jakarta',
+  display: 'swap',
+});
 
 /* Canonical origin. Set NEXT_PUBLIC_SITE_URL on Heroku to whichever host you
    actually serve — if the apex forwards to www (the GoDaddy pattern), the
@@ -22,17 +35,13 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: '#ffffff',
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Instrument+Sans:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={jakarta.variable}>
       <body>{children}</body>
     </html>
   );
