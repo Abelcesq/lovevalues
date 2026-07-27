@@ -57,9 +57,14 @@ export function Nav({ variant = 'app' }: { variant?: 'splash' | 'flow' | 'app' }
           )}
 
           {variant === 'app' && (
-            <Link className="login" href="/review">
-              Your answers
-            </Link>
+            <>
+              <Link className="login" href="/review">
+                Your answers
+              </Link>
+              <Link className="btn btn-ghost" href="/dashboard">
+                Dashboard
+              </Link>
+            </>
           )}
         </nav>
       </div>

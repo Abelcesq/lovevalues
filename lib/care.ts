@@ -30,6 +30,22 @@
  * risk and must never be described as though it does.
  */
 
+/**
+ * The notice shown once, before the first question.
+ *
+ * CEO-authored, 2026-07-27, and it is canonical — do not paraphrase it, and do
+ * not "tighten" it. It does a specific job the rest of the app cannot: it tells
+ * someone *in advance* that feelings may surface, that this is normal, and that
+ * asking for help is itself an act of self-love rather than a failure. Every
+ * other care surface in this product is reactive; this one is the only one that
+ * arrives before anything has gone wrong.
+ *
+ * It deliberately does not live on /support. Someone reaching that page may be
+ * in distress right now, and an opening paragraph about "the process of
+ * identifying values" would make them read past the thing they came for.
+ */
+export const PRE_JOURNEY_CARE = `Although this process of identifying values is intended as a discovery and educational tool to discovery our values, it may be possible that feelings or insecurities may come up. Be mindful of your feelings and know that feelings are normal. When the feelings become uneasy, know that there are resources to talk which are available now. Seek professional help if you feel you need to talk to someone. Our goal and purpose is to have you know that faith is not only believing in God but it is also believing and knowing that I am loved and loveable. Asking for guidance in moments of sadness, uncomfortable feelings or despair are concrete ways to practice self-love.`;
+
 export type CareLevel = 'none' | 'gentle' | 'urgent' | 'safety';
 
 export type Resource = {

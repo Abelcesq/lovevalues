@@ -42,10 +42,13 @@ worth paying for. Not scale. Not marketing. One honest validation.
    final analysis; if the information changes, the analysis can change.* Then it
    asks: does this resonate? (Yes / Partly / No — and tell us what to correct.)
 5. **Not therapy.** The product is not, and must never present as, therapy.
-   Anyone in distress is routed to real human help — implemented in three
+   Anyone in distress is routed to real human help — implemented in four
    layers: an always-visible "Talk to someone" link and `/support` page,
-   local-only screening while writing (`lib/care.ts`), and a `careFlag` the
-   synthesis engine must return. Screening never leaves the browser; do not add
+   **the pre-journey notice on `/begin`** (CEO-authored, canonical as
+   `PRE_JOURNEY_CARE` in `lib/care.ts` — do not paraphrase it), local-only
+   screening while writing (`lib/care.ts`), and a `careFlag` the synthesis
+   engine must return. The pre-journey notice is the only one of the four that
+   reaches someone *before* anything has gone wrong; the rest are reactive. Screening never leaves the browser; do not add
    telemetry to it. The false-positive corpus in `tests/care.test.mjs` is
    load-bearing — a screen that fires on ordinary Roots answers trains users to
    dismiss it, and then it fails the one time it matters.
@@ -159,7 +162,8 @@ app/
   how-it-works/         The long-form editorial explanation (was the home page)
   signup/  login/       Step 1 — account (email or social)
   checkout/             Step 2 — plan + 7-day trial, Stripe-hosted payment
-  begin/                Step 3 — intro + legal disclosure gate
+  begin/                Step 3 — intro, the pre-journey care notice, legal gate
+  dashboard/            The hub — progress, report, details, billing, about
   journey/              The 4-module guided path
   review/               Every question, editable — the living document
   profile/              AI synthesis + "Does this resonate?"
@@ -180,7 +184,7 @@ components/
 lib/
   account.ts            Accounts — LOCAL ONLY. Not auth. Read its header first
   method.ts             THE METHOD — all values, modules, questions, disclosures
-  care.ts               Duty of care — screening + resources. Local-only
+  care.ts               Duty of care — screening, resources, PRE_JOURNEY_CARE
   llm.ts                Resilience lane — open-model fallback. Inert by default
   store.ts              Local-first persistence (single seam to replace)
 tests/

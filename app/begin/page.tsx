@@ -1,7 +1,9 @@
+import { HeartHandshake } from 'lucide-react';
 import Link from 'next/link';
 import { Footer, Nav } from '@/components/Chrome';
 import ResumeNotice from '@/components/ResumeNotice';
 import Steps from '@/components/Steps';
+import { PRE_JOURNEY_CARE } from '@/lib/care';
 import { LEGAL_DISCLOSURE } from '@/lib/method';
 
 export const metadata = { title: 'Begin — Love Values' };
@@ -27,6 +29,28 @@ export default function Begin() {
               loving began, how you actually show up, and what you reach for when things get hard.
             </p>
           </div>
+
+          {/* The pre-journey care notice.
+              It sits ABOVE the practical "three things", because it is the more
+              important of the two and because everything else in this app's
+              duty-of-care path is reactive — it fires after someone has already
+              written something worrying. This is the only surface that reaches
+              a person before anything has gone wrong. Copy is canonical: see
+              PRE_JOURNEY_CARE in lib/care.ts. */}
+          <section className="pre-care">
+            <span className="pre-care-mark" aria-hidden="true">
+              <HeartHandshake />
+            </span>
+            <div>
+              <span className="eyebrow">You&apos;re not alone in this</span>
+              <h2>Before you begin</h2>
+              <p>{PRE_JOURNEY_CARE}</p>
+              <p className="pre-care-link">
+                Here is the link to resources should you ever need them.{' '}
+                <Link href="/support">Talk to someone</Link>
+              </p>
+            </div>
+          </section>
 
           <div className="q-block">
             <p className="q-prompt">Three things worth knowing before you start.</p>

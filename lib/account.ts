@@ -128,6 +128,43 @@ export function startTrial(plan: Plan): Account | null {
   return next;
 }
 
+/** Edits the profile fields a user is allowed to change themselves. */
+export function updateAccount(patch: Partial<Pick<Account, 'firstName' | 'lastName' | 'email'>>) {
+  const existing = loadAccount();
+  if (!existing) return null;
+  const next: Account = {
+    ...existing,
+    ...patch,
+    email: (patch.email ?? existing.email).trim().toLowerCase(),
+  };
+  save(next);
+  return next;
+}
+
+/**
+ * Ends the subscription.
+ *
+ * Local only, and that is a real limitation rather than a detail: with no
+ * Stripe customer and no webhook, this clears the plan on THIS DEVICE and
+ * nothing else. Once billing is live, cancelling has to go through Stripe —
+ * otherwise a user "cancels" here, sees a confirmation, and is charged anyway,
+ * which is the single worst bug this product could ship.
+ */
+export function cancelPlan(): Account | null {
+  const existing = loadAccount();
+  if (!existing) return null;
+  const next: Account = { ...existing, plan: null, trialEndsAt: null };
+  save(next);
+  return next;
+}
+
+/** Whole days left in the trial. Negative once it has lapsed. */
+export function trialDaysLeft(account: Account): number | null {
+  if (!account.trialEndsAt) return null;
+  const ms = new Date(account.trialEndsAt).getTime() - Date.now();
+  return Math.ceil(ms / 86_400_000);
+}
+
 export function displayName(account: Account): string {
   return account.firstName || account.email.split('@')[0] || 'there';
 }
