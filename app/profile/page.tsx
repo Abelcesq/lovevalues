@@ -59,7 +59,15 @@ function Profile() {
         setError(data.error ?? 'Something went wrong. Your answers are safe.');
         return;
       }
-      update((p) => ({ ...p, synthesis: data.synthesis as Synthesis, resonance: null }));
+      update((p) => ({
+        ...p,
+        synthesis: {
+          ...(data.synthesis as Synthesis),
+          provider: data.provider,
+          model: data.model,
+        },
+        resonance: null,
+      }));
     } catch {
       setError('We couldn’t reach the server. Your answers are safe on this device.');
     } finally {
@@ -117,6 +125,17 @@ function Profile() {
               )}
 
               <div className="framing">{MIRROR_FRAMING}</div>
+
+              {/* /privacy promises a reflection written by the fallback engine
+                  is marked. This is that mark — a claim on the privacy page
+                  that the UI does not honour is worse than no claim. */}
+              {s.provider === 'openrouter' && (
+                <p className="save-note" style={{ margin: '-24px auto 40px' }}>
+                  Our usual engine was unavailable, so this reflection was written by an
+                  open-source model{s.model ? ` (${s.model})` : ''} instead. It may read
+                  differently. You can regenerate below to try the usual one again.
+                </p>
+              )}
 
               <section className="syn-section">
                 <span className="eyebrow">Your core values</span>

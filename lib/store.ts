@@ -18,6 +18,10 @@ const KEY = 'lovevalues.profile.v1';
 export type Synthesis = {
   /** Duty-of-care routing set by the engine. See lib/care.ts. */
   careFlag?: 'none' | 'gentle' | 'urgent' | 'safety';
+  /** Which engine wrote this. Present only when the resilience lane produced
+      it — /privacy promises the user can tell, so this must be surfaced. */
+  provider?: string;
+  model?: string;
   coreValues: { value: string; whyItMatters: string }[];
   operatingSystem: string;
   howYouPresent: string;

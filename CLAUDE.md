@@ -81,7 +81,17 @@ worth paying for. Not scale. Not marketing. One honest validation.
    (browser `localStorage`). No account system, no server-side storage of a
    user's answers. This needs a CEO decision before Phase 1 payment testing,
    because payment implies accounts.
-6. **Hosting + processor** ✅ **decided — Heroku, existing Stripe account.**
+6. **Open models** ✅ **added 2026-07-27 as a resilience lane only** —
+   DeepSeek-R1 (MIT) via OpenRouter, retrying a *failed* Anthropic call so the
+   profile degrades instead of going dark. Claude stays primary; healthy calls
+   are never re-routed; a refusal never falls back. Inert until
+   `OPENROUTER_API_KEY` is set. **Enabling it means user answers can reach a
+   fourth party — `/privacy` discloses this and the UI marks any reflection
+   written that way.** Qwen2.5 was proposed as a "workhorse" for high-volume
+   classification; **this app has no such work** (one synthesis, one person, one
+   call), so nothing was built for it. Revisit if Phase 2 match analysis creates
+   real volume.
+7. **Hosting + processor** ✅ **decided — Heroku, existing Stripe account.**
    Pricing unchanged: $9.99/mo (30 days waived), $29.99 one-time profile,
    $9.99/user match analysis. Nothing integrated yet, deliberately — deploy and
    run the stranger test first. See `skills/deploy-and-payments/SKILL.md`,
@@ -124,9 +134,11 @@ components/
 lib/
   method.ts             THE METHOD — all values, modules, questions, disclosures
   care.ts               Duty of care — screening + resources. Local-only
+  llm.ts                Resilience lane — open-model fallback. Inert by default
   store.ts              Local-first persistence (single seam to replace)
 tests/
   care.test.mjs         The false-positive corpus. Most important test here
+  llm.test.mjs          Fallback parsing — incl. stripping R1 reasoning traces
 knowledge/              about-me, project-purpose, board-analysis
 skills/                 One SKILL.md each (gotchas live here)
 projects/               project.md = the container + dashboard

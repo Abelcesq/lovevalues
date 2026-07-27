@@ -23,8 +23,21 @@ export default function Privacy() {
             </p>
             <p>
               The one exception is when you press <strong>Generate my profile</strong>. At that
-              moment your answers are sent to our server, used once to produce your reflection, and
-              then discarded. We do not write them to a database or a log.
+              moment your answers are sent to our server, passed once to the AI that writes your
+              reflection, and then discarded. We do not write them to a database or a log.
+            </p>
+            <p>
+              Being specific about who that AI is: normally it is Anthropic&apos;s Claude. If that
+              service is unavailable, we can fall back to an open-source model reached through a
+              routing service called OpenRouter, so that your reflection doesn&apos;t simply fail.
+              When we do, we require that the provider does not train on what you wrote. If a
+              reflection was produced this way, we mark it — you should be able to tell.
+            </p>
+            <p>
+              We would rather say that plainly than let &quot;our server&quot; quietly stand in for
+              a chain of companies. If you would prefer your answers never travel that path, simply
+              don&apos;t generate a profile — everything else in the app works without it, and your
+              answers stay on your device.
             </p>
             <p>
               Because everything lives on your device, clearing your browser data will erase your

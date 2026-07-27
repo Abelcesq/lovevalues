@@ -64,14 +64,36 @@ exists. Specifically, watch for:
    Its production source also supplied the voice recognition model this app
    now uses, and the Stripe/Heroku gotchas in
    `skills/deploy-and-payments/SKILL.md`.
-4. **Trademark search** on "Love Values" before heavy brand spend.
-5. ~~**Distress-detection UI path.**~~ ✅ **Built.** Always-visible support link
+4. **Open-source models — scoped down deliberately.** The brief proposed
+   DeepSeek-R1 as a "thinking engine" and Qwen2.5-32B as a "workhorse", with
+   jobs described as synthesising trend signals, reasoning about acceleration,
+   and first-pass scoring of many trend items. **Those jobs are NowTrending's,
+   not this app's** — Love Values makes exactly one AI call: one synthesis, on
+   one person's answers, once. There is no high-volume classification here for
+   a workhorse to do, so building one would have been dead code.
+
+   What *was* built is the pattern NowTrending actually uses in
+   `transfer/ai_grade.py`: a resilience lane. DeepSeek-R1 via OpenRouter
+   retries a **failed** Anthropic call so the profile degrades instead of going
+   dark — the outage class NowTrending hit on 2026-07-07. Claude stays primary,
+   healthy calls are never re-routed, and a refusal never falls back (a refusal
+   is a judgment, not an outage).
+
+   **The cost of switching it on is a privacy change, not a code change.**
+   Answers would reach OpenRouter and its upstream provider — a fourth party.
+   `/privacy` now says so plainly, `data_collection: "deny"` excludes providers
+   that train on prompts, and the profile marks any reflection written by the
+   fallback. Weigh that before setting the key: for this data category, "our
+   server" quietly meaning "a chain of companies" is exactly the kind of thing
+   that costs trust when a user finds out later rather than upfront.
+5. **Trademark search** on "Love Values" before heavy brand spend.
+6. ~~**Distress-detection UI path.**~~ ✅ **Built.** Always-visible support link
    and `/support` page, local-only screening while writing, and an engine-side
    `careFlag`. Two things still need a human: **verify every crisis number
    before launch and re-verify on a schedule** (a dead line is worse than none,
    because it is trusted), and decide whether the US/UK-centric list is
    sufficient for your first users.
-6. **32 cards may be too many** for a first pass. Worth testing a shorter list
+7. **32 cards may be too many** for a first pass. Worth testing a shorter list
    against completion rate.
 
 ## Board notes

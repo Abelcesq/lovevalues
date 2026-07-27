@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
+import { synthesizeViaFallback } from '@/lib/llm';
 import { LEGAL_DISCLOSURE, MIRROR_FRAMING } from '@/lib/method';
 
 export const runtime = 'nodejs';
@@ -171,6 +172,13 @@ export async function POST(request: Request) {
     ...answered.map((a) => `Q: ${a.question}\nA: ${a.answer}`),
   ].join('\n');
 
+  const userMessage = `Here is everything this person shared. Reflect it back to them.\n\n${transcript}`;
+
+  /* The fallback provider has no server-side schema enforcement, so the shape
+     has to travel in the prompt. Derived from SCHEMA rather than hand-written,
+     so the two cannot drift apart. */
+  const schemaHint = JSON.stringify(SCHEMA, null, 2);
+
   const client = new Anthropic();
 
   try {
@@ -182,14 +190,12 @@ export async function POST(request: Request) {
         effort: 'high',
         format: { type: 'json_schema', schema: SCHEMA },
       },
-      messages: [
-        {
-          role: 'user',
-          content: `Here is everything this person shared. Reflect it back to them.\n\n${transcript}`,
-        },
-      ],
+      messages: [{ role: 'user', content: userMessage }],
     });
 
+    /* A refusal is a judgment, not an outage — never route around it to a
+       second model. Retrying a declined request elsewhere is exactly the
+       behaviour the safety classifier exists to prevent. */
     if (response.stop_reason === 'refusal') {
       return NextResponse.json(
         {
@@ -213,6 +219,44 @@ export async function POST(request: Request) {
       disclosure: LEGAL_DISCLOSURE,
     });
   } catch (error) {
+    /* ── RESILIENCE LANE ────────────────────────────────────────────────────
+       Claude failed. Rather than let the profile go dark, retry the same
+       prompt on an open model. Inert unless OPENROUTER_API_KEY is set, so
+       this changes nothing until it is deliberately switched on.
+
+       Deliberately NOT reached on a refusal — that returns above. A refusal is
+       a judgment; routing around it to a second model is precisely what the
+       classifier exists to prevent. This lane is for outages only. */
+    const fallback = await synthesizeViaFallback(SYSTEM_PROMPT, userMessage, schemaHint);
+    if (fallback) {
+      const s = fallback.synthesis as Record<string, unknown>;
+
+      /* Re-assert the guardrails on the way out. The fallback model's
+         adherence to the empathy and never-diagnose rules is unverified, so
+         nothing structural is taken on trust:
+           - careFlag defaults to the safe value if absent or malformed, never
+             to "none" by accident;
+           - MIRROR_FRAMING and LEGAL_DISCLOSURE are appended by us below, as
+             on the primary path, so they cannot be paraphrased away. */
+      const flag = s.careFlag;
+      s.careFlag =
+        flag === 'none' || flag === 'gentle' || flag === 'urgent' || flag === 'safety'
+          ? flag
+          : 'none';
+
+      /* Missing prose is better than invented prose — a section the model
+         omitted is left empty and simply does not render. */
+      return NextResponse.json({
+        synthesis: { ...s, generatedAt: new Date().toISOString() },
+        framing: MIRROR_FRAMING,
+        disclosure: LEGAL_DISCLOSURE,
+        /* Surfaced so a degraded reflection is identifiable after the fact
+           rather than indistinguishable from a primary one. */
+        provider: 'openrouter',
+        model: fallback.model,
+      });
+    }
+
     if (error instanceof Anthropic.RateLimitError) {
       return NextResponse.json(
         { error: 'The engine is busy right now. Wait a moment and try again — nothing was lost.' },
