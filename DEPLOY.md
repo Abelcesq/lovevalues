@@ -106,9 +106,38 @@ The last command prints a **DNS target** ending in `.herokudns.com`. In GoDaddy
 |---|---|---|
 | CNAME | `www` | the `...herokudns.com` target Heroku printed |
 
+### What is already in this domain's DNS (checked 2026-07-27)
+
+Two of these matter, because the zone is not empty and the instructions above
+read as though it were.
+
+- **`CNAME · www · lovevalues.com.` already exists.** It is a self-reference
+  left over from the GoDaddy default. **Edit** that row rather than adding a
+  second `www` — two CNAMEs on the same name is an invalid zone, and GoDaddy
+  will either reject it or resolve unpredictably.
+- **`A · @ · WebsiteBuilder Site` already exists.** Delete it. It points the
+  bare domain at a GoDaddy site-builder page and will otherwise win over the
+  forwarding set up below. (Deleting it takes any published GoDaddy Website
+  Builder site on this domain offline — check before removing.)
+
+**Do not delete**, whatever a guide elsewhere says:
+
+- both `NS · @ · ns47/ns48.domaincontrol.com` rows — removing these hands the
+  domain to nobody,
+- `CNAME · bounces.cloud.em`, `bounces.cloud2.em`, `sable.cloud._domainkey`,
+  `sable.cloud2._domainkey` — GoDaddy email and DKIM signing; deleting them
+  breaks mail delivery and silently sends outbound mail to spam,
+- `CNAME · _domainconnect` — how GoDaddy applies automated DNS changes,
+- `CNAME · pay` — GoDaddy commerce pay links.
+
+Set the `www` row's TTL to **600 seconds** while making the change. The default
+1 hour means every mistake costs an hour to see corrected.
+
 Then handle the apex (`lovevalues.com` with no `www`). GoDaddy cannot CNAME an
 apex, so use **Forwarding** → forward `lovevalues.com` to
-`https://www.lovevalues.com`, permanent (301) — the same arrangement as
+`https://www.lovevalues.com`, permanent (301), **forward only — not "forward
+with masking"**. Masking serves the site inside a hidden frame, which breaks
+the padlock and pins the address bar to the apex. Same arrangement as
 ezaitask.com.
 
 Certificates take a few minutes. Check with:
