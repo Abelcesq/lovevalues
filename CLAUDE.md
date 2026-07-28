@@ -107,11 +107,37 @@ worth paying for. Not scale. Not marketing. One honest validation.
    password they probably reuse. Replacing that file is the whole job when the
    backend lands — nothing else calls storage directly.
 
-   Still needed: a server + database, real password hashing (argon2/bcrypt, not
-   browser SHA-256), OAuth apps for Google and Meta (Instagram login runs
-   through Meta now — one integration, not two, and it carries app review), the
-   Stripe webhook, and a decision on what happens when a trial lapses
-   mid-journey.
+   **The target architecture is now decided (CEO, 2026-07-27), and it is a
+   good one — local-first is the design, not a placeholder:**
+
+   > Answers and all written content stay on the user's own device,
+   > permanently. The server exists for exactly two things: account
+   > credentials, and running the AI synthesis / report generation.
+
+   That keeps the strongest privacy posture this product will ever have while
+   still allowing accounts and billing. `/api/synthesize` already works this
+   way — answers are sent once, used, and discarded. What changes is that this
+   becomes the *stated architecture* rather than a temporary state, so:
+
+   - The server stores identity and subscription state. It must NOT store
+     answers, and the schema should make that impossible rather than merely
+     discouraged.
+   - **Consequence that must be designed for, not discovered:** an account on a
+     new phone finds no answers. Sign-in restores billing, not content. That
+     needs an explicit, obvious path — an encrypted export the user carries, or
+     an opt-in encrypted backup — because "I logged in and my profile was
+     gone" is the failure mode that destroys trust fastest.
+   - Losing or wiping the device loses everything. `/privacy` says so; the
+     dashboard should surface Export prominently rather than hiding it.
+   - Phase 2 match analysis needs *transient* traits from both sides. It still
+     never gets childhood or past-relationship content — hard rule 8 — and
+     local-first makes that wall easier to hold, not harder.
+
+   Still needed: a server + database for **credentials and billing only**, real
+   password hashing (argon2/bcrypt, not browser SHA-256), OAuth apps for Google
+   and Meta (Instagram login runs through Meta now — one integration, not two,
+   and it carries app review), the Stripe webhook, and a decision on what
+   happens when a trial lapses mid-journey.
 
    **The sequencing risk is on the record.** `projects/project.md` and the
    Munger seat both hold that a paywall in front of an unvalidated method buys

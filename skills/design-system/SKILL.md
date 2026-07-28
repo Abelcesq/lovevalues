@@ -37,8 +37,10 @@ how a palette half-reverts.
 
 | Token | Use |
 |---|---|
-| `--color-canvas` `#ffffff` | The page. Everywhere. |
-| `--color-card` `#f4f4f7` | Card surfaces **inside the app only** |
+| `--color-page` / `--color-page-2` | The tinted wash on `<body>`. The page, everywhere |
+| `--color-canvas` `#ffffff` | White surfaces that sit ON something — ghost pills, social buttons |
+| `--color-card` `#ffffff` | Card surfaces **inside the app only** |
+| `--color-inset` | Wells and chips **inside** a white card |
 | `--color-ink` `#0a0a12` | Headings, emphasis |
 | `--color-secondary` `#3f4155` | Body copy |
 | `--color-muted` `#83849a` | Labels, counts, fine print |
@@ -108,3 +110,34 @@ Nothing that makes the page jump.
 5. **Google Fonts is fetched at build time.** `next/font` self-hosts, so there is
    no runtime request — but the *build* needs network access to fonts.googleapis.com.
    A hosting environment that blocks it will fail the build, not degrade.
+
+
+## The background is a wash, not a glow (2026-07-27)
+
+The splash originally carried a radial gradient pooled in the top-right corner.
+The CEO rejected it against vidaselect.com, which carries a constant cream
+across the entire page: *"use the second image as a background shade rather
+than the corner… apply it to the entire background."*
+
+So the gradient now lives on `<body>` and covers the whole document. Three
+things about it that were arrived at the hard way:
+
+1. **No `background-attachment: fixed`.** Fixed anchors the gradient to the
+   viewport, so content scrolls past a stationary tint and the bottom of every
+   screen is permanently the pale end. Letting it span the document gives one
+   continuous tone from nav to footer.
+
+2. **Both stops must be tinted.** A first pass faded to near-white and the
+   bottom two-thirds of every page went colourless — which is exactly the
+   "glow that runs out" the brief was replacing. `#e7e4f9 → #f2f0fd`.
+
+3. **Cards went white, and that is a consequence, not a preference.** On a
+   tinted page a grey card reads as a hole punched in the surface. White reads
+   as a card lifted off it. That forced a third token: chips and wells *inside*
+   a white card can no longer be white, so they use `--color-inset`.
+
+   The layering is now consistent everywhere and worth stating as a rule:
+   **tinted page → white card → tinted inset.**
+
+Do not reintroduce a per-section glow on top of the wash. Two gradients read as
+a smudge.

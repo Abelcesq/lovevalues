@@ -21,24 +21,52 @@
 
    2. THE LANDING PAGE DOES NOT USE PANELS. Aurora composes everything from
       cards, which is correct inside a form-driven product and wrong for a page
-      a stranger reads top to bottom. The home page is a continuous editorial
-      scroll: one white canvas, a reading column, hierarchy from type and
-      whitespace, hairlines instead of filled boxes. Nothing is parked in a
-      container. Card classes below are for /journey, /review and /profile —
-      the app — not for /.
+      a stranger reads top to bottom. The editorial page is a continuous
+      scroll: one column, hierarchy from type and whitespace, hairlines instead
+      of filled boxes. Nothing is parked in a container. Card classes below are
+      for /journey, /review, /dashboard and /profile — the app — not for the
+      long-form page.
 
    The palette is our own. Aurora is midnight navy + red; the previous Love
    Values palette was navy + gold, which is also what the CEO's other sites
-   use. This is deliberately neither: a white canvas, near-black ink, and one
-   electric indigo doing all the work.
+   use. This is deliberately neither: a soft indigo-tinted page, near-black
+   ink, and one electric indigo doing all the work.
+
+   THE BACKGROUND IS A WASH, NOT A GLOW. The splash used to carry a radial
+   gradient pooled in one corner. Per the CEO (referencing vidaselect.com's
+   constant cream), that same gradient now covers the entire page via <body>,
+   viewport-anchored so the tone stays even all the way down. Do not
+   reintroduce a per-section glow on top of it — two gradients read as a smudge.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @theme {
-  /* ---- surfaces ---- */
+  /* ---- surfaces ----
+     Two different things, and mixing them up is the easy mistake:
+
+     `page`   is the tinted wash behind EVERYTHING. It replaces the old
+              radial glow in the corner of the splash — the CEO asked for that
+              gradient spread across the whole background rather than pooled in
+              one corner, the way vidaselect.com carries a constant cream.
+     `canvas` is pure white, and it is now only used for surfaces that sit ON
+              something: chips inside a card, the mic button, a ghost pill.
+              Do not use it for the page. */
+  /* Both ends are tinted on purpose. An earlier pass faded to near-white and
+     the bottom two-thirds of every page went colourless, which is the exact
+     thing being fixed — the brief was a wash across the ENTIRE background,
+     like vidaselect.com's constant cream, not a glow that runs out. */
+  --color-page: #e7e4f9;
+  --color-page-2: #f2f0fd;
   --color-canvas: #ffffff;
-  --color-card: #f4f4f7;
-  --color-card-2: #ececf2;
-  --color-line: #e5e5ec;
+  /* Cards are WHITE now, not grey. On a tinted page a grey card reads as a
+     hole; a white one reads as a card lifted off the surface — and it means
+     the layering is consistent everywhere: tinted page → white card → tinted
+     inset. */
+  --color-card: #ffffff;
+  --color-card-2: #f5f4fd;
+  /* Wells and chips that sit INSIDE a white card. */
+  --color-inset: #f1f0fa;
+  --color-inset-2: #e8e6f6;
+  --color-line: #e5e3f2;
 
   /* ---- text ---- */
   --color-ink: #0a0a12;
@@ -89,7 +117,16 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  background: var(--color-canvas);
+  /* The whole-page wash.
+     Deliberately NOT `background-attachment: fixed`. Fixed anchors the
+     gradient to the viewport, which means content scrolls past a stationary
+     tint and the bottom of every screen is permanently the pale end. Letting
+     it span the document instead gives one continuous tone from the top of
+     the page to the footer — which is what the reference actually does. Both
+     stops are tinted, so there is no colourless stretch however long the page
+     gets. */
+  background: linear-gradient(180deg, var(--color-page) 0%, var(--color-page-2) 100%);
+  min-height: 100vh;
   color: var(--color-secondary);
   font-family: var(--font-sans);
   font-size: var(--text-16);
@@ -136,7 +173,7 @@ header.nav {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: color-mix(in srgb, var(--color-canvas) 88%, transparent);
+  background: color-mix(in srgb, var(--color-page) 78%, transparent);
   backdrop-filter: saturate(180%) blur(12px);
   border-bottom: 1px solid var(--color-line);
 }
@@ -517,25 +554,11 @@ input:focus-visible {
 .splash-inner {
   max-width: 780px;
 }
+/* No corner glow here any more. The gradient now lives on <body> and covers
+   the whole page, so a second one pooled behind the headline would just read
+   as a smudge. */
 .splash-hero {
-  position: relative;
   padding: 96px 0 84px;
-  overflow: hidden;
-}
-.splash-hero::before {
-  content: '';
-  position: absolute;
-  inset: -40% -20% auto 30%;
-  height: 760px;
-  background: radial-gradient(
-    42% 42% at 50% 45%,
-    color-mix(in srgb, var(--color-brand) 13%, transparent),
-    transparent 70%
-  );
-  pointer-events: none;
-}
-.splash-hero .wrap {
-  position: relative;
 }
 .splash-hero .eyebrow {
   display: block;
@@ -589,6 +612,7 @@ input:focus-visible {
   padding: 28px;
   border-radius: var(--radius-card);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
 }
 .splash-pillar .p-mark {
   display: grid;
@@ -596,7 +620,7 @@ input:focus-visible {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: var(--color-canvas);
+  background: var(--color-inset);
   color: var(--color-brand);
   margin-bottom: 16px;
 }
@@ -776,7 +800,9 @@ input:focus-visible {
 }
 .or span {
   position: relative;
-  background: var(--color-canvas);
+  /* Matches the wash behind it — this label masks the rule, so a white chip
+     would show as a bright notch on the tinted page. */
+  background: var(--color-page-2);
   padding: 0 12px;
   font-size: var(--text-12);
   font-weight: 700;
@@ -922,6 +948,7 @@ input:focus-visible {
   padding: 26px 28px;
   border-radius: var(--radius-card);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
 }
 .pay-head {
   display: flex;
@@ -1417,6 +1444,7 @@ footer {
   padding: 18px 20px;
   border-radius: var(--radius-tile);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
   transition: background 0.2s ease;
 }
 .progress-tile:hover {
@@ -1442,7 +1470,7 @@ footer {
   display: block;
   height: 6px;
   border-radius: 999px;
-  background: var(--color-canvas);
+  background: var(--color-inset);
   overflow: hidden;
 }
 .progress-tile .bar > span {
@@ -1474,6 +1502,7 @@ footer {
   padding: 20px 22px;
   border-radius: var(--radius-tile);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
   transition: background 0.2s ease;
 }
 .vcard-set {
@@ -1500,13 +1529,14 @@ footer {
   padding: 0.45em 0.85em;
   border-radius: 999px;
   border: 0;
-  background: var(--color-canvas);
+  background: var(--color-inset);
   color: var(--color-muted);
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease;
 }
 .bucket:hover {
   color: var(--color-ink);
+  background: var(--color-inset-2);
 }
 .bucket.sel {
   background: var(--color-brand);
@@ -1550,6 +1580,7 @@ footer {
   padding: 28px 30px;
   border-radius: var(--radius-card);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
 }
 .op-block h3 {
   font-size: var(--text-22);
@@ -1770,7 +1801,7 @@ footer {
   padding: 0.5em 1em;
   border-radius: 999px;
   border: 0;
-  background: var(--color-canvas);
+  background: var(--color-inset);
   color: var(--color-secondary);
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease;
@@ -1882,7 +1913,7 @@ footer {
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background: var(--color-canvas);
+  background: var(--color-inset);
   color: var(--color-accent);
   flex: 0 0 auto;
 }
@@ -2003,6 +2034,7 @@ footer {
   padding: 28px;
   border-radius: var(--radius-card);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
 }
 .dash-card .c-mark {
   display: grid;
@@ -2010,7 +2042,7 @@ footer {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: var(--color-canvas);
+  background: var(--color-inset);
   color: var(--color-brand);
   margin-bottom: 16px;
 }
@@ -2028,7 +2060,7 @@ footer {
   margin-bottom: 18px;
 }
 .dash-card .field input {
-  background: var(--color-canvas);
+  background: var(--color-inset);
 }
 .c-actions {
   display: flex;
@@ -2114,6 +2146,7 @@ footer {
   padding: 22px 24px;
   border-radius: var(--radius-tile);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
   margin-bottom: 12px;
 }
 .resource-region {
@@ -2168,6 +2201,7 @@ footer {
   padding: 22px 24px;
   border-radius: var(--radius-tile);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
 }
 .review-row .mod {
   font-size: var(--text-12);
@@ -2219,6 +2253,7 @@ footer {
   padding: 20px 24px;
   border-radius: var(--radius-tile);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
   margin-bottom: 12px;
 }
 .syn-value h3 {
@@ -2253,6 +2288,7 @@ footer {
   padding: 32px 30px;
   border-radius: var(--radius-card);
   background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
   text-align: center;
 }
 .resonance h2 {

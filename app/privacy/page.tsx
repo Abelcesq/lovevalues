@@ -92,10 +92,15 @@ export default function Privacy() {
           <section className="syn-section">
             <h2>Honestly, where we are</h2>
             <p>
-              This is an early product. Nothing you write is on a server we control, which means
-              there is very little for anyone to break into — but it also means there is no sync
-              between your devices, and clearing your browser data is permanent. We would rather
-              tell you that than let a sign-up screen imply a safety net that does not exist yet.
+              This is an early product, and the design is deliberate rather than temporary:{' '}
+              <strong>what you write stays on your device</strong>. Our server exists to hold your
+              account and to run the AI that writes your reflection — not to keep your answers.
+            </p>
+            <p>
+              The honest cost of that: signing in on a new phone restores your account and your
+              subscription, not your writing. Clearing your browser data is permanent. Use{' '}
+              <strong>Download my data</strong> and keep your own copy — we would rather say this
+              plainly than let a sign-up screen imply a safety net that isn&apos;t there.
             </p>
           </section>
 
