@@ -146,6 +146,30 @@ Certificates take a few minutes. Check with:
 heroku certs:auto -a lovevalues-app
 ```
 
+### HTTPS is forced in `middleware.ts` — and it is not optional here
+
+Heroku serves both `http://` and `https://` on a custom domain and redirects
+neither. That is fine for most sites and quietly fatal for this one: **browsers
+refuse microphone access on an insecure origin silently.** No prompt, no error,
+`getUserMedia` simply does not exist. A visitor on `http://` gets a site that
+looks entirely functional with no microphone and nothing explaining why — and
+voice is the feature most likely to get an honest answer out of someone.
+
+`middleware.ts` redirects with a 308. Three things in it were found by testing
+rather than reasoning, and each would have shipped as a bug:
+
+1. **`next start` sets `x-forwarded-proto: http` itself.** Checking only the
+   header redirects local runs to an https URL nothing is listening on, so
+   `npm start` breaks on every developer machine. The host is checked too.
+2. **`request.nextUrl` reports the server's own socket**, so its hostname is
+   `localhost` no matter what the client asked for. Reading the host from
+   `nextUrl` produces a check that silently never fires in production. Use the
+   `host` header.
+3. **Setting `url.host` to a bare hostname does not clear the port** — the URL
+   spec only updates the port when the new value carries one. The old port
+   survives, and on Heroku that is the internal dyno port, producing
+   `https://www.lovevalues.com:3815/`. Clear `url.port` first.
+
 ### ⚠️ The apex-forwarding trap — read before adding any webhook
 
 GoDaddy's forwarding converts **POST into GET**. A webhook posted to the apex
