@@ -66,9 +66,12 @@ gets display sizes above 44 for its opening line and nothing else.
 that flow straight into each other. **No section is wrapped in a card, a
 border, or a filled block.** Separation is whitespace first, a hairline second.
 
-The single exception is `.cta-inline` — a dark rounded block dropped *between*
+The single exception is `.cta-inline` — a rounded white card dropped *between*
 sections. It interrupts the flow; it never contains it. VIDA does the same
-thing and it is the reason their page still reads as an article.
+thing and it is the reason their page still reads as an article. (It was dark
+ink until 2026-07-27; the CEO asked for white once the page background became a
+tinted wash, and he was right — a near-black slab on a soft lavender page reads
+as a hole rather than a pause.)
 
 A sticky table of contents (`components/Toc.tsx`) maps the page on desktop and
 is hidden below 1040px, where it would eat the screen.

@@ -1263,11 +1263,11 @@ input:focus-visible {
   margin: 52px 0;
   padding: 34px 36px;
   border-radius: 26px;
-  background: var(--color-ink);
-  color: color-mix(in srgb, #fff 66%, var(--color-ink));
+  background: var(--color-card);
+  box-shadow: 0 1px 2px rgba(20, 16, 60, 0.05);
+  color: var(--color-secondary);
 }
 .cta-inline h3 {
-  color: #fff;
   font-size: clamp(1.4rem, 3vw, var(--text-28));
   letter-spacing: -0.03em;
   margin-bottom: 10px;
@@ -1277,17 +1277,21 @@ input:focus-visible {
   margin-bottom: 22px;
   max-width: 46ch;
 }
+/* `btn-invert` existed only for the old dark block. On a white card the
+   primary indigo pill is the correct control, so the class is kept as an alias
+   rather than left as an invisible white-on-white button. */
 .cta-inline .btn-invert {
-  color: var(--color-ink);
-  background: #fff;
+  color: var(--color-on-brand);
+  background: var(--color-brand);
+  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--color-brand) 70%, transparent);
 }
 .cta-inline .btn-invert:hover:not(:disabled) {
-  background: var(--color-brand-soft);
+  background: var(--color-brand-press);
 }
 .cta-inline .fine {
   margin: 14px 0 0;
   font-size: var(--text-12);
-  color: color-mix(in srgb, #fff 45%, var(--color-ink));
+  color: var(--color-muted);
 }
 
 .article-end {
