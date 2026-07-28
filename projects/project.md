@@ -5,7 +5,13 @@ working dashboard: what is true right now, and what is next.
 
 ## Phase
 
-**Phase 0 → Phase 1.** Web MVP built. Not yet validated on a single stranger.
+**Phase 0 → Phase 1.** Web MVP built and **live at https://www.lovevalues.com**
+as of 2026-07-27. Not yet validated on a single stranger — which remains the
+only thing that matters.
+
+Deployment removed the excuses: there is a URL, real HTTPS, and a working AI
+key. What has *not* happened is anyone outside the founder going through the
+method and saying whether it was worth it.
 
 ## Task streams
 

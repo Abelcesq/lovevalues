@@ -23,14 +23,22 @@ heroku login
 
 ## 2. Create the app
 
-Heroku app names are globally unique, so `lovevalues` is probably taken. Pick
-something specific — the name only appears in the `.herokuapp.com` URL, and the
-real domain is attached in step 5.
+**Already done — the live app is `lovevalues`**, serving
+`lovevalues-172d325682b4.herokuapp.com` and `www.lovevalues.com`. This section
+is kept for reference only.
+
+⚠️ There is also a leftover app called **`lovevalues-app`** from a first
+attempt. It is NOT the live app, it receives no deploys, and config set on it
+does nothing — which cost real time on 2026-07-27 when `NEXT_PUBLIC_SITE_URL`
+and the API key were both set on the wrong one, and again when it turned out to
+be holding `www.lovevalues.com` and blocking the real app from claiming it.
+Check `git remote -v` if ever in doubt: the `heroku` remote points at the live
+app.
 
 ```powershell
 cd "$env:USERPROFILE\OneDrive\Desktop\CODING PROJECTS\lovevalues"
 git pull                                   # get the latest branch
-heroku create lovevalues-app               # try; use another name if taken
+heroku create lovevalues                   # already done — the live app is `lovevalues`
 ```
 
 That adds a `heroku` git remote automatically. Confirm:
@@ -42,8 +50,8 @@ git remote -v
 ## 3. Configure
 
 ```powershell
-heroku config:set ANTHROPIC_API_KEY=sk-ant-... -a lovevalues-app
-heroku config:set NEXT_PUBLIC_SITE_URL=https://www.lovevalues.com -a lovevalues-app
+heroku config:set ANTHROPIC_API_KEY=sk-ant-... -a lovevalues
+heroku config:set NEXT_PUBLIC_SITE_URL=https://www.lovevalues.com -a lovevalues
 ```
 
 The Anthropic key is read server-side only, in `app/api/synthesize/route.ts`.
@@ -57,7 +65,7 @@ actually costs — which is the input to whether $29.99 is the right price.
 
 ```powershell
 git push heroku claude/new-app-voice-input-0q1w0a:main
-heroku open -a lovevalues-app
+heroku open -a lovevalues
 ```
 
 Heroku's Node buildpack installs dependencies, runs `next build`, then starts
@@ -68,7 +76,7 @@ database.
 dependencies too early:
 
 ```powershell
-heroku config:set NPM_CONFIG_PRODUCTION=false -a lovevalues-app
+heroku config:set NPM_CONFIG_PRODUCTION=false -a lovevalues
 git commit --allow-empty -m "rebuild" ; git push heroku claude/new-app-voice-input-0q1w0a:main
 ```
 
@@ -88,15 +96,15 @@ showing it after your app is live.
 **Watch the logs** if anything looks wrong:
 
 ```powershell
-heroku logs --tail -a lovevalues-app
+heroku logs --tail -a lovevalues
 ```
 
 ## 5. Connect lovevalues.com
 
 ```powershell
-heroku domains:add www.lovevalues.com -a lovevalues-app
-heroku certs:auto:enable -a lovevalues-app
-heroku domains -a lovevalues-app
+heroku domains:add www.lovevalues.com -a lovevalues
+heroku certs:auto:enable -a lovevalues
+heroku domains -a lovevalues
 ```
 
 The last command prints a **DNS target** ending in `.herokudns.com`. In GoDaddy
@@ -143,7 +151,7 @@ ezaitask.com.
 Certificates take a few minutes. Check with:
 
 ```powershell
-heroku certs:auto -a lovevalues-app
+heroku certs:auto -a lovevalues
 ```
 
 ### HTTPS is forced in `middleware.ts` — and it is not optional here

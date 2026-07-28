@@ -236,6 +236,13 @@ projects/               project.md = the container + dashboard
 - ⬜ Crisis resources are US/UK-centric beyond findahelpline.com; verify every
   number before launch and on a schedule — a dead crisis line is worse than none
 - ⬜ Screening is English-only and pattern-based; it will miss indirect phrasing
-- ⬜ No accounts, no payments, no server-side persistence
+- ✅ **Live at https://www.lovevalues.com** (2026-07-27). Heroku app `lovevalues`
+  — NOT `lovevalues-app`, which is a leftover that receives no deploys and cost
+  real time twice. HTTPS is forced in `middleware.ts` because the microphone
+  fails silently without it
+- ⬜ **The synthesis engine has still never produced a reflection for a real
+  person.** The key is set and valid; nobody has pressed Generate yet. Until
+  that happens the central claim of this product is unverified
+- ⬜ Accounts are `localStorage` only; payments inert until Stripe keys are set
 - ⬜ No match feature (Phase 2) and no privacy wall implementation yet
 - ⬜ Not tested on a single stranger — which is the only thing that matters next
