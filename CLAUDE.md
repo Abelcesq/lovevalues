@@ -204,6 +204,7 @@ components/
   Chrome.tsx            Nav + footer. "Talk to someone" survives every breakpoint
   Toc.tsx               The home page's sticky table of contents
   SplashCta.tsx         Entry fork — new / mid-signup / returning
+  AskAi.tsx             "Ask an AI about us" — ported from thedotx.com
   SocialButtons.tsx     Google · Facebook · Instagram (rendered, not yet wired)
   Steps.tsx             Account → Plan → Begin progress rail
   ResumeNotice.tsx      The same fork, at the top of the /begin gate
@@ -216,6 +217,9 @@ lib/
 tests/
   care.test.mjs         The false-positive corpus. Most important test here
   llm.test.mjs          Fallback parsing — incl. stripping R1 reasoning traces
+public/
+  llms.txt              What an AI assistant reads. Keep it TRUE — the Ask-AI
+                        buttons point assistants straight at it
 knowledge/              about-me, project-purpose, board-analysis
 skills/                 One SKILL.md each (gotchas live here)
 projects/               project.md = the container + dashboard

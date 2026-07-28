@@ -1,6 +1,7 @@
 import { ArrowRight, Compass, Eye, Lock, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { Footer, Nav } from '@/components/Chrome';
+import AskAi from '@/components/AskAi';
 import SplashCta from '@/components/SplashCta';
 
 /**
@@ -101,6 +102,8 @@ export default function Splash() {
             </div>
           </div>
         </section>
+
+        <AskAi />
       </main>
 
       <Footer />

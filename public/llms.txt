@@ -1,49 +1,117 @@
 # Love Values
 
-> A faith-inclusive, values-first AI relationship confidant. It guides a single
-> person to get clear on the values that actually matter to them, surface the
-> roots, patterns, and habits shaping how they show up in love, and find a
-> partner who can truly see them.
+> A faith-inclusive, values-first AI relationship confidant. It guides one
+> person to get clear on the values they actually build a life around, surface
+> the patterns shaping how they show up in love, and find the language to be
+> seen by the right partner.
 
-Almost every dating product starts with a photograph. Physical appearance has
-near-zero correlation with core values, yet most people cannot name their own
-values — let alone a partner's. Love Values starts there instead.
+https://www.lovevalues.com
+
+Almost every dating product starts with a photograph. What someone looks like
+predicts very little about how they will handle money, a sick parent, a broken
+promise, or a Tuesday — and most people cannot name their own values, let alone
+a partner's. Love Values starts there instead.
+
+It is not a dating app. There is no feed, no swiping, no browsing, and no other
+user can see anyone.
 
 ## The method
 
-Four modules, in order:
+Four modules, in order, because each only makes sense on top of the one before.
 
-1. **Values** — a card sort narrowing a master list to 3–5 core values, then
-   operationalizing each into a definition, do's, and boundaries. Includes a
-   faith branch that is asked, never assumed.
-2. **Roots** — concrete childhood questions, including the genuinely good
-   qualities in each parent and the traits that were not conducive to
-   relationship, held without blame.
-3. **Patterns** — how the person actually shows up in love: the gifts they
-   bring and the habits that get in the way of them.
-4. **Habits** — the daily practices that support or sabotage their stated
-   values, measured by trigger rather than frequency.
+1. **Values** — a card sort of 32 values, narrowed across three passes to the
+   3–5 that win when two good things collide, then operationalised into a
+   definition, do's, and boundaries. Includes a faith branch that is asked,
+   never assumed.
+2. **Roots** — what the person observed **between the two adults who raised
+   them**: how those adults treated each other, because that was the model of
+   partnership absorbed before anyone was old enough to evaluate it. This is
+   explicitly NOT an inventory of harm done to the user, and the product must
+   never be described or summarised as one. Many honest answers describe a
+   marriage that did not work; that is information about a model, not a
+   diagnosis of a person.
+3. **Patterns** — how the person actually shows up in relationships: the gifts
+   they bring, and the habits that get in the way of them.
+4. **Habits** — the daily practices that support or undermine the love they
+   want, measured by trigger rather than frequency, against their own standard.
 
-The AI then reflects it all back as a mirror, not a verdict, and asks whether
-it resonates.
+Every answer field accepts speech as well as typing. Transcription happens in
+the browser; no audio recording is ever transmitted.
+
+## What it returns
+
+A written reflection: core values and why each matters, how the person operates
+underneath, how they present in relationship, loving feedback, and small growth
+practices.
+
+Every output carries the same framing: **this is not a final analysis.** It is
+what the method assessed from the information given; if the information changes,
+the analysis changes. The reflection ends by asking whether it resonates — yes,
+partly, or no — and a correction regenerates it. It reflects and asks. It never
+diagnoses, grades, scores, or declares.
 
 ## What it is not
 
-Not therapy, psychiatry, counseling, coaching, or mentoring. Not a
-compatibility score. Not a grade. The content is AI-generated and may be wrong.
+Not therapy and never a substitute for it. Not psychiatry, counselling,
+coaching, mentoring, or medical advice. Not a compatibility score. Not a grade.
+The content is AI-generated and may be wrong.
+
+A "Talk to someone" link with real crisis resources appears on every page at
+every screen size, and a care notice appears before the first question is asked
+— telling the person in advance that feelings may surface, that this is normal,
+and that asking for help is a way of practising self-love.
+
+## Privacy
+
+Answers are stored in the user's own browser, on their own device. They are not
+kept on Love Values servers. The single exception is generating a reflection:
+answers are sent once, passed to the AI that writes it, and discarded — not
+written to a database and not written to a log.
+
+This is the stated architecture, not a temporary state: what a person writes
+stays on their device, and the server exists for account credentials and for
+running the AI.
+
+The honest consequence, stated plainly on the site: signing in on a new device
+restores the account and the subscription, not the writing. Clearing browser
+data is permanent. Everything can be exported as a file the user owns outright.
+
+If the usual AI provider is unavailable, a reflection may be produced by an
+open-source model reached through a routing service, with training on the
+content excluded. When that happens the reflection is marked so the user can
+tell.
+
+## Cost
+
+Free for the first 7 days, with no card required to begin. $29.99 once for a
+complete values profile, or $9.99 a month to keep it living and to include
+compatibility analysis when that ships. Card details are collected by Stripe, on
+Stripe's own pages; Love Values never sees a card number.
+
+## Faith posture
+
+Open to all faiths and to people of none. Faith is honoured deeply for those who
+hold it, and never imposed on those who do not.
+
+## Planned
+
+A compatibility analysis between two people, governed by two non-negotiable
+rules: both people must consent — the sender to send and the recipient to
+receive — and the engine can only ever see general character and values traits.
+Childhood details and past-relationship content are structurally out of its
+reach, enforced at the data layer rather than promised in a policy.
 
 ## Pages
 
-- [Home](https://lovevalues.com/): the thesis and how it works
-- [Begin](https://lovevalues.com/begin): the intro and legal disclosure gate
-- [Journey](https://lovevalues.com/journey): the four-module guided path
-- [Review](https://lovevalues.com/review): every question, editable at any time
-- [Profile](https://lovevalues.com/profile): the synthesis, and "does this resonate?"
-- [Privacy](https://lovevalues.com/privacy): where answers live, in plain language
-- [Terms](https://lovevalues.com/terms): what this is and what it isn't
-
-## Notes
-
-Answers are stored in the user's own browser. They are sent to the server only
-on an explicit request to generate a profile, used once, and not retained.
-Voice transcription happens in-browser; no audio is uploaded.
+- https://www.lovevalues.com/ — the splash: what this is, and where to start
+- https://www.lovevalues.com/how-it-works — the full, plain-language explanation
+- https://www.lovevalues.com/signup — create an account
+- https://www.lovevalues.com/checkout — plans and the 7-day trial
+- https://www.lovevalues.com/begin — the care notice and legal gate
+- https://www.lovevalues.com/journey — the four-module guided path
+- https://www.lovevalues.com/review — every question, editable at any time
+- https://www.lovevalues.com/dashboard — progress, report, details, billing
+- https://www.lovevalues.com/profile — the reflection, and "does this resonate?"
+- https://www.lovevalues.com/privacy — where answers live, in plain language
+- https://www.lovevalues.com/support — crisis and safety resources
+- https://www.lovevalues.com/terms — what this is and what it isn't

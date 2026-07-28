@@ -651,6 +651,63 @@ input:focus-visible {
   max-width: 60ch;
 }
 
+/* ---------- ask an AI ----------
+   Ported from thedotx.com, which runs the same block at the foot of its home
+   page. Their version is gold-on-midnight; this is the same idea in our
+   palette, and the buttons are outlined pills so four of them in a row read as
+   a set of options rather than four competing calls to action. */
+.askai {
+  padding: 0 0 96px;
+}
+.askai-inner {
+  max-width: 780px;
+  text-align: center;
+}
+.askai .eyebrow {
+  display: block;
+  margin-bottom: 14px;
+}
+.askai h2 {
+  font-size: clamp(1.5rem, 3.4vw, var(--text-32));
+  letter-spacing: -0.03em;
+}
+.askai h2 .hl {
+  color: var(--color-brand);
+}
+.askai-sub {
+  max-width: 52ch;
+  margin: 12px auto 26px;
+  font-size: var(--text-16);
+  color: var(--color-secondary);
+}
+.ai-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.ai-btn {
+  font-family: inherit;
+  font-size: var(--text-14);
+  font-weight: 700;
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  border-radius: 999px;
+  padding: 0.7em 1.4em;
+  cursor: pointer;
+  transition: box-shadow 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+.ai-btn:hover {
+  color: var(--color-brand);
+  box-shadow: inset 0 0 0 1px var(--color-brand);
+}
+.ai-note {
+  margin-top: 16px;
+  font-size: var(--text-12);
+  color: var(--color-muted);
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    THE SIGN-UP FLOW  (/signup → /checkout → /begin)
    ═══════════════════════════════════════════════════════════════════════════ */
