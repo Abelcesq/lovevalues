@@ -560,36 +560,49 @@ input:focus-visible {
 .splash-hero {
   padding: 96px 0 84px;
 }
-/* The opening line above the headline. Deliberately NOT the uppercase,
-   letter-spaced `.eyebrow` treatment: this one is a full sentence, and at that
-   length all-caps with 0.16em tracking becomes genuinely hard to read. */
+/* The two lines above the headline.
+   Deliberately NOT the uppercase, letter-spaced `.eyebrow` treatment: these are
+   full sentences carrying their own capitalised emphasis (FIRST, BEFORE), and
+   all-caps at 0.16em tracking would fight that and be hard to read besides. */
 .splash-tagline {
-  font-size: var(--text-14);
+  font-size: var(--text-16);
   font-weight: 700;
-  letter-spacing: 0.01em;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
   color: var(--color-brand);
-  max-width: 60ch;
-  margin-bottom: 20px;
+  max-width: 62ch;
 }
+.splash-tagline + .splash-tagline {
+  margin-top: 10px;
+}
+.splash-tagline + .splash-tagline + * {
+  margin-top: 28px;
+}
+/* Sized to the CEO's reference, which sets the headline only modestly above
+   body copy rather than as display type. */
 .splash-hero h1 {
-  font-size: clamp(1.9rem, 3.9vw, 3rem);
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  font-size: clamp(1.5rem, 2.9vw, 2.15rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
   font-weight: 800;
-  max-width: 26ch;
+  max-width: 30ch;
 }
 .splash-hero h1 .hl {
   color: var(--color-brand);
 }
 .splash-lede {
-  margin-top: 22px;
-  font-size: var(--text-18);
-  line-height: 1.65;
+  margin-top: 26px;
+  font-size: var(--text-16);
+  line-height: 1.7;
   color: var(--color-secondary);
-  max-width: 66ch;
+  max-width: 72ch;
 }
 .splash-lede + .splash-lede {
-  margin-top: 16px;
+  margin-top: 14px;
+}
+.splash-lede-cta {
+  font-weight: 700;
+  color: var(--color-ink);
 }
 .splash-cta {
   margin-top: 34px;
@@ -1160,19 +1173,25 @@ input:focus-visible {
 }
 
 /* ---- the opening of the article ---- */
+.article-body .splash-tagline {
+  max-width: none;
+}
 .article-body h1 {
-  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
-  line-height: 1.12;
-  letter-spacing: -0.035em;
+  font-size: clamp(1.5rem, 2.9vw, 2.15rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
   font-weight: 800;
+  margin-top: 28px;
 }
 .article-body h1 .hl {
   color: var(--color-brand);
 }
+/* Sits under a headline that is now only modestly larger than body copy, so
+   the old 22px standfirst competed with it. */
 .standfirst {
   margin-top: 20px;
-  font-size: var(--text-22);
-  line-height: 1.5;
+  font-size: var(--text-16);
+  line-height: 1.7;
   color: var(--color-secondary);
 }
 .byline {

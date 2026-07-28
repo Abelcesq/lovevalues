@@ -51,10 +51,16 @@ export default function HowItWorks() {
           <Toc entries={SECTIONS} />
 
           <article className="article-body">
+            <p className="splash-tagline">Values and interpersonal dynamics FIRST</p>
+            <p className="splash-tagline">Assess your values BEFORE physical appearance becomes the focus.</p>
+
             <h1>
-              Know and understand what matters to you and your core values. Create clarity and be <span className="hl">seen</span> by your commitment to your values and who you truly are.
+              Know what matters to you and be <span className="hl">seen</span> by the commitment to
+              your values.
             </h1>
-            <p className="standfirst">Values and interpersonal dynamics first — to assess whether the relationship can work before physical appearance becomes the focus.</p>
+
+            <p className="standfirst">Love Values is a private, AI guide that will help with the following: 1) create clarity on your values, 2) identify personality traits that are important to you in a partner, 3) identify the personality traits you currently possess, and 4) explain how the current values and personality traits intertwine to create the unique You and your relationship dynamic.</p>
+
             <p className="byline">
               <ShieldCheck aria-hidden="true" />
               Private by default · Your answers stay on your device · Free for 7 days

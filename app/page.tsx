@@ -51,24 +51,23 @@ export default function Splash() {
       <main className="splash">
         <section className="splash-hero">
           <div className="wrap splash-inner">
-            {/* Rendered as a sentence-case tagline rather than the usual uppercase,
-                letter-spaced eyebrow — at this length, all-caps with 0.16em tracking
-                is genuinely hard to read and wraps to three lines. */}
-            <p className="splash-tagline">Values and interpersonal dynamics first — to assess whether the relationship can work before physical appearance becomes the focus.</p>
+            {/* Two stacked lines, not one wrapped sentence, and not the uppercase
+                letter-spaced eyebrow — this is the format the CEO specified. */}
+            <p className="splash-tagline">Values and interpersonal dynamics FIRST</p>
+            <p className="splash-tagline">Assess your values BEFORE physical appearance becomes the focus.</p>
+
             <h1>
-              Know and understand what matters to you and your core values.
-              <br />
-              Create clarity and be <span className="hl">seen</span> by your commitment to your values and who you truly are.
+              Know what matters to you and be <span className="hl">seen</span> by the commitment to
+              your values.
             </h1>
+
             <p className="splash-lede">
-              Love Values is a private, AI guide that will help identify and create clarity on your values, what personality traits are fundamental to the relationship and/or romantic partnership you desire, what traits you currently have, and how the current values and traits intertwine to create the unique you that you are.
+              Love Values is a private, AI guide that will help with the following: 1) create clarity on your values, 2) identify personality traits that are important to you in a partner, 3) identify the personality traits you currently possess, and 4) explain how the current values and personality traits intertwine to create the unique You and your relationship dynamic.
             </p>
             <p className="splash-lede">
-              In about an hour this journey will walk you through a series of questions, create clarity on the values you currently hold in your life at this moment, the patterns you picked up before you could choose them, and how these show up in love and in how you are in relationship.
+              By creating clarity for yourself, you can discover how to choose based on values and the personality traits that will build a relationship that can grow through your value system rather than be guided by physical appearance.
             </p>
-            <p className="splash-lede">
-              By creating clarity for yourself, you can then choose intentionally to match based on values and the personality traits that have the substance to build relationships that grow through the value system rather than by physical appearance. If this excites you, create your account now and let’s get started.
-            </p>
+            <p className="splash-lede splash-lede-cta">If this excites you, create your account now and let’s get started!!</p>
 
             <SplashCta />
 
