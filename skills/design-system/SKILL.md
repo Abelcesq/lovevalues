@@ -99,7 +99,7 @@ Nothing that makes the page jump.
    was a real regression on `/review`, where every "Answer this" button
    disappeared into the card behind it.
 
-3. **"Talk to someone" must survive the mobile breakpoint.** The nav collapses
+3. **"Talk to external professional support" must survive the mobile breakpoint.** The nav collapses
    its secondary links below 980px. The care link is excluded from that with
    `.nav-actions .login:not(.care-link)`. Hard rule 5 says support is always one
    click away — a media query is not an exemption.

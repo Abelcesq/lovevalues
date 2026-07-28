@@ -43,7 +43,7 @@ worth paying for. Not scale. Not marketing. One honest validation.
    asks: does this resonate? (Yes / Partly / No — and tell us what to correct.)
 5. **Not therapy.** The product is not, and must never present as, therapy.
    Anyone in distress is routed to real human help — implemented in four
-   layers: an always-visible "Talk to someone" link and `/support` page,
+   layers: an always-visible "Talk to external professional support" link and `/support` page,
    **the pre-journey notice on `/begin`** (CEO-authored, canonical as
    `PRE_JOURNEY_CARE` in `lib/care.ts` — do not paraphrase it), local-only
    screening while writing (`lib/care.ts`), and a `careFlag` the synthesis
@@ -201,7 +201,7 @@ components/
   CarePrompt.tsx        The quiet, dismissible support card
   ValuesCardSort.tsx    Module 1, the crown jewel in action
   QuestionField.tsx     One question, any input kind
-  Chrome.tsx            Nav + footer. "Talk to someone" survives every breakpoint
+  Chrome.tsx            Nav + footer. "Talk to external professional support" survives every breakpoint
   Toc.tsx               The home page's sticky table of contents
   SplashCta.tsx         Entry fork — new / mid-signup / returning
   AskAi.tsx             "Ask an AI about us" — ported from thedotx.com

@@ -162,7 +162,7 @@ set it again with the real value.
 - [ ] `/journey` runs, answers persist across a refresh
 - [ ] **The microphone appears and dictates** — this is the one that proves
       HTTPS is correct end to end. On plain HTTP it silently will not exist.
-- [ ] `/support` loads, and "Talk to someone" is in the nav
+- [ ] `/support` loads, and "Talk to external professional support" is in the nav
 - [ ] `/profile` → *Generate my profile* returns a reflection (needs the key)
 - [ ] Open it on a phone. Most of the stranger test will happen there.
 

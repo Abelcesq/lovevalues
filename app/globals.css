@@ -2477,6 +2477,33 @@ footer {
     padding: 28px 24px;
   }
 }
+/* The care link is now a five-word phrase, which no longer fits beside the
+   brand on a phone. Rather than truncating it — hard rule 5 makes the wording
+   the CEO's call, not the layout's — the nav wraps to a second row and the
+   link is held on one line at a smaller size. */
+@media (max-width: 700px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 0;
+  }
+  .nav-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .nav-actions .care-link {
+    white-space: nowrap;
+    font-size: var(--text-12);
+    padding-left: 0;
+  }
+  .nav-actions .btn {
+    white-space: nowrap;
+    font-size: var(--text-12);
+    padding: 0.7em 1.1em;
+  }
+}
+
 @media (max-width: 980px) {
   .card-grid {
     grid-template-columns: 1fr;
@@ -2519,7 +2546,7 @@ footer {
   .beat {
     margin-top: 40px;
   }
-  /* "Talk to someone" is a hard rule — it stays reachable at every width.
+  /* "Talk to external professional support" is a hard rule — it stays reachable at every width.
      Only the secondary link collapses. */
   .nav-actions .login:not(.care-link) {
     display: none;
