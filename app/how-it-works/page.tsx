@@ -52,13 +52,9 @@ export default function HowItWorks() {
 
           <article className="article-body">
             <h1>
-              Know what you actually value. Then be <span className="hl">seen</span> for it.
+              Know and understand what matters to you and your core values. Create clarity and be <span className="hl">seen</span> by your commitment to your values and who you truly are.
             </h1>
-            <p className="standfirst">
-              Love Values is a private, AI-guided confidant. It walks one person through the
-              handful of values they truly build a life around, the patterns they picked up
-              before they could choose them, and how both show up in love.
-            </p>
+            <p className="standfirst">Values and interpersonal dynamics first — to assess whether the relationship can work before physical appearance becomes the focus.</p>
             <p className="byline">
               <ShieldCheck aria-hidden="true" />
               Private by default · Your answers stay on your device · Free for 7 days

@@ -51,14 +51,23 @@ export default function Splash() {
       <main className="splash">
         <section className="splash-hero">
           <div className="wrap splash-inner">
-            <p className="eyebrow">Values-first, not appearance-first</p>
+            {/* Rendered as a sentence-case tagline rather than the usual uppercase,
+                letter-spaced eyebrow — at this length, all-caps with 0.16em tracking
+                is genuinely hard to read and wraps to three lines. */}
+            <p className="splash-tagline">Values and interpersonal dynamics first — to assess whether the relationship can work before physical appearance becomes the focus.</p>
             <h1>
-              Know what you actually value. Then be <span className="hl">seen</span> for it.
+              Know and understand what matters to you and your core values.
+              <br />
+              Create clarity and be <span className="hl">seen</span> by your commitment to your values and who you truly are.
             </h1>
             <p className="splash-lede">
-              Love Values is a private, AI-guided confidant. In about an hour it walks you through
-              the handful of values you truly build a life around, the patterns you picked up
-              before you could choose them, and how both show up in love.
+              Love Values is a private, AI guide that will help identify and create clarity on your values, what personality traits are fundamental to the relationship and/or romantic partnership you desire, what traits you currently have, and how the current values and traits intertwine to create the unique you that you are.
+            </p>
+            <p className="splash-lede">
+              In about an hour this journey will walk you through a series of questions, create clarity on the values you currently hold in your life at this moment, the patterns you picked up before you could choose them, and how these show up in love and in how you are in relationship.
+            </p>
+            <p className="splash-lede">
+              By creating clarity for yourself, you can then choose intentionally to match based on values and the personality traits that have the substance to build relationships that grow through the value system rather than by physical appearance. If this excites you, create your account now and let’s get started.
             </p>
 
             <SplashCta />
@@ -86,11 +95,12 @@ export default function Splash() {
 
         <section className="splash-more">
           <div className="wrap splash-inner">
-            <h2>Want the whole argument before you sign up?</h2>
+            <h2>Need more information…</h2>
             <p>
-              Fair. There is a full, plain-language explanation of the method, what it costs, what
-              happens to what you write, and what this is <em>not</em> — including the fact that it
-              is not therapy and never replaces it.
+              If you are uncertain and need more information, that is ok. Some of us require time to prepare. Below is a link — “Read how it works” — that will provide more detailed information on the method, what it costs, the information you provide, and clarification on what this is not, including the fact that it is not therapy and never replaces it, and the benefits of ongoing updates and matching options.
+            </p>
+            <p>
+              Also, if emotions or feelings come up, there is an external resource section to assist — to let you know that you are not alone, that talking about what is coming up is normal, and that community support is available.
             </p>
             <div className="cta-row">
               <Link className="btn btn-ghost btn-lg" href="/how-it-works">
