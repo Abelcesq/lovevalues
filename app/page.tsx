@@ -106,7 +106,7 @@ export default function Splash() {
                 Read how it works <ArrowRight aria-hidden="true" />
               </Link>
               <Link className="textlink care-link" href="/support">
-                Or talk to a real person
+                Reach out to an outside professional
               </Link>
             </div>
           </div>
