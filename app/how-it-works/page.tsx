@@ -133,20 +133,25 @@ export default function HowItWorks() {
             <section className="prose" id="why">
               <h2>Why values, and not photos</h2>
               <p>
-                Nearly every way people meet now starts with a face. Appearance is genuinely
-                information — it is just almost none of the information that determines whether a
-                relationship lasts. What someone looks like tells you very little about how
-                they&apos;ll handle money, a sick parent, a broken promise, or a Tuesday.
+                Nearly every dating site focuses on appearance and images. However, the physical
+                appearance of a person will not provide any substantive information to assess
+                whether a relationship with that person will last — how the person handles money,
+                a sick parent, a broken promise, or a crisis.
               </p>
               <p>
-                What someone values tells you nearly all of it. And two people can be enormously
-                attracted to each other and still be structurally incompatible, in a way that only
-                becomes visible three years in — usually as a fight about something that was never
-                really about that thing.
+                What someone values and how the person processes circumstances are more likely to
+                confirm whether a relationship with that person will last long term. Understanding
+                what things are cherished and honored, and obtaining compatibility based on those
+                things, provides the foundation to allow the values to bridge the gap between a
+                difficult circumstance and the sustainability of the relationship. Simply being
+                attracted to another person rarely accomplishes that. Of course, time and daily
+                interaction provide the ability to grow the relationship — but clarity of values can
+                be the initial determination of whether the time investment makes sense.
               </p>
               <p>
-                Starting from values doesn&apos;t make attraction irrelevant. It makes it
-                second — which is the order that actually holds up.
+                In the same way that love supersedes initial attraction, a value-based relationship
+                will create a foundation that will hold stronger than one based only on physical
+                appearance.
               </p>
             </section>
 
