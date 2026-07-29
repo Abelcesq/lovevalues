@@ -39,7 +39,7 @@ export function Nav({ variant = 'app' }: { variant?: 'splash' | 'flow' | 'app' }
               it survives the sign-up flow too, where someone is most likely to
               be alone with a hard question. */}
           <Link className="login care-link" href="/support">
-            Talk to external professional support
+            Talk to an external resource
           </Link>
 
           {variant === 'splash' && (
@@ -83,7 +83,7 @@ export function Footer() {
           </Link>
           <nav className="foot-links">
             <Link className="care-link" href="/support">
-              Talk to external professional support
+              Talk to an external resource
             </Link>
             <Link href="/review">Your answers</Link>
             <Link href="/privacy">Privacy</Link>

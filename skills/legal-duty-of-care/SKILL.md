@@ -69,7 +69,7 @@ Appears at signup and on every report.
 
 Three independent layers, so no single one has to be perfect:
 
-1. **Always-on door.** "Talk to external professional support" sits in the nav and the footer of
+1. **Always-on door.** "Talk to an external resource" sits in the nav and the footer of
    every page, and `/support` lists free confidential lines. Nobody should have
    to trip a screen to find help, and nobody should have to admit to anything
    to be shown it.

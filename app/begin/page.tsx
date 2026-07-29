@@ -47,7 +47,7 @@ export default function Begin() {
               <p>{PRE_JOURNEY_CARE}</p>
               <p className="pre-care-link">
                 Here is the link to resources should you ever need them.{' '}
-                <Link href="/support">Talk to external professional support</Link>
+                <Link href="/support">Talk to an external resource</Link>
               </p>
             </div>
           </section>

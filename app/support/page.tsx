@@ -2,7 +2,7 @@ import { Footer, Nav } from '@/components/Chrome';
 import { CRISIS_RESOURCES, SAFETY_RESOURCES, type Resource } from '@/lib/care';
 
 export const metadata = {
-  title: 'Talk to external professional support — Love Values',
+  title: 'Talk to an external resource — Love Values',
   description:
     'Free, confidential support lines. If you are in distress, please reach out to a qualified professional or a trusted person in your life.',
 };
@@ -15,7 +15,7 @@ export default function Support() {
         <div className="read">
           <div className="module-open">
             <span className="eyebrow">You&apos;re not alone in this</span>
-            <h1>Talk to external professional support</h1>
+            <h1>Talk to an external resource</h1>
             <p>
               This product is software. There are moments it has no business being the thing you
               turn to — and reaching a person is the right call more often than people let

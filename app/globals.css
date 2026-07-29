@@ -2546,7 +2546,7 @@ footer {
   .beat {
     margin-top: 40px;
   }
-  /* "Talk to external professional support" is a hard rule — it stays reachable at every width.
+  /* "Talk to an external resource" is a hard rule — it stays reachable at every width.
      Only the secondary link collapses. */
   .nav-actions .login:not(.care-link) {
     display: none;

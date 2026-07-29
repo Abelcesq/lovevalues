@@ -256,7 +256,7 @@ export default function HowItWorks() {
               </p>
               <p>
                 If you are in distress, the right next step is a person, not an app. There is a{' '}
-                <Link href="/support">Talk to external professional support</Link> link in the header of every page and
+                <Link href="/support">Talk to an external resource</Link> link in the header of every page and
                 at the bottom of every page, with real crisis lines behind it. It is there whether
                 or not anything you write triggers it, because you should never have to justify
                 yourself to software to reach help.
