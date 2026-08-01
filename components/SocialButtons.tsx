@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 /**
  * Google / Facebook / Instagram sign-in.
@@ -24,14 +24,63 @@ import { useState } from 'react';
  * would break the one-system rule in skills/design-system.
  */
 
+/* `authProvider` is what Auth.js is asked to sign in with — note that
+   Instagram maps to `facebook`. That is not a shortcut: standalone Instagram
+   login no longer exists for a product like this, and consumer login runs
+   through Meta. One set of credentials, one review, two buttons. */
 const PROVIDERS = [
-  { id: 'google', label: 'Continue with Google' },
-  { id: 'facebook', label: 'Continue with Facebook' },
-  { id: 'instagram', label: 'Continue with Instagram' },
+  {
+    id: "google",
+    label: "Continue with Google",
+    authProvider: "google",
+    gate: "google",
+  },
+  {
+    id: "facebook",
+    label: "Continue with Facebook",
+    authProvider: "facebook",
+    gate: "meta",
+  },
+  {
+    id: "instagram",
+    label: "Continue with Instagram",
+    authProvider: "facebook",
+    gate: "meta",
+  },
 ] as const;
 
-export default function SocialButtons() {
+export type SocialAvailability = { google: boolean; meta: boolean };
+
+export default function SocialButtons({
+  available = { google: false, meta: false },
+}: {
+  available?: SocialAvailability;
+}) {
   const [notice, setNotice] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+
+  async function handle(p: (typeof PROVIDERS)[number]) {
+    if (!available[p.gate]) {
+      setNotice(
+        `${p.label.replace("Continue with ", "")} sign-in isn’t connected yet. Use your email below for now — it takes about twenty seconds.`,
+      );
+      return;
+    }
+    setBusy(p.id);
+    try {
+      /* Imported here rather than at module scope so that the Auth.js client
+         bundle is only fetched by someone who actually taps a provider — and,
+         more importantly, so this component still renders if Auth.js is not
+         configured at all. */
+      const { signIn } = await import("next-auth/react");
+      await signIn(p.authProvider, { callbackUrl: "/checkout" });
+    } catch {
+      setBusy(null);
+      setNotice(
+        "We couldn’t reach that sign-in service. Please try your email below.",
+      );
+    }
+  }
 
   return (
     <>
@@ -41,14 +90,11 @@ export default function SocialButtons() {
             key={p.id}
             type="button"
             className="social-btn"
-            onClick={() =>
-              setNotice(
-                `${p.label.replace('Continue with ', '')} sign-in isn’t connected yet. Use your email below for now — it takes about twenty seconds.`,
-              )
-            }
+            disabled={busy !== null}
+            onClick={() => handle(p)}
           >
             <Glyph id={p.id} />
-            {p.label}
+            {busy === p.id ? "Taking you there…" : p.label}
           </button>
         ))}
       </div>
@@ -62,8 +108,8 @@ export default function SocialButtons() {
   );
 }
 
-function Glyph({ id }: { id: 'google' | 'facebook' | 'instagram' }) {
-  if (id === 'google') {
+function Glyph({ id }: { id: "google" | "facebook" | "instagram" }) {
+  if (id === "google") {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path
@@ -85,7 +131,7 @@ function Glyph({ id }: { id: 'google' | 'facebook' | 'instagram' }) {
       </svg>
     );
   }
-  if (id === 'facebook') {
+  if (id === "facebook") {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path

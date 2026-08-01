@@ -6,6 +6,10 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    /* Lets lib/ modules import each other with an explicit .ts extension, which
+       node --experimental-strip-types requires to resolve them in tests.
+       Safe here because noEmit is on and Next bundles rather than emits. */
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",

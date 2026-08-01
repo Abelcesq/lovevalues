@@ -44,7 +44,12 @@ export type Account = {
   createdAt: string;
 };
 
-export const TRIAL_DAYS = 7;
+/* Re-exported so existing client imports keep working. The value itself
+   lives in lib/plan.ts, which server routes can safely import — see that
+   file for why importing it from here instead breaks in a confusing way. */
+import { TRIAL_DAYS } from './plan';
+
+export { TRIAL_DAYS };
 
 export function loadAccount(): Account | null {
   if (typeof window === 'undefined') return null;

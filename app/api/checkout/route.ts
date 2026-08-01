@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { TRIAL_DAYS } from '@/lib/plan';
 
 /**
  * Creates a Stripe Checkout Session and hands back its URL.
@@ -23,7 +24,7 @@ import { NextResponse } from 'next/server';
  * And note the www. trap in that skill file before touching the webhook.
  */
 
-const TRIAL_DAYS = 7;
+
 
 export async function POST(req: Request) {
   const key = process.env.STRIPE_SECRET_KEY;

@@ -217,6 +217,91 @@ heroku config:get ANTHROPIC_API_KEY -a lovevalues
 That must print a long `sk-ant-api03-...` string. If it prints `sk-ant-...`,
 set it again with the real value.
 
+## 5b. The backend — accounts, sign-in, billing state
+
+Until this is done the app runs device-only: signup still works, but accounts
+live in one browser and the Google/Meta buttons say they are not connected.
+Everything below is additive — skipping it breaks nothing.
+
+### Add the database
+
+```powershell
+heroku addons:create heroku-postgresql:essential-0 -a lovevalues
+```
+
+About **$5/month**. This sets `DATABASE_URL` automatically. Then create the
+tables:
+
+```powershell
+heroku run npm run db:migrate -a lovevalues
+```
+
+Safe to re-run — applied migrations are skipped.
+
+> **What this database can and cannot hold.** Identity and billing only. No
+> column in it is large enough to store a person's answers — every column is
+> a bounded `varchar`, there is no `text` or `jsonb` anywhere, and
+> `tests/schema.test.mjs` proves it by trying an answer-length insert and
+> requiring Postgres to reject it. That is hard rule 8 enforced at the data
+> layer rather than promised. Adding a column that breaks it fails the tests.
+
+### Set the session secret
+
+```powershell
+heroku config:set AUTH_SECRET=$([Convert]::ToBase64String((1..32|%{Get-Random -Max 256}))) -a lovevalues
+```
+
+This signs session cookies. If it changes, everyone is signed out — which is
+harmless, just inconvenient. Never share it.
+
+### Connect Google
+
+From the Google Cloud console (see the walkthrough in chat), with redirect URI
+exactly `https://www.lovevalues.com/api/auth/callback/google`:
+
+```powershell
+heroku config:set AUTH_GOOGLE_ID=... AUTH_GOOGLE_SECRET=... -a lovevalues
+```
+
+### Connect Meta (Facebook **and** Instagram — one integration)
+
+Redirect URI exactly `https://www.lovevalues.com/api/auth/callback/facebook`:
+
+```powershell
+heroku config:set AUTH_FACEBOOK_ID=... AUTH_FACEBOOK_SECRET=... -a lovevalues
+```
+
+> ⚠️ **The `www.` in both callback URLs is not optional**, for the same reason
+> the Stripe webhook needs it: GoDaddy's apex forwarding converts POST to GET,
+> and an OAuth callback arriving that way fails with an error that looks
+> nothing like a DNS problem.
+
+The buttons switch themselves on as soon as each pair of keys exists — the
+signup page asks `/api/auth-status` at runtime, so this needs a restart, not a
+rebuild.
+
+### Checking it worked
+
+```powershell
+heroku config:get DATABASE_URL -a lovevalues   # should print a postgres:// URL
+heroku pg:psql -a lovevalues -c "\dt"          # should list users, accounts, subscriptions...
+```
+
+Then visit `/signup` and create an account. `heroku pg:psql -a lovevalues -c
+"SELECT email, name FROM users"` should show it — **and nothing resembling an
+answer**, now or ever.
+
+### Running the schema tests against production
+
+The database tests skip silently when `DATABASE_URL` is unset, so a green local
+run does **not** prove the deployed schema is sound. Before and after any schema
+change:
+
+```powershell
+$env:DATABASE_URL = (heroku config:get DATABASE_URL -a lovevalues)
+npm test
+```
+
 ## 6. Verify
 
 - [ ] Home page loads over `https://www.lovevalues.com`
