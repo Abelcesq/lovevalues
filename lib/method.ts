@@ -8,10 +8,10 @@
  */
 
 export const LEGAL_DISCLOSURE =
-  'This application, its information, and its content are not, and are not intended to be construed as, psychological, psychiatric, therapy, mentoring, coaching, or advice of any kind. The user understands that the content is AI-generated and may be wrong, inaccurate, or misleading. It is provided for informational use only and may offer valuable insight.';
+  "This application, its information, and its content are not, and are not intended to be construed as, psychological, psychiatric, therapy, mentoring, coaching, or advice of any kind. The user understands that the content is AI-generated and may be wrong, inaccurate, or misleading. It is provided for informational use only and may offer valuable insight.";
 
 export const MIRROR_FRAMING =
-  'This is not a final analysis. It is what the method assessed from the information provided so far. If the information changes, the analysis and outcome can change.';
+  "This is not a final analysis. It is what the method assessed from the information provided so far. If the information changes, the analysis and outcome can change.";
 
 export const MIRROR_DISCLAIMER =
   "Read the mirror first, every time. Give the other person the same grace you'd want for your own inconsistency. Distinguish a genuine values mismatch (worth acting on) from a simple human imperfection (universal — extend grace). A screen that produces a verdict but never a conversation is avoidance in analytical clothing. This report's output is a question to raise together, not a sentence to carry out in silence.";
@@ -52,6 +52,17 @@ The purpose is never to erase what happened or to reframe harm as a gift. It is 
 
 Two boundaries on this, both absolute. Offer release only for what THEY raised, in their own words. Never go looking for a wound, never suggest one is probably there, and never treat forgiveness as homework you assign. And when something is genuinely heavy, say plainly that a real human being — a professional, or someone they trust — is worth talking to. That is not a failure of this document. It is the most useful sentence in it.
 
+WHERE THE LEVERAGE ACTUALLY IS — this shapes how you write about change:
+The past cannot be edited, and nothing they write about it can be undone by this document. What can move is what they choose next. Treat the present as the only place with any leverage in it, and say so — not as consolation, but because it is the practical truth and it is the difference between a reflection that shames and one that mobilizes. However long a pattern has run, its length is not evidence that it must continue.
+
+Willingness is the threshold, not ability. Nobody needs to know HOW to release something, or how to speak to themselves differently, before they can begin. Being willing to is the whole entry requirement. Say that plainly where someone is likely to conclude they lack the skill for what you are describing — otherwise they will read your reflection as a description of a door they cannot open.
+
+Approval is what makes change possible; criticism is what cements the thing being criticized. This is not softness, it is mechanics: a person who berates themselves for a pattern is rehearsing it. So when you name something hard, name it alongside acceptance of the person as they are right now, in this moment, unimproved. Acceptance is the ground the change grows in, never the reward for having changed.
+
+Watch for the difference between what someone VALUES and what they believe they SHOULD value. Inherited obligation wears the costume of conviction, and one of the most freeing things this method can do is separate the two. Where their answers suggest a value absorbed from a parent, a faith community, or a partner rather than chosen, reflect that gently and let them decide which it is. A "should" they never actually agreed to is a weight, not a value; a value they would choose again is worth building a life on.
+
+Write practices as movement toward what they want, in the present tense, not as a fight against what they don't. What a person keeps their attention on is what grows, so a practice framed as resisting a fault keeps the fault at the centre of the frame. Name the thing being built, not the thing being avoided.
+
 PERSONAL RESPONSIBILITY — the register for anything about action:
 Speak to their agency, directly and warmly. Values that are only stated are not yet values; they become real in what someone actually does on an ordinary day. So look for congruence and its absence: whether their calendar, their habits, and their choices match the things they told you matter most. Name the gap where you find one — not as a failing, but as the most useful thing they can see today, because it is the thing they can change today.
 
@@ -65,6 +76,12 @@ Agency applies to what a person DOES: what they say yes to, what they tolerate, 
 AGREEMENTS, when you speak about how they would build with a partner:
 The goal is not to find someone who happens to match. It is to reach explicit, spoken agreements about the values two people are choosing to grow together — and then for each to take genuine ownership of the other's values, so that what mattered to one becomes something both are building. Frame it as mutual and specific: values named out loud, agreed on, and practiced, rather than assumed and later discovered. Communicating responsibly — clearly, early, and without making the other person guess — is itself one of the practices.
 
+TWO THINGS THAT SOUND ADJACENT TO THE ABOVE AND ARE FORBIDDEN:
+
+1. NEVER suggest that a person's thoughts, resentment, or emotional patterns caused, cause, or can cure a physical illness. Not as a claim, not as a hint, not as a question, not softened into "some people find." Someone reading this may be seriously ill, and telling them their mind produced their disease hands them guilt on top of it and steers them away from real medical care. Held resentment is worth releasing because of what it costs them in their relationships and their peace — that is the whole argument, and it is enough. If a person raises their own health, respond with care and point toward their doctor.
+
+2. NEVER assert a metaphysical mechanism as fact — that a person chose their parents or their circumstances, that events arrive as lessons, that the universe returns what someone puts out. Some users hold beliefs like these and some hold none, and this method is open to both. Reflect the meaning THEY make of their own life in their own terms. Do not supply a cosmology.
+
 WHAT YOU MUST NEVER DO WITH ANY OF THIS:
 Never name, cite, quote, paraphrase-with-attribution, or allude to any book, author, teacher, tradition, program, or person as the source of these ideas. Never reproduce anyone's phrasing. Never mention a founder or a personal brand. These principles are yours as the product; you present them in your own plain words, as though no one had ever written them down. If a sentence would only make sense to someone who had read a particular book, delete the sentence.`;
 
@@ -76,53 +93,193 @@ export type ValueCard = { id: string; label: string; hint: string };
 
 /** The master list for the card sort. Faith is present but never assumed. */
 export const VALUE_CARDS: ValueCard[] = [
-  { id: 'faith', label: 'Faith', hint: 'A relationship with God, or a spiritual practice that grounds you.' },
-  { id: 'family', label: 'Family', hint: 'The people you belong to, by blood or by choice.' },
-  { id: 'trust', label: 'Trust', hint: 'Being able to rest in someone, without watching.' },
-  { id: 'loyalty', label: 'Loyalty', hint: 'Staying, especially when staying costs something.' },
-  { id: 'honesty', label: 'Honesty', hint: 'Telling the truth even when the truth is inconvenient.' },
-  { id: 'sacrifice', label: 'Sacrifice as love', hint: 'Giving up something of yours so someone else can have more.' },
-  { id: 'compassion', label: 'Compassion', hint: 'Being moved by another person’s pain, and acting on it.' },
-  { id: 'work-ethic', label: 'Work ethic', hint: 'Doing the work well, whether or not anyone is watching.' },
-  { id: 'gratitude', label: 'Gratitude', hint: 'Noticing what you already have.' },
-  { id: 'joy', label: 'Joy', hint: 'Delight, humor, lightness — the ability to enjoy a life.' },
-  { id: 'creativity', label: 'Creativity', hint: 'Making things that didn’t exist before.' },
-  { id: 'education', label: 'Education', hint: 'Learning, and valuing it in the people around you.' },
-  { id: 'health', label: 'Health', hint: 'Caring for the body and mind you were given.' },
-  { id: 'charity', label: 'Charity', hint: 'Giving to those who cannot give back.' },
-  { id: 'courage', label: 'Courage', hint: 'Doing the right thing while afraid.' },
-  { id: 'autonomy', label: 'Autonomy', hint: 'Being free to choose your own direction.' },
-  { id: 'stability', label: 'Stability', hint: 'A life that is steady and predictable enough to build on.' },
-  { id: 'adventure', label: 'Adventure', hint: 'Newness, risk, seeing what else is out there.' },
-  { id: 'ambition', label: 'Ambition', hint: 'Wanting more, and being willing to build it.' },
-  { id: 'humility', label: 'Humility', hint: 'Holding your own importance loosely.' },
-  { id: 'forgiveness', label: 'Forgiveness', hint: 'Releasing a debt someone genuinely owes you.' },
-  { id: 'patience', label: 'Patience', hint: 'Letting things take the time they take.' },
-  { id: 'generosity', label: 'Generosity', hint: 'Open hands with money, time, and attention.' },
-  { id: 'integrity', label: 'Integrity', hint: 'Being the same person in every room.' },
-  { id: 'respect', label: 'Respect', hint: 'Treating someone’s dignity as non-negotiable.' },
-  { id: 'communication', label: 'Communication', hint: 'Saying the hard thing, kindly, out loud.' },
-  { id: 'affection', label: 'Affection', hint: 'Warmth expressed — touch, words, presence.' },
-  { id: 'financial-responsibility', label: 'Financial responsibility', hint: 'Handling money in a way another person could rely on.' },
-  { id: 'tradition', label: 'Tradition', hint: 'Carrying forward what was handed to you.' },
-  { id: 'service', label: 'Service', hint: 'Building your life partly around other people’s good.' },
-  { id: 'peace', label: 'Peace', hint: 'A home without a constant undercurrent of conflict.' },
-  { id: 'growth', label: 'Growth', hint: 'Being willing to become someone different than you are.' },
+  {
+    id: "faith",
+    label: "Faith",
+    hint: "A relationship with God, or a spiritual practice that grounds you.",
+  },
+  {
+    id: "family",
+    label: "Family",
+    hint: "The people you belong to, by blood or by choice.",
+  },
+  {
+    id: "trust",
+    label: "Trust",
+    hint: "Being able to rest in someone, without watching.",
+  },
+  {
+    id: "loyalty",
+    label: "Loyalty",
+    hint: "Staying, especially when staying costs something.",
+  },
+  {
+    id: "honesty",
+    label: "Honesty",
+    hint: "Telling the truth even when the truth is inconvenient.",
+  },
+  {
+    id: "sacrifice",
+    label: "Sacrifice as love",
+    hint: "Giving up something of yours so someone else can have more.",
+  },
+  {
+    id: "compassion",
+    label: "Compassion",
+    hint: "Being moved by another person’s pain, and acting on it.",
+  },
+  {
+    id: "work-ethic",
+    label: "Work ethic",
+    hint: "Doing the work well, whether or not anyone is watching.",
+  },
+  {
+    id: "gratitude",
+    label: "Gratitude",
+    hint: "Noticing what you already have.",
+  },
+  {
+    id: "joy",
+    label: "Joy",
+    hint: "Delight, humor, lightness — the ability to enjoy a life.",
+  },
+  {
+    id: "creativity",
+    label: "Creativity",
+    hint: "Making things that didn’t exist before.",
+  },
+  {
+    id: "education",
+    label: "Education",
+    hint: "Learning, and valuing it in the people around you.",
+  },
+  {
+    id: "health",
+    label: "Health",
+    hint: "Caring for the body and mind you were given.",
+  },
+  {
+    id: "charity",
+    label: "Charity",
+    hint: "Giving to those who cannot give back.",
+  },
+  {
+    id: "courage",
+    label: "Courage",
+    hint: "Doing the right thing while afraid.",
+  },
+  {
+    id: "autonomy",
+    label: "Autonomy",
+    hint: "Being free to choose your own direction.",
+  },
+  {
+    id: "stability",
+    label: "Stability",
+    hint: "A life that is steady and predictable enough to build on.",
+  },
+  {
+    id: "adventure",
+    label: "Adventure",
+    hint: "Newness, risk, seeing what else is out there.",
+  },
+  {
+    id: "ambition",
+    label: "Ambition",
+    hint: "Wanting more, and being willing to build it.",
+  },
+  {
+    id: "humility",
+    label: "Humility",
+    hint: "Holding your own importance loosely.",
+  },
+  {
+    id: "forgiveness",
+    label: "Forgiveness",
+    hint: "Releasing a debt someone genuinely owes you.",
+  },
+  {
+    id: "patience",
+    label: "Patience",
+    hint: "Letting things take the time they take.",
+  },
+  {
+    id: "generosity",
+    label: "Generosity",
+    hint: "Open hands with money, time, and attention.",
+  },
+  {
+    id: "integrity",
+    label: "Integrity",
+    hint: "Being the same person in every room.",
+  },
+  {
+    id: "respect",
+    label: "Respect",
+    hint: "Treating someone’s dignity as non-negotiable.",
+  },
+  {
+    id: "communication",
+    label: "Communication",
+    hint: "Saying the hard thing, kindly, out loud.",
+  },
+  {
+    id: "affection",
+    label: "Affection",
+    hint: "Warmth expressed — touch, words, presence.",
+  },
+  {
+    id: "financial-responsibility",
+    label: "Financial responsibility",
+    hint: "Handling money in a way another person could rely on.",
+  },
+  {
+    id: "tradition",
+    label: "Tradition",
+    hint: "Carrying forward what was handed to you.",
+  },
+  {
+    id: "service",
+    label: "Service",
+    hint: "Building your life partly around other people’s good.",
+  },
+  {
+    id: "peace",
+    label: "Peace",
+    hint: "A home without a constant undercurrent of conflict.",
+  },
+  {
+    id: "growth",
+    label: "Growth",
+    hint: "Being willing to become someone different than you are.",
+  },
 ];
 
-export type SortBucket = 'very-important' | 'important' | 'not-important';
+export type SortBucket = "very-important" | "important" | "not-important";
 
 export const SORT_BUCKETS: { id: SortBucket; label: string; note: string }[] = [
-  { id: 'very-important', label: 'Very important', note: 'I would feel the loss of this.' },
-  { id: 'important', label: 'Important', note: 'It matters, but it could bend.' },
-  { id: 'not-important', label: 'Not important to me', note: 'Not a judgment — just not yours.' },
+  {
+    id: "very-important",
+    label: "Very important",
+    note: "I would feel the loss of this.",
+  },
+  {
+    id: "important",
+    label: "Important",
+    note: "It matters, but it could bend.",
+  },
+  {
+    id: "not-important",
+    label: "Not important to me",
+    note: "Not a judgment — just not yours.",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
 /* QUESTION MODEL                                                      */
 /* ------------------------------------------------------------------ */
 
-export type QuestionKind = 'long-text' | 'short-text' | 'scale-1-10' | 'yes-no';
+export type QuestionKind = "long-text" | "short-text" | "scale-1-10" | "yes-no";
 
 export type Question = {
   id: string;
@@ -137,7 +294,7 @@ export type Question = {
   optional?: boolean;
 };
 
-export type ModuleId = 'values' | 'roots' | 'patterns' | 'habits';
+export type ModuleId = "values" | "roots" | "patterns" | "habits";
 
 export type ModuleDef = {
   id: ModuleId;
@@ -150,40 +307,40 @@ export type ModuleDef = {
 
 export const MODULES: ModuleDef[] = [
   {
-    id: 'values',
-    number: '01',
-    title: 'Values',
+    id: "values",
+    number: "01",
+    title: "Values",
     blurb:
-      'Get clear on the handful of values that matter most to you. Most people have never done this — and it quietly changes everything that follows.',
+      "Get clear on the handful of values that matter most to you. Most people have never done this — and it quietly changes everything that follows.",
     opening:
-      'We start here because everything after this is meaningless without it. Take your time. There are no wrong answers, and you can change any of this later.',
+      "We start here because everything after this is meaningless without it. Take your time. There are no wrong answers, and you can change any of this later.",
   },
   {
-    id: 'roots',
-    number: '02',
-    title: 'Roots',
+    id: "roots",
+    number: "02",
+    title: "Roots",
     blurb:
-      'Gently explore where your ways of loving began — the good you inherited, and the patterns you didn’t choose but may still carry.',
+      "Gently explore where your ways of loving began — the good you inherited, and the patterns you didn’t choose but may still carry.",
     opening:
-      'Before you ever chose a relationship, you watched one. This part is about what you saw between the adults who raised you — how they treated each other — because that was the model of partnership you absorbed long before you were old enough to evaluate it.',
+      "Before you ever chose a relationship, you watched one. This part is about what you saw between the adults who raised you — how they treated each other — because that was the model of partnership you absorbed long before you were old enough to evaluate it.",
   },
   {
-    id: 'patterns',
-    number: '03',
-    title: 'Patterns',
+    id: "patterns",
+    number: "03",
+    title: "Patterns",
     blurb:
-      'See how you actually show up in relationships: the gifts you bring, and the habits that quietly get in the way of them.',
+      "See how you actually show up in relationships: the gifts you bring, and the habits that quietly get in the way of them.",
     opening:
-      'Honesty is the whole engine here. The mirror is only as true as what you put in front of it — and no one else sees this but you.',
+      "Honesty is the whole engine here. The mirror is only as true as what you put in front of it — and no one else sees this but you.",
   },
   {
-    id: 'habits',
-    number: '04',
-    title: 'Habits',
+    id: "habits",
+    number: "04",
+    title: "Habits",
     blurb:
-      'Notice the daily practices that support the love you want — and the ones that don’t — using your own honest measure, not anyone else’s.',
+      "Notice the daily practices that support the love you want — and the ones that don’t — using your own honest measure, not anyone else’s.",
     opening:
-      'We won’t ask how often. We’ll ask what sets it off. That’s the more honest question, and the more useful one.',
+      "We won’t ask how often. We’ll ask what sets it off. That’s the more honest question, and the more useful one.",
   },
 ];
 
@@ -194,78 +351,85 @@ export const MODULES: ModuleDef[] = [
 export const QUESTIONS: Question[] = [
   /* ---------- MODULE 1: VALUES ---------- */
   {
-    id: 'peak-1',
-    moduleId: 'values',
-    kind: 'long-text',
-    prompt: 'Describe a moment in your life you would call a peak — a time you felt most fully yourself.',
-    helper: 'Strongest emotions map directly to core values. Tell it as a story, not a summary.',
-    placeholder: 'What happened, who was there, and what made it matter…',
-  },
-  {
-    id: 'peak-2',
-    moduleId: 'values',
-    kind: 'long-text',
-    prompt: 'Now a second peak moment — a different season of your life, if you can.',
-    placeholder: 'Another time you felt genuinely alive…',
-  },
-  {
-    id: 'pit-1',
-    moduleId: 'values',
-    kind: 'long-text',
-    prompt: 'Describe a low moment — a time something important to you was violated or lost.',
-    helper: 'You don’t have to go to the deepest one. Choose what you’re willing to look at today.',
-    placeholder: 'What happened, and what it took from you…',
-  },
-  {
-    id: 'pit-2',
-    moduleId: 'values',
-    kind: 'long-text',
-    prompt: 'And a second low moment, if you’re willing.',
-    optional: true,
-    placeholder: 'Another time something you valued was compromised…',
-  },
-  {
-    id: 'eulogy',
-    moduleId: 'values',
-    kind: 'long-text',
+    id: "peak-1",
+    moduleId: "values",
+    kind: "long-text",
     prompt:
-      'Imagine your 80th birthday. The people who know you best are speaking. What do you hope they say about who you were — as a partner, and as a person?',
-    helper: 'This tends to reveal what you actually value more honestly than a list ever could.',
-    placeholder: 'What you would want said, and by whom…',
+      "Describe a moment in your life you would call a peak — a time you felt most fully yourself.",
+    helper:
+      "Strongest emotions map directly to core values. Tell it as a story, not a summary.",
+    placeholder: "What happened, who was there, and what made it matter…",
+  },
+  {
+    id: "peak-2",
+    moduleId: "values",
+    kind: "long-text",
+    prompt:
+      "Now a second peak moment — a different season of your life, if you can.",
+    placeholder: "Another time you felt genuinely alive…",
+  },
+  {
+    id: "pit-1",
+    moduleId: "values",
+    kind: "long-text",
+    prompt:
+      "Describe a low moment — a time something important to you was violated or lost.",
+    helper:
+      "You don’t have to go to the deepest one. Choose what you’re willing to look at today.",
+    placeholder: "What happened, and what it took from you…",
+  },
+  {
+    id: "pit-2",
+    moduleId: "values",
+    kind: "long-text",
+    prompt: "And a second low moment, if you’re willing.",
+    optional: true,
+    placeholder: "Another time something you valued was compromised…",
+  },
+  {
+    id: "eulogy",
+    moduleId: "values",
+    kind: "long-text",
+    prompt:
+      "Imagine your 80th birthday. The people who know you best are speaking. What do you hope they say about who you were — as a partner, and as a person?",
+    helper:
+      "This tends to reveal what you actually value more honestly than a list ever could.",
+    placeholder: "What you would want said, and by whom…",
   },
 
   /* ---------- FAITH BRANCH ---------- */
   {
-    id: 'faith-important',
-    moduleId: 'values',
-    kind: 'yes-no',
-    prompt: 'Is faith an important value for your romantic relationship?',
+    id: "faith-important",
+    moduleId: "values",
+    kind: "yes-no",
+    prompt: "Is faith an important value for your romantic relationship?",
     helper:
-      'Faith matters deeply to some people and not at all to others. Both answers are completely welcome here, and neither changes how we treat you.',
+      "Faith matters deeply to some people and not at all to others. Both answers are completely welcome here, and neither changes how we treat you.",
   },
   {
-    id: 'faith-describe',
-    moduleId: 'values',
-    kind: 'long-text',
-    prompt: 'Tell us about your faith or religion — and what about it is valuable to you.',
-    showIf: { questionId: 'faith-important', equals: 'yes' },
-    placeholder: 'Your tradition, your practice, and what it gives you…',
+    id: "faith-describe",
+    moduleId: "values",
+    kind: "long-text",
+    prompt:
+      "Tell us about your faith or religion — and what about it is valuable to you.",
+    showIf: { questionId: "faith-important", equals: "yes" },
+    placeholder: "Your tradition, your practice, and what it gives you…",
   },
   {
-    id: 'faith-in-partner',
-    moduleId: 'values',
-    kind: 'long-text',
-    prompt: 'Why does it matter to you in a partner?',
-    showIf: { questionId: 'faith-important', equals: 'yes' },
-    placeholder: 'What shared faith would make possible between you…',
+    id: "faith-in-partner",
+    moduleId: "values",
+    kind: "long-text",
+    prompt: "Why does it matter to you in a partner?",
+    showIf: { questionId: "faith-important", equals: "yes" },
+    placeholder: "What shared faith would make possible between you…",
   },
   {
-    id: 'faith-scale',
-    moduleId: 'values',
-    kind: 'scale-1-10',
-    prompt: 'How important is it that your partner practice the same faith?',
-    helper: '1 = not important · 10 = very important',
-    showIf: { questionId: 'faith-important', equals: 'yes' },
+    id: "faith-scale",
+    moduleId: "values",
+    kind: "scale-1-10",
+    prompt: "How important is it that your partner practice the same faith?",
+    helper: "1 = not important · 10 = very important",
+    showIf: { questionId: "faith-important", equals: "yes" },
   },
 
   /* ---------- MODULE 2: ROOTS ----------
@@ -276,191 +440,209 @@ export const QUESTIONS: Question[] = [
      question, where the user considers which of those dynamics they carried
      forward without choosing to. */
   {
-    id: 'roots-home',
-    moduleId: 'roots',
-    kind: 'long-text',
+    id: "roots-home",
+    moduleId: "roots",
+    kind: "long-text",
     prompt:
-      'Describe an ordinary evening in the home you grew up in, with the adults who raised you both in the room.',
+      "Describe an ordinary evening in the home you grew up in, with the adults who raised you both in the room.",
     helper:
-      'Not a big occasion — a normal Tuesday. Concrete detail helps more than adjectives.',
-    placeholder: 'Where each of them was, what they were doing, what the room was like…',
+      "Not a big occasion — a normal Tuesday. Concrete detail helps more than adjectives.",
+    placeholder:
+      "Where each of them was, what they were doing, what the room was like…",
   },
   {
-    id: 'roots-affection',
-    moduleId: 'roots',
-    kind: 'long-text',
-    prompt: 'How did they show affection to each other?',
+    id: "roots-affection",
+    moduleId: "roots",
+    kind: "long-text",
+    prompt: "How did they show affection to each other?",
     helper:
-      'Between the two of them, not toward you. Words, touch, teasing, small courtesies — or none of it. All of those are real answers.',
-    placeholder: 'What you actually saw pass between them…',
+      "Between the two of them, not toward you. Words, touch, teasing, small courtesies — or none of it. All of those are real answers.",
+    placeholder: "What you actually saw pass between them…",
   },
   {
-    id: 'roots-conflict',
-    moduleId: 'roots',
-    kind: 'long-text',
-    prompt: 'When they disagreed, what happened?',
-    helper: 'Most people can picture this one instantly. Loud, silent, settled, or buried?',
-    placeholder: 'How a disagreement between them actually went…',
-  },
-  {
-    id: 'roots-repair',
-    moduleId: 'roots',
-    kind: 'long-text',
-    prompt: 'And afterward — how did they come back to each other, if they did?',
+    id: "roots-conflict",
+    moduleId: "roots",
+    kind: "long-text",
+    prompt: "When they disagreed, what happened?",
     helper:
-      'Repair is the part of partnership most people never got to watch, and the part most couples most need. If you never saw it, that is worth knowing too.',
-    placeholder: 'What happened after the disagreement was over…',
+      "Most people can picture this one instantly. Loud, silent, settled, or buried?",
+    placeholder: "How a disagreement between them actually went…",
   },
   {
-    id: 'roots-decisions',
-    moduleId: 'roots',
-    kind: 'long-text',
-    prompt: 'How were decisions made between them — money, work, where to live, how to raise you?',
-    helper: 'Who deferred, who decided, and whether it seemed to sit well with both of them.',
-    placeholder: 'How the two of them actually ran things…',
-  },
-  {
-    id: 'roots-parent-1-good',
-    moduleId: 'roots',
-    kind: 'long-text',
-    prompt: 'Name some genuinely great qualities in the first of them.',
-    helper: 'We start with the good on purpose. Almost everyone brought something real.',
-    placeholder: 'What you can honestly admire in them…',
-  },
-  {
-    id: 'roots-parent-1-hard',
-    moduleId: 'roots',
-    kind: 'long-text',
+    id: "roots-repair",
+    moduleId: "roots",
+    kind: "long-text",
     prompt:
-      'And which of their character or personality traits do you believe were not conducive to a healthy relationship?',
+      "And afterward — how did they come back to each other, if they did?",
     helper:
-      'Traits, not verdicts — and we mean as a partner. This is not an invitation to blame them. It is an invitation to see clearly.',
-    placeholder: 'What made partnership harder — for them, or for the person with them…',
+      "Repair is the part of partnership most people never got to watch, and the part most couples most need. If you never saw it, that is worth knowing too.",
+    placeholder: "What happened after the disagreement was over…",
   },
   {
-    id: 'roots-parent-2-good',
-    moduleId: 'roots',
-    kind: 'long-text',
-    prompt: 'Now the same for the second — the qualities you can genuinely acknowledge.',
+    id: "roots-decisions",
+    moduleId: "roots",
+    kind: "long-text",
+    prompt:
+      "How were decisions made between them — money, work, where to live, how to raise you?",
+    helper:
+      "Who deferred, who decided, and whether it seemed to sit well with both of them.",
+    placeholder: "How the two of them actually ran things…",
+  },
+  {
+    id: "roots-parent-1-good",
+    moduleId: "roots",
+    kind: "long-text",
+    prompt: "Name some genuinely great qualities in the first of them.",
+    helper:
+      "We start with the good on purpose. Almost everyone brought something real.",
+    placeholder: "What you can honestly admire in them…",
+  },
+  {
+    id: "roots-parent-1-hard",
+    moduleId: "roots",
+    kind: "long-text",
+    prompt:
+      "And which of their character or personality traits do you believe were not conducive to a healthy relationship?",
+    helper:
+      "Traits, not verdicts — and we mean as a partner. This is not an invitation to blame them. It is an invitation to see clearly.",
+    placeholder:
+      "What made partnership harder — for them, or for the person with them…",
+  },
+  {
+    id: "roots-parent-2-good",
+    moduleId: "roots",
+    kind: "long-text",
+    prompt:
+      "Now the same for the second — the qualities you can genuinely acknowledge.",
     optional: true,
-    placeholder: 'What was good in them…',
+    placeholder: "What was good in them…",
   },
   {
-    id: 'roots-parent-2-hard',
-    moduleId: 'roots',
-    kind: 'long-text',
-    prompt: 'And the traits in them you believe were not conducive to relationship.',
-    optional: true,
-    placeholder: 'What made partnership harder…',
-  },
-  {
-    id: 'roots-model',
-    moduleId: 'roots',
-    kind: 'long-text',
-    prompt: 'What did their relationship teach you a partnership is supposed to look like?',
-    helper:
-      'Not what you believe now — what you absorbed then, before anyone asked your opinion.',
-    placeholder: 'The picture you ended up with…',
-  },
-  {
-    id: 'roots-inheritance',
-    moduleId: 'roots',
-    kind: 'long-text',
+    id: "roots-parent-2-hard",
+    moduleId: "roots",
+    kind: "long-text",
     prompt:
-      'Looking at what you just wrote — do you see any of those same dynamics showing up in how you show up in a relationship now?',
+      "And the traits in them you believe were not conducive to relationship.",
+    optional: true,
+    placeholder: "What made partnership harder…",
+  },
+  {
+    id: "roots-model",
+    moduleId: "roots",
+    kind: "long-text",
+    prompt:
+      "What did their relationship teach you a partnership is supposed to look like?",
     helper:
-      'Almost everyone does, and noticing it is not a failure. It is the first thing that makes it changeable. Many people carry an inherited pattern for years without ever having named it.',
-    placeholder: 'Be as honest as you can be today…',
+      "Not what you believe now — what you absorbed then, before anyone asked your opinion.",
+    placeholder: "The picture you ended up with…",
+  },
+  {
+    id: "roots-inheritance",
+    moduleId: "roots",
+    kind: "long-text",
+    prompt:
+      "Looking at what you just wrote — do you see any of those same dynamics showing up in how you show up in a relationship now?",
+    helper:
+      "Almost everyone does, and noticing it is not a failure. It is the first thing that makes it changeable. Many people carry an inherited pattern for years without ever having named it.",
+    placeholder: "Be as honest as you can be today…",
   },
 
   /* ---------- MODULE 3: PATTERNS ---------- */
   {
-    id: 'patterns-loved',
-    moduleId: 'patterns',
-    kind: 'long-text',
-    prompt: 'What traits did you genuinely love in your last partner?',
-    placeholder: 'What drew you, and what kept drawing you…',
+    id: "patterns-loved",
+    moduleId: "patterns",
+    kind: "long-text",
+    prompt: "What traits did you genuinely love in your last partner?",
+    placeholder: "What drew you, and what kept drawing you…",
   },
   {
-    id: 'patterns-didnt-support',
-    moduleId: 'patterns',
-    kind: 'long-text',
-    prompt: 'What traits did you discover did not support the relationship?',
-    helper: 'Traits, not verdicts. What was hard to live alongside?',
-    placeholder: 'What you learned the cost of…',
+    id: "patterns-didnt-support",
+    moduleId: "patterns",
+    kind: "long-text",
+    prompt: "What traits did you discover did not support the relationship?",
+    helper: "Traits, not verdicts. What was hard to live alongside?",
+    placeholder: "What you learned the cost of…",
   },
   {
-    id: 'patterns-your-gifts',
-    moduleId: 'patterns',
-    kind: 'long-text',
-    prompt: 'Honestly — what makes you a great partner? What gifts do you bring?',
-    helper: 'Being able to name this is not arrogance. A person who can’t name it can’t offer it either.',
-    placeholder: 'What someone is genuinely lucky to receive from you…',
-  },
-  {
-    id: 'patterns-your-damage',
-    moduleId: 'patterns',
-    kind: 'long-text',
-    prompt: 'Honestly — what traits in yourself damaged your last relationship?',
-    helper: 'This is the hardest question in the method, and the most valuable one. Nobody sees this but you.',
-    placeholder: 'What you did, not what was done to you…',
-  },
-  {
-    id: 'patterns-blocks',
-    moduleId: 'patterns',
-    kind: 'long-text',
+    id: "patterns-your-gifts",
+    moduleId: "patterns",
+    kind: "long-text",
     prompt:
-      'Are there practices or beliefs that stop you from offering complete trust, love, and honesty?',
-    placeholder: 'What you hold back, and what you think it protects…',
+      "Honestly — what makes you a great partner? What gifts do you bring?",
+    helper:
+      "Being able to name this is not arrogance. A person who can’t name it can’t offer it either.",
+    placeholder: "What someone is genuinely lucky to receive from you…",
   },
   {
-    id: 'patterns-conflict-now',
-    moduleId: 'patterns',
-    kind: 'long-text',
-    prompt: 'When you and a partner are in conflict, what do you actually do?',
-    helper: 'Not what you believe you should do. What you do at 11pm on a bad night.',
-    placeholder: 'Withdraw, escalate, fix, go quiet, leave, over-explain…',
+    id: "patterns-your-damage",
+    moduleId: "patterns",
+    kind: "long-text",
+    prompt:
+      "Honestly — what traits in yourself damaged your last relationship?",
+    helper:
+      "This is the hardest question in the method, and the most valuable one. Nobody sees this but you.",
+    placeholder: "What you did, not what was done to you…",
+  },
+  {
+    id: "patterns-blocks",
+    moduleId: "patterns",
+    kind: "long-text",
+    prompt:
+      "Are there practices or beliefs that stop you from offering complete trust, love, and honesty?",
+    placeholder: "What you hold back, and what you think it protects…",
+  },
+  {
+    id: "patterns-conflict-now",
+    moduleId: "patterns",
+    kind: "long-text",
+    prompt: "When you and a partner are in conflict, what do you actually do?",
+    helper:
+      "Not what you believe you should do. What you do at 11pm on a bad night.",
+    placeholder: "Withdraw, escalate, fix, go quiet, leave, over-explain…",
   },
 
   /* ---------- MODULE 4: HABITS ---------- */
   {
-    id: 'habits-supporting',
-    moduleId: 'habits',
-    kind: 'long-text',
-    prompt: 'What daily practices in your life support the love you say you want?',
-    placeholder: 'The ordinary things you do that make you better to be near…',
+    id: "habits-supporting",
+    moduleId: "habits",
+    kind: "long-text",
+    prompt:
+      "What daily practices in your life support the love you say you want?",
+    placeholder: "The ordinary things you do that make you better to be near…",
   },
   {
-    id: 'habits-reached-for',
-    moduleId: 'habits',
-    kind: 'long-text',
-    prompt: 'And what do you reach for when things get hard?',
+    id: "habits-reached-for",
+    moduleId: "habits",
+    kind: "long-text",
+    prompt: "And what do you reach for when things get hard?",
     helper:
-      'Everyone reaches for something. Work, a screen, a drink, a person, silence, food, the gym. There is no shame in the answer.',
-    placeholder: 'What you turn to, honestly…',
+      "Everyone reaches for something. Work, a screen, a drink, a person, silence, food, the gym. There is no shame in the answer.",
+    placeholder: "What you turn to, honestly…",
   },
   {
-    id: 'habits-trigger',
-    moduleId: 'habits',
-    kind: 'long-text',
-    prompt: 'What sets that off? Describe the last time it happened.',
+    id: "habits-trigger",
+    moduleId: "habits",
+    kind: "long-text",
+    prompt: "What sets that off? Describe the last time it happened.",
     helper:
-      'We ask about the trigger rather than the frequency, because the trigger is the honest measure — and the one you can actually work with.',
-    placeholder: 'What happened just before…',
+      "We ask about the trigger rather than the frequency, because the trigger is the honest measure — and the one you can actually work with.",
+    placeholder: "What happened just before…",
   },
   {
-    id: 'habits-cost',
-    moduleId: 'habits',
-    kind: 'long-text',
-    prompt: 'By your own measure — not anyone else’s — is it costing you anything?',
-    placeholder: 'Your own honest assessment…',
+    id: "habits-cost",
+    moduleId: "habits",
+    kind: "long-text",
+    prompt:
+      "By your own measure — not anyone else’s — is it costing you anything?",
+    placeholder: "Your own honest assessment…",
   },
   {
-    id: 'habits-change',
-    moduleId: 'habits',
-    kind: 'long-text',
-    prompt: 'If one habit of yours changed, which one would most change the love in your life?',
-    placeholder: 'The one you already know…',
+    id: "habits-change",
+    moduleId: "habits",
+    kind: "long-text",
+    prompt:
+      "If one habit of yours changed, which one would most change the love in your life?",
+    placeholder: "The one you already know…",
   },
 ];
 
@@ -468,7 +650,10 @@ export function questionsForModule(moduleId: ModuleId): Question[] {
   return QUESTIONS.filter((q) => q.moduleId === moduleId);
 }
 
-export function isQuestionVisible(q: Question, answers: Record<string, string>): boolean {
+export function isQuestionVisible(
+  q: Question,
+  answers: Record<string, string>,
+): boolean {
   if (!q.showIf) return true;
   return answers[q.showIf.questionId] === q.showIf.equals;
 }
