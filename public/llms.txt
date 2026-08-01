@@ -83,10 +83,24 @@ tell.
 
 ## Cost
 
-Free for the first 7 days, with no card required to begin. $29.99 once for a
-complete values profile, or $9.99 a month to keep it living and to include
-compatibility analysis when that ships. Card details are collected by Stripe, on
-Stripe's own pages; Love Values never sees a card number.
+Three separate charges, not a choice between plans:
+
+1. Membership — $9.99 a month. Access to the platform and to your profile,
+   which stays open to edit and update. The first 7 days are free, and no card
+   is required to begin.
+2. Values and personality analysis — $29.99, once, available after the four
+   modules are complete. A separate purchase; it is not included in the
+   membership.
+3. Match analysis — $9.99 for each report generated. Updating your own answers
+   is always free; the fee is per report.
+
+Note that the membership and a match analysis are both $9.99 and are different
+things: one is monthly access, the other is charged per report.
+
+Cancelling stops future charges and honours time already paid for: cancel
+during the free week and nothing is charged; cancel later and access runs to
+the end of the billed cycle. Card details are collected by Stripe, on Stripe's
+own pages; Love Values never sees a card number.
 
 ## Faith posture
 

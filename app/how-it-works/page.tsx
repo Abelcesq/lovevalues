@@ -113,8 +113,11 @@ export default function HowItWorks() {
                 <li>
                   <Check aria-hidden="true" />
                   <span>
-                    <b>Free for 7 days.</b> The full profile is $29.99 once.
-                    Nothing is charged to begin.
+                    <b>
+                      $9.99 a month for membership, free for the first 7 days.
+                    </b>{" "}
+                    Your values analysis ($29.99, once) and each match analysis
+                    ($9.99) are separate. Nothing is charged to begin.
                   </span>
                 </li>
               </ul>
@@ -303,24 +306,40 @@ export default function HowItWorks() {
 
             <section className="prose" id="cost">
               <h2>What it costs</h2>
-              <p>Plainly, with no card required to start:</p>
+              <p>
+                Three separate things, priced separately, so you only ever pay
+                for what you actually want. Nothing is charged to begin.
+              </p>
               <ul>
                 <li>
-                  <b>Free for 7 days.</b> The whole method, all four parts, the
-                  full profile.
+                  <b>$9.99 a month — your membership.</b> This is access to the
+                  platform: the four-part method, and your profile kept open so
+                  you can edit and update it whenever you like.{" "}
+                  <b>The first 7 days are free.</b>
                 </li>
                 <li>
-                  <b>$29.99, once</b> — your complete values profile, yours to
-                  keep.
+                  <b>$29.99, once — your values and personality analysis.</b>{" "}
+                  Once you have completed the four-part discovery process, this
+                  generates your own detailed analysis and recommendations. It
+                  is a separate charge, not part of the membership.
                 </li>
                 <li>
-                  <b>$9.99 a month</b> — keeps the profile living, and adds
-                  match analysis when it ships.
+                  <b>$9.99 for each match analysis.</b> When you want to see how
+                  you match with a particular person — where a relationship is
+                  likely to hold, and where differences would need an honest
+                  conversation. Updating your answers is always free; this fee
+                  is for each new report generated.
                 </li>
               </ul>
               <p className="note">
-                Cancel any time. Your data stays yours, and you can export it
-                whenever you like.
+                <b>
+                  Cancelling stops future charges and never takes away time you
+                  have paid for.
+                </b>{" "}
+                Cancel during the free week and you are never charged. Cancel
+                later and your membership runs to the end of the month you have
+                already paid for. Your answers stay on your own device
+                throughout, and you can export them whenever you like.
               </p>
             </section>
 

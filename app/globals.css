@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    LOVE VALUES — DESIGN SYSTEM
@@ -125,7 +125,11 @@ body {
      the page to the footer — which is what the reference actually does. Both
      stops are tinted, so there is no colourless stretch however long the page
      gets. */
-  background: linear-gradient(180deg, var(--color-page) 0%, var(--color-page-2) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-page) 0%,
+    var(--color-page-2) 100%
+  );
   min-height: 100vh;
   color: var(--color-secondary);
   font-family: var(--font-sans);
@@ -217,7 +221,9 @@ header.nav {
   font-weight: 600;
   padding: 0.5em 0.85em;
   border-radius: 999px;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 }
 .nav-actions .login:hover {
   color: var(--color-ink);
@@ -238,7 +244,10 @@ header.nav {
   border-radius: 999px;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
     box-shadow 0.18s ease;
 }
 .btn svg {
@@ -249,7 +258,8 @@ header.nav {
 .btn-primary {
   color: var(--color-on-brand);
   background: var(--color-brand);
-  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--color-brand) 70%, transparent);
+  box-shadow: 0 6px 18px -8px
+    color-mix(in srgb, var(--color-brand) 70%, transparent);
 }
 .btn-primary:hover:not(:disabled) {
   background: var(--color-brand-press);
@@ -291,9 +301,12 @@ input:focus-visible {
   color: var(--color-brand);
   font-weight: 700;
   font-size: var(--text-16);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-brand) 35%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-brand) 35%, transparent);
   padding-bottom: 1px;
-  transition: border-color 0.18s ease, color 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
 .textlink:hover {
   color: var(--color-brand-press);
@@ -409,7 +422,8 @@ input:focus-visible {
 .flow .mark-u {
   color: var(--color-ink);
   font-weight: 700;
-  box-shadow: inset 0 -0.5em 0 color-mix(in srgb, var(--color-brand) 14%, transparent);
+  box-shadow: inset 0 -0.5em 0
+    color-mix(in srgb, var(--color-brand) 14%, transparent);
 }
 
 /* A numbered beat in the flow. The label runs inline above the heading rather
@@ -751,7 +765,10 @@ input:focus-visible {
   border-radius: 999px;
   padding: 0.7em 1.4em;
   cursor: pointer;
-  transition: box-shadow 0.18s ease, color 0.18s ease, background 0.18s ease;
+  transition:
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    background 0.18s ease;
 }
 .ai-btn:hover {
   color: var(--color-brand);
@@ -822,7 +839,7 @@ input:focus-visible {
   color: var(--color-muted);
 }
 .steps-rail li + li::before {
-  content: '';
+  content: "";
   width: 18px;
   height: 1px;
   background: var(--color-line);
@@ -876,7 +893,9 @@ input:focus-visible {
   border-radius: 999px;
   padding: 0.8em 1.2em;
   cursor: pointer;
-  transition: background 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 }
 .social-btn:hover {
   background: var(--color-card);
@@ -902,7 +921,7 @@ input:focus-visible {
   margin: 22px 0;
 }
 .or::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
@@ -995,7 +1014,9 @@ input:focus-visible {
   border: 0;
   box-shadow: inset 0 0 0 2px transparent;
   cursor: pointer;
-  transition: background 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 }
 .plan:hover {
   background: var(--color-card-2);
@@ -1114,6 +1135,84 @@ input:focus-visible {
   flex: 0 0 auto;
 }
 
+/* ---- the two later purchases ----
+   Deliberately quieter than the membership card: they are disclosure, not a
+   second thing to buy today. Nobody can purchase either of these yet — the
+   report needs four finished modules, match analysis needs a second person —
+   so styling them as offers would be selling something that does not exist. */
+.later-costs {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-line);
+}
+.later-costs-head {
+  font-size: var(--text-12);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 10px;
+}
+.later-cost + .later-cost {
+  margin-top: 8px;
+}
+.later-cost-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 11px 13px;
+  border-radius: 12px;
+  border: 1px solid var(--color-line);
+  background: var(--color-inset);
+  cursor: pointer;
+  font: inherit;
+  color: var(--color-ink);
+}
+.later-cost-btn:hover {
+  border-color: var(--color-brand);
+}
+.later-cost-price {
+  font-weight: 800;
+  font-size: var(--text-14);
+  color: var(--color-brand);
+  flex: 0 0 auto;
+}
+.later-cost-title {
+  font-size: var(--text-14);
+  font-weight: 600;
+  flex: 1 1 auto;
+}
+.later-cost-btn svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  color: var(--color-muted);
+  transition: transform 0.18s ease;
+}
+.later-cost-btn svg.flip {
+  transform: rotate(180deg);
+}
+.later-cost-body {
+  padding: 12px 13px 2px;
+  font-size: var(--text-14);
+  line-height: 1.65;
+  color: var(--color-secondary);
+}
+.later-cost-note {
+  margin-top: 12px;
+  font-size: var(--text-12);
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+/* One membership, so the grid must not leave a phantom empty column beside it. */
+.plans-single {
+  grid-template-columns: 1fr;
+  max-width: 460px;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    THE ARTICLE LAYOUT
 
@@ -1171,7 +1270,9 @@ input:focus-visible {
   color: var(--color-muted);
   padding: 7px 0 7px 14px;
   border-left: 3px solid var(--color-line);
-  transition: color 0.18s ease, border-color 0.18s ease;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 .toc-list a:hover {
   color: var(--color-ink);
@@ -1320,7 +1421,8 @@ input:focus-visible {
 .prose a:not(.btn):not(.textlink) {
   color: var(--color-brand);
   font-weight: 600;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-brand) 30%, transparent);
 }
 .prose ol,
 .prose ul {
@@ -1356,7 +1458,7 @@ input:focus-visible {
   line-height: 1.6;
 }
 .prose ul > li::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 2px;
   top: 12px;
@@ -1401,7 +1503,8 @@ input:focus-visible {
 .cta-inline .btn-invert {
   color: var(--color-on-brand);
   background: var(--color-brand);
-  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--color-brand) 70%, transparent);
+  box-shadow: 0 6px 18px -8px
+    color-mix(in srgb, var(--color-brand) 70%, transparent);
 }
 .cta-inline .btn-invert:hover:not(:disabled) {
   background: var(--color-brand-press);
@@ -1497,7 +1600,9 @@ footer {
   color: var(--color-muted);
   background: var(--color-card);
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 .rail-item:hover {
   color: var(--color-ink);
@@ -1512,7 +1617,7 @@ footer {
   opacity: 0.7;
 }
 .rail-item.done .n::after {
-  content: ' ✓';
+  content: " ✓";
   color: var(--color-brand);
 }
 .rail-item.active .n::after {
@@ -1654,7 +1759,9 @@ footer {
   background: var(--color-inset);
   color: var(--color-muted);
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 }
 .bucket:hover {
   color: var(--color-ink);
@@ -1681,7 +1788,9 @@ footer {
   background: var(--color-card);
   color: var(--color-secondary);
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 }
 .chip:hover {
   color: var(--color-ink);
@@ -1830,7 +1939,9 @@ footer {
   background: var(--color-card);
   color: var(--color-secondary);
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 }
 .yesno button:hover {
   color: var(--color-ink);
@@ -1858,7 +1969,9 @@ footer {
   font-weight: 700;
   cursor: pointer;
   font-variant-numeric: tabular-nums;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 }
 .scale button:hover {
   color: var(--color-ink);
@@ -1873,7 +1986,9 @@ footer {
 .vi {
   border-radius: var(--radius-tile);
   background: var(--color-card);
-  transition: box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 .vi:focus-within {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 22%, transparent);
@@ -1926,7 +2041,9 @@ footer {
   background: var(--color-inset);
   color: var(--color-secondary);
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 }
 .vi-mic svg {
   width: 16px;
@@ -2065,7 +2182,8 @@ footer {
 .pre-care-link a {
   color: var(--color-accent);
   font-weight: 800;
-  border-bottom: 2px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+  border-bottom: 2px solid
+    color-mix(in srgb, var(--color-accent) 40%, transparent);
   padding-bottom: 1px;
 }
 .pre-care-link a:hover {
@@ -2225,7 +2343,9 @@ footer {
   font-size: var(--text-14);
   font-weight: 600;
   color: var(--color-secondary);
-  transition: color 0.18s ease, border-color 0.18s ease;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 .dash-links a:hover {
   color: var(--color-ink);
@@ -2479,7 +2599,9 @@ footer {
 .reveal {
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 .reveal.in {
   opacity: 1;

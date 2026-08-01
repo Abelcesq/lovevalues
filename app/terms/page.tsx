@@ -1,7 +1,7 @@
-import { Footer, Nav } from '@/components/Chrome';
-import { LEGAL_DISCLOSURE, MIRROR_FRAMING } from '@/lib/method';
+import { Footer, Nav } from "@/components/Chrome";
+import { LEGAL_DISCLOSURE, MIRROR_FRAMING } from "@/lib/method";
 
-export const metadata = { title: 'Terms — Love Values' };
+export const metadata = { title: "Terms — Love Values" };
 
 export default function Terms() {
   return (
@@ -19,45 +19,75 @@ export default function Terms() {
           <section className="syn-section">
             <h2>This is not therapy</h2>
             <p>
-              Love Values is not therapy, counseling, psychiatry, coaching, or mentoring, and it
-              does not replace any of them. It asks reflective questions and offers a reading of
-              your own answers. That is all it does, and it is not a substitute for a qualified
-              human being.
+              Love Values is not therapy, counseling, psychiatry, coaching, or
+              mentoring, and it does not replace any of them. It asks reflective
+              questions and offers a reading of your own answers. That is all it
+              does, and it is not a substitute for a qualified human being.
             </p>
             <p>
-              If you are in distress, please reach out to a qualified professional or a trusted
-              person in your life. That is not a formality — it is the right thing to do, and this
-              product will always say so rather than trying to hold you itself.
+              If you are in distress, please reach out to a qualified
+              professional or a trusted person in your life. That is not a
+              formality — it is the right thing to do, and this product will
+              always say so rather than trying to hold you itself.
             </p>
           </section>
 
           <section className="syn-section">
             <h2>The content is AI-generated</h2>
             <p>
-              Your reflection is produced by an AI model. It may be wrong, inaccurate, or
-              misleading. {MIRROR_FRAMING}
+              Your reflection is produced by an AI model. It may be wrong,
+              inaccurate, or misleading. {MIRROR_FRAMING}
             </p>
             <p>
-              Read it as a mirror, not a verdict — and when it&apos;s wrong, say so. That is a
-              feature of the method, not a failure of it.
+              Read it as a mirror, not a verdict — and when it&apos;s wrong, say
+              so. That is a feature of the method, not a failure of it.
             </p>
           </section>
 
           <section className="syn-section">
             <h2>Your words are yours</h2>
             <p>
-              You own what you write here. You can edit it, export it, or delete it entirely at any
-              time. We claim no ownership of your answers and do not use them to train anything.
+              You own what you write here. You can edit it, export it, or delete
+              it entirely at any time. We claim no ownership of your answers and
+              do not use them to train anything.
             </p>
           </section>
 
           <section className="syn-section">
             <h2>Pricing</h2>
             <p>
-              Free for the first 7 days. Your full values profile is $29.99, once. Keeping it
-              living, with match analysis, is $9.99 per month. Cancel anytime. Payment is not
-              enabled yet in this build.
+              There are three separate charges. They are independent of one
+              another, and buying one does not include another.
             </p>
+            <ul>
+              <li>
+                <b>Membership — $9.99 per month.</b> This is access to the
+                platform and to your profile, which stays open for you to edit
+                and update. The first 7 days are free.
+              </li>
+              <li>
+                <b>Values and personality analysis — $29.99, charged once.</b>{" "}
+                Available once you have completed the four-part discovery
+                process. This is a separate purchase and is not included in your
+                membership.
+              </li>
+              <li>
+                <b>Match analysis — $9.99 for each report generated.</b> There
+                is no fee to update your responses; the fee applies to each new
+                report analysis generated. Generating a second report is charged
+                again.
+              </li>
+            </ul>
+            <p>
+              <b>Cancellation.</b> Cancelling prevents future charges and does
+              not remove time you have already been given or paid for. If you
+              cancel before the end of the free 7 days, you are not charged at
+              all. If a charge has already been processed, your membership
+              continues to the end of that billed cycle and no further charge is
+              taken. Reinstatement after cancellation requires your
+              authorisation.
+            </p>
+            <p>Payment is not enabled yet in this build.</p>
           </section>
         </div>
       </main>

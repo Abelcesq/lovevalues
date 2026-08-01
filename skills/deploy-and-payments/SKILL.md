@@ -91,8 +91,14 @@ Lite/Pro:
 | Item | Price |
 |---|---|
 | Values profile | $29.99 one-time |
-| Living profile + match analysis | $9.99 / month, first 7 days waived |
-| Match compatibility analysis | $9.99 per user |
+| Membership (access to the platform) | $9.99 / month, first 7 days waived |
+| Match compatibility analysis | $9.99 per report generated |
+
+These are THREE INDEPENDENT CHARGES, not a choice of plans (CEO, 2026-08-01):
+membership is access; the values profile and each match analysis are bought
+separately on top of it. Cancelling stops future charges only and honours the
+cycle already paid for. `lib/plan.ts` is that one file — read its header before
+writing any pricing copy or Stripe object.
 
 Put these constants in **one file** and import them everywhere — templates,
 checkout, webhook. EZAITASK does this in `accounts/pricing.py` and it is the
