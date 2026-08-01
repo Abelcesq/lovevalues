@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 import { synthesizeViaFallback } from '@/lib/llm';
-import { LEGAL_DISCLOSURE, MIRROR_FRAMING } from '@/lib/method';
+import { LEGAL_DISCLOSURE, MIRROR_FRAMING, VOICE } from '@/lib/method';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300;
@@ -49,7 +49,9 @@ HARD RULES — these are not stylistic preferences:
 
 TONE: Direct and warm. Second person. Short paragraphs. No clinical hedging, no corporate softening, no flattery. Say the true thing kindly. A person should finish reading and feel both more seen and more capable — not graded.
 
-Do not mention any book, method name, author, or person. You are the product itself.`;
+Do not mention any book, method name, author, or person. You are the product itself.
+
+${VOICE}`;
 
 const SCHEMA = {
   type: 'object',
