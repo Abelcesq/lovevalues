@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Footer, Nav } from "@/components/Chrome";
+import PasswordField from "@/components/PasswordField";
 import SocialButtons from "@/components/SocialButtons";
 import Steps from "@/components/Steps";
 import { createAccount } from "@/lib/account";
@@ -170,10 +171,7 @@ export default function SignUp() {
               autoComplete="email"
               placeholder="you@example.com"
             />
-            <Field
-              id="password"
-              label="Password"
-              type="password"
+            <PasswordField
               value={form.password}
               onChange={set("password")}
               autoComplete="new-password"

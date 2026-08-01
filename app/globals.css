@@ -982,6 +982,56 @@ input:focus-visible {
   font-size: var(--text-12);
   color: var(--color-muted);
 }
+
+/* ---- password show/hide ---- */
+.pw-wrap {
+  position: relative;
+}
+/* Room for the toggle so a long passphrase never slides underneath it. */
+.pw-wrap input {
+  padding-right: 92px;
+}
+.pw-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--color-inset);
+  color: var(--color-secondary);
+  font: inherit;
+  font-size: var(--text-12);
+  font-weight: 700;
+  cursor: pointer;
+}
+.pw-toggle:hover {
+  color: var(--color-brand);
+}
+.pw-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 35%, transparent);
+}
+.pw-toggle svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+@media (max-width: 420px) {
+  /* On a narrow phone the word costs more than it earns — the eye is
+     universally understood, and the accessible name still says "Show
+     password" for anyone who cannot see it. */
+  .pw-toggle-text {
+    display: none;
+  }
+  .pw-wrap input {
+    padding-right: 56px;
+  }
+}
 .field-error {
   margin: 4px 0 16px;
   padding: 12px 14px;
