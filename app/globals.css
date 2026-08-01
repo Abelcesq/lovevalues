@@ -565,12 +565,18 @@ input:focus-visible {
    full sentences carrying their own capitalised emphasis (FIRST, BEFORE), and
    all-caps at 0.16em tracking would fight that and be hard to read besides. */
 .splash-tagline {
-  font-size: var(--text-16);
+  /* Same size as the headline below, by the CEO's instruction — the three lines
+     read as one stacked statement rather than as label-then-headline. Kept in
+     sync with `.splash-hero h1` and `.article-body h1`: all three use this exact
+     clamp, so changing one without the others reopens the mismatch. Line-height,
+     tracking and measure match too — at equal size, differing values in any of
+     those read as a size difference even though the font-size is identical. */
+  font-size: clamp(1.5rem, 2.9vw, 2.15rem);
   font-weight: 700;
-  line-height: 1.45;
-  letter-spacing: -0.005em;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
   color: var(--color-brand);
-  max-width: 62ch;
+  max-width: 30ch;
 }
 .splash-tagline + .splash-tagline {
   margin-top: 10px;
