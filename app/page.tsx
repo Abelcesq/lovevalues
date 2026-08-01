@@ -1,8 +1,8 @@
-import { ArrowRight, Compass, Eye, Lock, Sparkles } from 'lucide-react';
-import Link from 'next/link';
-import { Footer, Nav } from '@/components/Chrome';
-import AskAi from '@/components/AskAi';
-import SplashCta from '@/components/SplashCta';
+import { ArrowRight, Compass, Eye, Lock, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Footer, Nav } from "@/components/Chrome";
+import AskAi from "@/components/AskAi";
+import SplashCta from "@/components/SplashCta";
 
 /**
  * The splash.
@@ -22,24 +22,24 @@ import SplashCta from '@/components/SplashCta';
  */
 
 export const metadata = {
-  title: 'Love Values — know what you value, be truly seen',
+  title: "Love Values — know what you value, be truly seen",
 };
 
 const PILLARS = [
   {
     icon: Compass,
-    title: 'Start with what you value',
-    body: 'A guided card sort narrows thirty-two values down to the three to five that win when they collide.',
+    title: "Start with what you value",
+    body: "A guided card sort narrows thirty-two values down to the three to five that win when they collide.",
   },
   {
     icon: Eye,
-    title: 'See the patterns you carry',
-    body: 'Where your instincts about partnership came from, and how they show up when it counts.',
+    title: "See the patterns you carry",
+    body: "Where your instincts about partnership came from, and how they show up when it counts.",
   },
   {
     icon: Sparkles,
-    title: 'Get a mirror, not a verdict',
-    body: 'A reflection written for you, that asks whether it got you right — and changes when you say it did not.',
+    title: "Get a mirror, not a verdict",
+    body: "A reflection written for you, that asks whether it got you right — and changes when you say it did not.",
   },
 ];
 
@@ -53,27 +53,42 @@ export default function Splash() {
           <div className="wrap splash-inner">
             {/* Two stacked lines, not one wrapped sentence, and not the uppercase
                 letter-spaced eyebrow — this is the format the CEO specified. */}
-            <p className="splash-tagline">Values and interpersonal dynamics FIRST</p>
-            <p className="splash-tagline">Assess your values BEFORE physical appearance becomes the focus.</p>
+            <p className="splash-tagline splash-tagline-head">
+              Values and interpersonal dynamics FIRST
+            </p>
+            <p className="splash-tagline">
+              Assess your values BEFORE physical appearance becomes the focus.
+            </p>
 
             <h1>
-              Know what matters to you and be <span className="hl">seen</span> by the commitment to
-              your values.
+              Know what matters to you and be <span className="hl">seen</span>{" "}
+              by the commitment to your values.
             </h1>
 
             <p className="splash-lede">
-              Love Values is a private, AI guide that will help with the following: 1) create clarity on your values, 2) identify personality traits that are important to you in a partner, 3) identify the personality traits you currently possess, and 4) explain how the current values and personality traits intertwine to create the unique You and your relationship dynamic.
+              Love Values is a private, AI guide that will help with the
+              following: 1) create clarity on your values, 2) identify
+              personality traits that are important to you in a partner, 3)
+              identify the personality traits you currently possess, and 4)
+              explain how the current values and personality traits intertwine
+              to create the unique You and your relationship dynamic.
             </p>
             <p className="splash-lede">
-              By creating clarity for yourself, you can discover how to choose based on values and the personality traits that will build a relationship that can grow through your value system rather than be guided by physical appearance.
+              By creating clarity for yourself, you can discover how to choose
+              based on values and the personality traits that will build a
+              relationship that can grow through your value system rather than
+              be guided by physical appearance.
             </p>
-            <p className="splash-lede splash-lede-cta">If this excites you, create your account now and let’s get started!!</p>
+            <p className="splash-lede splash-lede-cta">
+              If this excites you, create your account now and let’s get
+              started!!
+            </p>
 
             <SplashCta />
 
             <p className="splash-fine">
-              <Lock aria-hidden="true" />7 days free · Cancel any time · Your answers stay on your
-              device
+              <Lock aria-hidden="true" />7 days free · Cancel any time · Your
+              answers stay on your device
             </p>
           </div>
         </section>
@@ -96,10 +111,19 @@ export default function Splash() {
           <div className="wrap splash-inner">
             <h2>Need more information…</h2>
             <p>
-              If you are uncertain and need more information, that is ok. Some of us require time to prepare. Below is a link — “Read how it works” — that will provide more detailed information on the method, what it costs, the information you provide, and clarification on what this is not, including the fact that it is not therapy and never replaces it, and the benefits of ongoing updates and matching options.
+              If you are uncertain and need more information, that is ok. Some
+              of us require time to prepare. Below is a link — “Read how it
+              works” — that will provide more detailed information on the
+              method, what it costs, the information you provide, and
+              clarification on what this is not, including the fact that it is
+              not therapy and never replaces it, and the benefits of ongoing
+              updates and matching options.
             </p>
             <p>
-              Also, if emotions or feelings come up, there is an external resource section to assist — to let you know that you are not alone, that talking about what is coming up is normal, and that community support is available.
+              Also, if emotions or feelings come up, there is an external
+              resource section to assist — to let you know that you are not
+              alone, that talking about what is coming up is normal, and that
+              community support is available.
             </p>
             <div className="cta-row">
               <Link className="btn btn-ghost btn-lg" href="/how-it-works">

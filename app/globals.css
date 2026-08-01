@@ -581,6 +581,25 @@ input:focus-visible {
 .splash-tagline + .splash-tagline {
   margin-top: 10px;
 }
+/* The first tagline acts as a heading over the two lines beneath it — the
+   CEO's instruction. It keeps the shared size, so it is distinguished by
+   weight, the underline, and the gap rather than by being bigger. */
+.splash-tagline-head {
+  font-weight: 800;
+  text-decoration: underline;
+  /* Nudged clear of the descenders in "interpersonal"/"dynamics"; the default
+     offset sits right on them and reads as a strikethrough on that word. */
+  text-underline-offset: 0.16em;
+  text-decoration-thickness: 0.055em;
+}
+/* A full blank line beneath the heading. 1.25em resolves against the following
+   line's own font-size and equals exactly one line-height, so the gap is a real
+   blank line at every breakpoint rather than a fixed px value that only looks
+   right on desktop. Must stay AFTER the 10px rule above — the two selectors
+   have equal specificity, so source order is what decides this. */
+.splash-tagline-head + .splash-tagline {
+  margin-top: 1.25em;
+}
 .splash-tagline + .splash-tagline + * {
   margin-top: 28px;
 }
