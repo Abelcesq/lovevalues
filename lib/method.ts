@@ -14,13 +14,14 @@ export const LEGAL_DISCLOSURE =
    Hard rule 4 lives here: this text appears above every reflection and on
    /terms, and it is what keeps the product a mirror rather than a verdict.
 
-   The revision does more than restate the old one. It adds the reason the
-   framing exists — that an analysis is a starting point you can act on, not a
-   result handed down — and it names what actually moves the outcome: habits,
-   activities and practices. That is the whole argument for coming back and
-   regenerating rather than reading once and filing it away. */
+   It does more than restate the old one-liner, which said only what the
+   analysis is not. This says why that matters, and it makes the living-document
+   promise explicit rather than implied: updating the responses will change the
+   analysis. That sentence is the instruction manual for the whole product —
+   without it, "not final" reads as a legal hedge instead of an invitation to
+   come back. */
 export const MIRROR_FRAMING =
-  "Keep in mind that this analysis is not final assessment. It is simply a perspective assessed rom the information provided so far. If the information changes, the analysis and outcome can change based on changing habits, activities and practices. Knowing where you are now can be key to choosing where you want to be and what you desire to create in your relationship.";
+  "Keep in mind that this analysis is not final assessment. It is simply a perspective assessed from the information provided so far. If the information changes, the analysis and outcome can change so changing habits, activities and practices and updating the responses will change the analysis. With that said, knowing where you are now can be key to choosing where you want to be and what you desire to create in your relationship.";
 
 export const MIRROR_DISCLAIMER =
   "Read the mirror first, every time. Give the other person the same grace you'd want for your own inconsistency. Distinguish a genuine values mismatch (worth acting on) from a simple human imperfection (universal — extend grace). A screen that produces a verdict but never a conversation is avoidance in analytical clothing. This report's output is a question to raise together, not a sentence to carry out in silence.";
