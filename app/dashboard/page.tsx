@@ -457,7 +457,7 @@ export default function Dashboard() {
             <span>
               <strong>
                 Feelings can surface in this work, and that is normal.
-              </strong>
+              </strong>{" "}
               If you would like to talk to someone, the resources are here —
               always, and without having to explain yourself first.
             </span>

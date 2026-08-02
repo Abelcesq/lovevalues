@@ -282,7 +282,7 @@ export default function HowItWorks() {
                 Because everything lives on your device, clearing your browser
                 data erases your profile and we cannot recover it. You can
                 export the whole thing as a file you own outright, at any time,
-                from the review page.
+                from your dashboard.
               </p>
             </section>
 
