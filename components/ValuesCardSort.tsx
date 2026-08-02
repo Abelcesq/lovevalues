@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * Module 1 — the Values Card Sort.
@@ -13,10 +13,10 @@
  * understands why it's hard will sit with it instead of guessing.
  */
 
-import { useMemo } from 'react';
-import { SORT_BUCKETS, VALUE_CARDS, type SortBucket } from '@/lib/method';
-import type { ProfileState } from '@/lib/store';
-import VoiceInput from './VoiceInput';
+import { useMemo } from "react";
+import { SORT_BUCKETS, VALUE_CARDS, type SortBucket } from "@/lib/method";
+import type { ProfileState } from "@/lib/store";
+import VoiceInput from "./VoiceInput";
 
 type Props = {
   profile: ProfileState;
@@ -27,19 +27,22 @@ type Props = {
 
 export default function ValuesCardSort({ profile, update, pass }: Props) {
   const veryImportant = useMemo(
-    () => VALUE_CARDS.filter((c) => profile.sort[c.id] === 'very-important'),
+    () => VALUE_CARDS.filter((c) => profile.sort[c.id] === "very-important"),
     [profile.sort],
   );
 
   if (pass === 0) return <PassSort profile={profile} update={update} />;
-  if (pass === 1) return <PassTopTen profile={profile} update={update} pool={veryImportant} />;
+  if (pass === 1)
+    return (
+      <PassTopTen profile={profile} update={update} pool={veryImportant} />
+    );
   if (pass === 2) return <PassCore profile={profile} update={update} />;
   return <PassOperationalize profile={profile} update={update} />;
 }
 
 /* ---------------- Pass 1: sort every card ---------------- */
 
-function PassSort({ profile, update }: Omit<Props, 'pass'>) {
+function PassSort({ profile, update }: Omit<Props, "pass">) {
   const setBucket = (id: string, bucket: SortBucket) =>
     update((p) => ({ ...p, sort: { ...p.sort, [id]: bucket } }));
 
@@ -58,15 +61,19 @@ function PassSort({ profile, update }: Omit<Props, 'pass'>) {
         {VALUE_CARDS.map((card) => {
           const chosen = profile.sort[card.id];
           return (
-            <div key={card.id} className={`vcard ${chosen ? 'vcard-set' : ''}`}>
+            <div key={card.id} className={`vcard ${chosen ? "vcard-set" : ""}`}>
               <h4>{card.label}</h4>
               <p>{card.hint}</p>
-              <div className="vcard-buckets" role="group" aria-label={`How important is ${card.label}?`}>
+              <div
+                className="vcard-buckets"
+                role="group"
+                aria-label={`How important is ${card.label}?`}
+              >
                 {SORT_BUCKETS.map((b) => (
                   <button
                     key={b.id}
                     type="button"
-                    className={`bucket ${chosen === b.id ? 'sel' : ''}`}
+                    className={`bucket ${chosen === b.id ? "sel" : ""}`}
                     onClick={() => setBucket(card.id, b.id)}
                     title={b.note}
                   >
@@ -88,7 +95,7 @@ function PassTopTen({
   profile,
   update,
   pool,
-}: Omit<Props, 'pass'> & { pool: typeof VALUE_CARDS }) {
+}: Omit<Props, "pass"> & { pool: typeof VALUE_CARDS }) {
   const toggle = (id: string) =>
     update((p) => {
       const has = p.topTen.includes(id);
@@ -101,8 +108,9 @@ function PassTopTen({
     return (
       <div className="empty-note">
         <p>
-          Nothing is marked <em>very important</em> yet. Go back to the first pass and sort a few
-          cards — then this step will have something to work with.
+          Nothing is marked <em>very important</em> yet. Go back to the first
+          pass and sort a few cards — then this step will have something to work
+          with.
         </p>
       </div>
     );
@@ -121,7 +129,7 @@ function PassTopTen({
           <button
             key={card.id}
             type="button"
-            className={`chip ${profile.topTen.includes(card.id) ? 'sel' : ''}`}
+            className={`chip ${profile.topTen.includes(card.id) ? "sel" : ""}`}
             onClick={() => toggle(card.id)}
             aria-pressed={profile.topTen.includes(card.id)}
           >
@@ -135,13 +143,14 @@ function PassTopTen({
 
 /* ---------------- Pass 3: the core 3–5 ---------------- */
 
-function PassCore({ profile, update }: Omit<Props, 'pass'>) {
+function PassCore({ profile, update }: Omit<Props, "pass">) {
   const pool = VALUE_CARDS.filter((c) => profile.topTen.includes(c.id));
 
   const toggle = (id: string) =>
     update((p) => {
       const has = p.coreValues.includes(id);
-      if (has) return { ...p, coreValues: p.coreValues.filter((x) => x !== id) };
+      if (has)
+        return { ...p, coreValues: p.coreValues.filter((x) => x !== id) };
       if (p.coreValues.length >= 5) return p;
       return { ...p, coreValues: [...p.coreValues, id] };
     });
@@ -167,7 +176,7 @@ function PassCore({ profile, update }: Omit<Props, 'pass'>) {
           <button
             key={card.id}
             type="button"
-            className={`chip chip-lg ${profile.coreValues.includes(card.id) ? 'sel' : ''}`}
+            className={`chip chip-lg ${profile.coreValues.includes(card.id) ? "sel" : ""}`}
             onClick={() => toggle(card.id)}
             aria-pressed={profile.coreValues.includes(card.id)}
           >
@@ -181,12 +190,20 @@ function PassCore({ profile, update }: Omit<Props, 'pass'>) {
 
 /* ---------------- Pass 4: value → behavior ---------------- */
 
-function PassOperationalize({ profile, update }: Omit<Props, 'pass'>) {
+function PassOperationalize({ profile, update }: Omit<Props, "pass">) {
   const core = VALUE_CARDS.filter((c) => profile.coreValues.includes(c.id));
 
-  const set = (id: string, field: 'definition' | 'dos' | 'donts', value: string) =>
+  const set = (
+    id: string,
+    field: "definition" | "dos" | "donts",
+    value: string,
+  ) =>
     update((p) => {
-      const current = p.operationalized[id] ?? { definition: '', dos: '', donts: '' };
+      const current = p.operationalized[id] ?? {
+        definition: "",
+        dos: "",
+        donts: "",
+      };
       return {
         ...p,
         operationalized: {
@@ -213,7 +230,11 @@ function PassOperationalize({ profile, update }: Omit<Props, 'pass'>) {
       />
 
       {core.map((card) => {
-        const v = profile.operationalized[card.id] ?? { definition: '', dos: '', donts: '' };
+        const v = profile.operationalized[card.id] ?? {
+          definition: "",
+          dos: "",
+          donts: "",
+        };
         return (
           <section key={card.id} className="op-block">
             <h3>{card.label}</h3>
@@ -227,7 +248,7 @@ function PassOperationalize({ profile, update }: Omit<Props, 'pass'>) {
               value={v.definition}
               rows={3}
               placeholder="In your own words…"
-              onChange={(next) => set(card.id, 'definition', next)}
+              onChange={(next) => set(card.id, "definition", next)}
             />
 
             <label className="op-label" id={`dos-${card.id}`}>
@@ -239,7 +260,7 @@ function PassOperationalize({ profile, update }: Omit<Props, 'pass'>) {
               value={v.dos}
               rows={3}
               placeholder="What someone would actually see me do…"
-              onChange={(next) => set(card.id, 'dos', next)}
+              onChange={(next) => set(card.id, "dos", next)}
             />
 
             <label className="op-label" id={`donts-${card.id}`}>
@@ -251,7 +272,7 @@ function PassOperationalize({ profile, update }: Omit<Props, 'pass'>) {
               value={v.donts}
               rows={3}
               placeholder="My own boundary — the line I notice when it's crossed…"
-              onChange={(next) => set(card.id, 'donts', next)}
+              onChange={(next) => set(card.id, "donts", next)}
             />
           </section>
         );

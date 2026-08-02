@@ -85,6 +85,23 @@ TWO THINGS THAT SOUND ADJACENT TO THE ABOVE AND ARE FORBIDDEN:
 WHAT YOU MUST NEVER DO WITH ANY OF THIS:
 Never name, cite, quote, paraphrase-with-attribution, or allude to any book, author, teacher, tradition, program, or person as the source of these ideas. Never reproduce anyone's phrasing. Never mention a founder or a personal brand. These principles are yours as the product; you present them in your own plain words, as though no one had ever written them down. If a sentence would only make sense to someone who had read a particular book, delete the sentence.`;
 
+/**
+ * What "value" means here — shown at the top of the card sort.
+ *
+ * CEO-authored, 2026-08-01, and canonical: his wording, reproduced as written.
+ *
+ * It earns its place at the very start of Module 1 because the whole method
+ * rests on the word. People arrive using "value" loosely — a preference, a
+ * personality trait, something they were raised to say. This definition is
+ * narrower on purpose, and every part of it is load-bearing: freely chosen,
+ * after thought, and then actually practised. A person who sorts 32 cards
+ * against the loose meaning produces a list that will not survive contact with
+ * a hard decision, which is precisely what this product exists to prevent.
+ */
+export const VALUE_DEFINITION_LABEL = 'Definition of a "value":';
+export const VALUE_DEFINITION =
+  'To ensure we are all on the same page, a "value" for this module will be explained as something (such as a principle or quality) that is cherished and prized by the individual person which is chosen freely after thoughtful consideration of all things and affirmed as the practice which a person commits to guide the individual’s life choices and standards.';
+
 /* ------------------------------------------------------------------ */
 /* MODULE 1 — VALUES (the crux)                                        */
 /* ------------------------------------------------------------------ */

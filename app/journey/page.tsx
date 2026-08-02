@@ -1,28 +1,30 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useMemo } from 'react';
-import { Footer, Nav } from '@/components/Chrome';
-import QuestionField from '@/components/QuestionField';
-import ValuesCardSort from '@/components/ValuesCardSort';
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useMemo } from "react";
+import { Footer, Nav } from "@/components/Chrome";
+import QuestionField from "@/components/QuestionField";
+import ValuesCardSort from "@/components/ValuesCardSort";
 import {
   MODULES,
+  VALUE_DEFINITION,
+  VALUE_DEFINITION_LABEL,
   isQuestionVisible,
   questionsForModule,
   type ModuleId,
-} from '@/lib/method';
-import { useProfile } from '@/lib/useProfile';
+} from "@/lib/method";
+import { useProfile } from "@/lib/useProfile";
 
 /** Screens per module. Values gets four card-sort passes before its questions. */
 const SCREENS: Record<ModuleId, string[]> = {
-  values: ['sort', 'top-ten', 'core', 'operationalize', 'questions'],
-  roots: ['questions'],
-  patterns: ['questions'],
-  habits: ['questions'],
+  values: ["sort", "top-ten", "core", "operationalize", "questions"],
+  roots: ["questions"],
+  patterns: ["questions"],
+  habits: ["questions"],
 };
 
-const ORDER: ModuleId[] = ['values', 'roots', 'patterns', 'habits'];
+const ORDER: ModuleId[] = ["values", "roots", "patterns", "habits"];
 
 export default function JourneyPage() {
   return (
@@ -47,25 +49,32 @@ function Journey() {
   const params = useSearchParams();
   const { profile, hydrated, update, setAnswer } = useProfile();
 
-  const moduleId = (params.get('m') as ModuleId) || 'values';
+  const moduleId = (params.get("m") as ModuleId) || "values";
   const module = MODULES.find((m) => m.id === moduleId) ?? MODULES[0];
   const screens = SCREENS[module.id];
-  const screenIndex = Math.min(Math.max(Number(params.get('s') ?? 0), 0), screens.length - 1);
+  const screenIndex = Math.min(
+    Math.max(Number(params.get("s") ?? 0), 0),
+    screens.length - 1,
+  );
   const screen = screens[screenIndex];
 
   const visibleQuestions = useMemo(
-    () => questionsForModule(module.id).filter((q) => isQuestionVisible(q, profile.answers)),
+    () =>
+      questionsForModule(module.id).filter((q) =>
+        isQuestionVisible(q, profile.answers),
+      ),
     [module.id, profile.answers],
   );
 
   const go = (m: ModuleId, s: number) => {
     router.push(`/journey?m=${m}&s=${s}`);
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   const moduleIdx = ORDER.indexOf(module.id);
   const isFirstScreen = moduleIdx === 0 && screenIndex === 0;
-  const isLastScreen = moduleIdx === ORDER.length - 1 && screenIndex === screens.length - 1;
+  const isLastScreen =
+    moduleIdx === ORDER.length - 1 && screenIndex === screens.length - 1;
 
   const back = () => {
     if (screenIndex > 0) return go(module.id, screenIndex - 1);
@@ -77,7 +86,7 @@ function Journey() {
     if (screenIndex < screens.length - 1) return go(module.id, screenIndex + 1);
     const upcoming = ORDER[moduleIdx + 1];
     if (upcoming) return go(upcoming, 0);
-    router.push('/profile');
+    router.push("/profile");
   };
 
   if (!hydrated) return <Loading />;
@@ -93,8 +102,8 @@ function Journey() {
               <button
                 key={m.id}
                 type="button"
-                className={`rail-item ${m.id === module.id ? 'active' : ''} ${
-                  ORDER.indexOf(m.id) < moduleIdx ? 'done' : ''
+                className={`rail-item ${m.id === module.id ? "active" : ""} ${
+                  ORDER.indexOf(m.id) < moduleIdx ? "done" : ""
                 }`}
                 onClick={() => go(m.id, 0)}
               >
@@ -110,32 +119,55 @@ function Journey() {
               <span className="eyebrow">Module {module.number}</span>
               <h1>{module.title}</h1>
               <p>{module.opening}</p>
+              {/* The definition of "value" belongs here rather than inside the
+                  card sort: it frames the whole module, the CEO's wording says
+                  "for this module", and someone re-reading it mid-sort can find
+                  it by scrolling up to the top of the module rather than
+                  hunting inside a pass. Values only — the other three modules
+                  are not about defining a term. */}
+              {module.id === "values" && (
+                <p className="value-definition">
+                  <strong>{VALUE_DEFINITION_LABEL}</strong> {VALUE_DEFINITION}
+                </p>
+              )}
             </div>
           )}
 
-          {screen === 'questions' ? (
+          {screen === "questions" ? (
             <>
               {visibleQuestions.map((q) => (
                 <QuestionField
                   key={q.id}
                   question={q}
-                  value={profile.answers[q.id] ?? ''}
+                  value={profile.answers[q.id] ?? ""}
                   onChange={(v) => setAnswer(q.id, v)}
                 />
               ))}
             </>
           ) : (
-            <ValuesCardSort profile={profile} update={update} pass={screenIndex} />
+            <ValuesCardSort
+              profile={profile}
+              update={update}
+              pass={screenIndex}
+            />
           )}
 
           <div className="controls">
             {!isFirstScreen && (
-              <button type="button" className="btn btn-ghost btn-lg" onClick={back}>
+              <button
+                type="button"
+                className="btn btn-ghost btn-lg"
+                onClick={back}
+              >
                 Back
               </button>
             )}
-            <button type="button" className="btn btn-primary btn-lg" onClick={next}>
-              {isLastScreen ? 'See your reflection' : 'Continue'}
+            <button
+              type="button"
+              className="btn btn-primary btn-lg"
+              onClick={next}
+            >
+              {isLastScreen ? "See your reflection" : "Continue"}
             </button>
             <Link className="btn btn-ghost btn-lg" href="/review">
               Review everything
@@ -143,8 +175,8 @@ function Journey() {
           </div>
 
           <p className="save-note">
-            Saved on this device as you go. You can leave and come back — and change any answer,
-            anytime.
+            Saved on this device as you go. You can leave and come back — and
+            change any answer, anytime.
           </p>
         </div>
       </main>

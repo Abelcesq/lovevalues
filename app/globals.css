@@ -1697,6 +1697,25 @@ footer {
   font-size: clamp(1.5rem, 3.2vw, var(--text-32));
   margin: 10px 0 12px;
 }
+/* The definition of "value", shown once at the top of the first pass.
+   Set apart from the note above it because it is reference material rather
+   than instruction — someone will come back to re-read it mid-sort, and it
+   needs to be findable without being the loudest thing on the page. */
+.value-definition {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--color-inset);
+  border-left: 3px solid var(--color-brand);
+  font-size: var(--text-14);
+  line-height: 1.65;
+  color: var(--color-secondary);
+  max-width: 72ch;
+}
+.value-definition strong {
+  color: var(--color-ink);
+}
+
 .pass-head p {
   color: var(--color-secondary);
 }
