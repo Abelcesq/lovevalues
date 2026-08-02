@@ -61,37 +61,63 @@ Never give it a `NEXT_PUBLIC_` prefix — that would ship it to the browser.
 you rotate one app instead of two, and per-key spend tells you what a synthesis
 actually costs — which is the input to whether $29.99 is the right price.
 
-## 4. Deploy
+## 4. Deploy — from GitHub, not from your laptop
 
-```powershell
-git push heroku claude/new-app-voice-input-0q1w0a:main
-heroku open -a lovevalues
-```
+**Changed 2026-08-02. There is no longer a deploy command to run.**
+
+The `lovevalues` app is connected to `Abelcesq/lovevalues` on GitHub and deploys
+`claude/new-app-voice-input-0q1w0a` automatically. Every push to that branch
+builds and goes live on its own. The dashboard is at
+<https://dashboard.heroku.com/apps/lovevalues/deploy/github>.
+
+**Why this replaced `git push heroku`, so nobody re-introduces it:** the local
+repo lived inside `OneDrive`, which holds file handles open while it syncs.
+Git's automatic `gc` could not delete `.git/objects` directories, prompted
+`Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)` in a
+loop, and the interrupted pull left the branch pointer five commits behind
+`origin`. `git push heroku` then reported **"Everything up-to-date"** — truthful
+and completely misleading, because the local branch genuinely had nothing new.
+Five commits, including a production bug fix, sat undeployed while every
+indicator said success.
+
+Deploying from GitHub removes the laptop from the path entirely.
+
+**Two buttons, both in the browser, both on that Deploy tab:**
+
+| | What it does |
+|---|---|
+| **Manual deploy → Deploy Branch** | Builds and releases the branch right now. Use it for the first deploy after connecting, and any time you want to choose the moment. |
+| **Automatic deploys** | Every future push to the branch deploys itself. |
+
+> ⚠️ **Enabling automatic deploys does not deploy what is already there.** It
+> only fires on *new* pushes. After connecting the repo, click **Deploy Branch**
+> once, or the commits already on GitHub sit there indefinitely while the page
+> reads "Automatically deploys from …". This is the trap on 2026-08-02.
 
 Heroku's Node buildpack installs dependencies, runs `next build`, then starts
-the process in the `Procfile`. No release phase and no migrations — there is no
-database.
+the process in the `Procfile`.
 
 **If the build fails on a missing TypeScript type**, the buildpack pruned dev
 dependencies too early:
 
 ```powershell
 heroku config:set NPM_CONFIG_PRODUCTION=false -a lovevalues
-git commit --allow-empty -m "rebuild" ; git push heroku claude/new-app-voice-input-0q1w0a:main
 ```
 
-**What success looks like.** The push streams a build log for one to three
-minutes and ends with `Verifying deploy... done.` and a line reading
-`* [new branch]  HEAD -> main`. Those two lines are the confirmation.
+then click **Deploy Branch** again.
 
-> ⚠️ Those are *output to read*, not commands to run. Pasting a line beginning
-> `remote:` back into PowerShell produces a red
-> `The term 'remote:' is not recognized` error, which looks alarming and means
-> nothing — the deploy already succeeded.
+**What success looks like.** The build log streams for one to three minutes in
+the browser and ends with `Verifying deploy... done.` The **Activity** tab keeps
+every release with the commit it came from, which is the fastest way to answer
+"is my fix actually live?"
 
 **After a successful deploy, hard-refresh the browser** (Ctrl+Shift+R). Heroku's
 "Welcome to your new app!" placeholder caches, so a normal reload can keep
 showing it after your app is live.
+
+**Rolling back** is `heroku releases -a lovevalues`, then
+`heroku rollback vNNN -a lovevalues` — worth knowing now that deploys happen
+without anyone pressing anything.
 
 **Watch the logs** if anything looks wrong:
 

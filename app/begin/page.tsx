@@ -33,7 +33,7 @@ export default function Begin() {
                 PRE_JOURNEY_CARE. Sets the time expectation before anyone starts,
                 so nobody tries to finish this in a queue. */}
             <p>
-              Please ensure to allow at least 30 minutes to about 90 minutes to
+              Please ensure to allow at least 30 minutes to about 120 minutes to
               give yourself the time and the space to reflect on the question
               and provide your most honest and genuine answers so that the
               analysis provided provide you withe the substance you seek. We at

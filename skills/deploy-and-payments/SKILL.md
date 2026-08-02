@@ -33,10 +33,15 @@ runs `npm run build` automatically; there is no release phase because there is
 nothing to migrate yet.
 
 ```bash
-heroku create lovevalues            # separate app from mytaskapp
+heroku create lovevalues            # already done
 heroku config:set ANTHROPIC_API_KEY=sk-ant-... -a lovevalues
-git push heroku claude/new-app-voice-input-0q1w0a:main
 ```
+
+**Deploys come from GitHub now (2026-08-02), not `git push heroku`.** The app is
+connected to `Abelcesq/lovevalues` and auto-deploys
+`claude/new-app-voice-input-0q1w0a`; a push to that branch is the deploy. See
+`DEPLOY.md` §4 for why the old command was abandoned and the trap in enabling
+auto-deploy without a first manual deploy.
 
 **Gotchas specific to this app:**
 
