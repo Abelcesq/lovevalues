@@ -33,18 +33,31 @@
 /**
  * The notice shown once, before the first question.
  *
- * CEO-authored, 2026-07-27, and it is canonical — do not paraphrase it, and do
- * not "tighten" it. It does a specific job the rest of the app cannot: it tells
- * someone *in advance* that feelings may surface, that this is normal, and that
- * asking for help is itself an act of self-love rather than a failure. Every
- * other care surface in this product is reactive; this one is the only one that
- * arrives before anything has gone wrong.
+ * CEO-authored, 2026-07-27, revised by him 2026-08-01, and it is canonical —
+ * do not paraphrase it, and do not "tighten" it. Its wording is his, including
+ * the grammar; it is reproduced exactly as written. It does a specific job the
+ * rest of the app cannot: it tells someone *in advance* that feelings may
+ * surface, that this is normal, and that asking for help is itself an act of
+ * self-love rather than a failure. Every other care surface in this product is
+ * reactive; this one is the only one that arrives before anything has gone
+ * wrong.
+ *
+ * ONE THING A FUTURE EDITOR SHOULD KNOW, because it is a real tension and not
+ * an oversight: the 2026-08-01 revision leans further into faith than the
+ * original did — it now states that God's love is freely given and that a
+ * faith-based approach is a powerful perspective. This notice is shown to
+ * EVERY user before the first question, including people who hold no faith and
+ * before Module 1 has asked them anything about it. Hard rule 7 says faith is
+ * honoured deeply for those who hold it and never imposed on those who do not.
+ * The CEO was told this and chose this wording deliberately; it is his product
+ * and his call. Do not quietly soften it back — if it needs to change, that is
+ * a decision for him, not a tidy-up.
  *
  * It deliberately does not live on /support. Someone reaching that page may be
  * in distress right now, and an opening paragraph about "the process of
  * identifying values" would make them read past the thing they came for.
  */
-export const PRE_JOURNEY_CARE = `Although this process of identifying values is intended as a discovery and educational tool to discovery our values, it may be possible that feelings or insecurities may come up. Be mindful of your feelings and know that feelings are normal. When the feelings become uneasy, know that there are resources to talk which are available now. Seek professional help if you feel you need to talk to someone. Our goal and purpose is to have you know that faith is not only believing in God but it is also believing and knowing that I am loved and loveable. Asking for guidance in moments of sadness, uncomfortable feelings or despair are concrete ways to practice self-love.`;
+export const PRE_JOURNEY_CARE = `Although this process of identifying values is intended as a discovery and educational tool to discovery our values, it may be possible that feelings or insecurities may come up. Be mindful of the feelings and know that feelings regarding our experience is normal. When the feelings become uneasy or too much, know that there are resources to talk to someone which are available now. Please seek professional help if you feel you need to talk to someone. Our goal and purpose is to have you know that faith is not only believing in God but it is also believing and knowing that each of us is loved unconditionally and that God's love is freely given.  This is why a faith based approach to life can be such a powerful perspective.  Asking for guidance in moments of sadness, uncomfortable feelings or despair are concrete ways to practice self-love especially in these moments.`;
 
 export type CareLevel = 'none' | 'gentle' | 'urgent' | 'safety';
 
