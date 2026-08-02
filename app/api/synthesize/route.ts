@@ -1,9 +1,12 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { NextResponse } from 'next/server';
-import { synthesizeViaFallback } from '@/lib/llm';
-import { LEGAL_DISCLOSURE, MIRROR_FRAMING, VOICE } from '@/lib/method';
+import Anthropic from "@anthropic-ai/sdk";
+import { NextResponse } from "next/server";
+import { synthesizeViaFallback } from "@/lib/llm";
+import { LEGAL_DISCLOSURE, MIRROR_FRAMING, VOICE } from "@/lib/method";
 
-export const runtime = 'nodejs';
+export const runtime = "nodejs";
+
+/* Vercel reads this. HEROKU DOES NOT — see the H12 note on the POST handler
+   below. It is kept only so the limit is right if this ever moves hosts. */
 export const maxDuration = 300;
 
 /**
@@ -54,88 +57,166 @@ Do not mention any book, method name, author, or person. You are the product its
 ${VOICE}`;
 
 const SCHEMA = {
-  type: 'object',
+  type: "object",
   properties: {
     careFlag: {
-      type: 'string',
-      enum: ['none', 'gentle', 'urgent', 'safety'],
+      type: "string",
+      enum: ["none", "gentle", "urgent", "safety"],
       description:
         'Whether this person appears to need a real human being right now. "none" for painful history described in the past tense — that is the method working, not distress. "gentle" for present-tense hopelessness or struggling to cope. "urgent" for present-tense risk of self-harm. "safety" if they may not be safe with another person right now.',
     },
     coreValues: {
-      type: 'array',
+      type: "array",
       description:
-        'The core values that came through, ranked most to least central. Draw on their chosen values AND what their stories actually reveal — sometimes those differ, and that gap is worth naming gently.',
+        "The core values that came through, ranked most to least central. Draw on their chosen values AND what their stories actually reveal — sometimes those differ, and that gap is worth naming gently.",
       items: {
-        type: 'object',
+        type: "object",
         properties: {
-          value: { type: 'string', description: 'The value, in one or two words.' },
+          value: {
+            type: "string",
+            description: "The value, in one or two words.",
+          },
           whyItMatters: {
-            type: 'string',
+            type: "string",
             description:
-              'Two to four sentences on what this value looks like in their specific life, quoting or referencing what they actually wrote.',
+              "Two to four sentences on what this value looks like in their specific life, quoting or referencing what they actually wrote.",
           },
         },
-        required: ['value', 'whyItMatters'],
+        required: ["value", "whyItMatters"],
         additionalProperties: false,
       },
     },
     operatingSystem: {
-      type: 'string',
+      type: "string",
       description:
-        'How they appear to run underneath: inherited patterns, what they reach for under stress, what tends to set it off. Three to five short paragraphs. Roots, never blame. No diagnosis.',
+        "How they appear to run underneath: inherited patterns, what they reach for under stress, what tends to set it off. Three to five short paragraphs. Roots, never blame. No diagnosis.",
     },
     howYouPresent: {
-      type: 'string',
+      type: "string",
       description:
-        'How they show up in relationship — with particular attention to the gap between the terms they state and the terms they actually enforce. Two to four paragraphs, warm and direct.',
+        "How they show up in relationship — with particular attention to the gap between the terms they state and the terms they actually enforce. Two to four paragraphs, warm and direct.",
     },
     lovingFeedback: {
-      type: 'string',
+      type: "string",
       description:
-        'What genuinely works about how they love, and why the harder patterns are there — traced to their origins with compassion. Lead with the real strengths; they are not a consolation prize. Three to five paragraphs.',
+        "What genuinely works about how they love, and why the harder patterns are there — traced to their origins with compassion. Lead with the real strengths; they are not a consolation prize. Three to five paragraphs.",
     },
     growthPractices: {
-      type: 'array',
+      type: "array",
       description:
-        'Concrete, specific new habits — small enough to start this week. Not advice, not affirmations. If someone withdraws in silence, a practice might be naming the drop out loud in the moment to build the confidence that makes it possible.',
+        "Concrete, specific new habits — small enough to start this week. Not advice, not affirmations. If someone withdraws in silence, a practice might be naming the drop out loud in the moment to build the confidence that makes it possible.",
       items: {
-        type: 'object',
+        type: "object",
         properties: {
-          practice: { type: 'string', description: 'The practice, stated as an action.' },
+          practice: {
+            type: "string",
+            description: "The practice, stated as an action.",
+          },
           why: {
-            type: 'string',
-            description: 'Which specific pattern of theirs this addresses, and how it helps.',
+            type: "string",
+            description:
+              "Which specific pattern of theirs this addresses, and how it helps.",
           },
         },
-        required: ['practice', 'why'],
+        required: ["practice", "why"],
         additionalProperties: false,
       },
     },
   },
   required: [
-    'careFlag',
-    'coreValues',
-    'operatingSystem',
-    'howYouPresent',
-    'lovingFeedback',
-    'growthPractices',
+    "careFlag",
+    "coreValues",
+    "operatingSystem",
+    "howYouPresent",
+    "lovingFeedback",
+    "growthPractices",
   ],
   additionalProperties: false,
 } as const;
 
 type Payload = {
   coreValues: string[];
-  operationalized: Record<string, { definition: string; dos: string; donts: string }>;
+  operationalized: Record<
+    string,
+    { definition: string; dos: string; donts: string }
+  >;
   answers: { question: string; answer: string }[];
 };
+
+/* ── WHY THIS ROUTE STREAMS ──────────────────────────────────────────────────
+   Heroku's router kills any request that has not produced a FIRST BYTE within
+   30 seconds (error H12) and answers the browser with its own HTML error page.
+   An honest reflection takes considerably longer than that. The client then
+   called res.json() on HTML, which threw, and the person was told "we couldn't
+   reach the server" — for a request the server was still working on.
+
+   `export const maxDuration` does not help: that is a Vercel directive and
+   Heroku ignores it entirely. The only fix is to send a byte early and keep
+   sending them.
+
+   So: a newline goes out immediately, more every 10 seconds while the model
+   works (Heroku's post-first-byte idle limit is 55s), and the real answer is
+   the final line. Newline-delimited, so the client can simply take the last
+   non-empty line and parse it — which also works unchanged for the plain JSON
+   errors returned above, before streaming begins.
+
+   Consequence worth knowing: once the stream opens, the HTTP status is already
+   200. Failures after that point travel in the payload as { error }, not as a
+   status code. The client checks both. */
+const HEARTBEAT_MS = 10_000;
+
+function streamed(work: () => Promise<unknown>): Response {
+  const encoder = new TextEncoder();
+  const body = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      /* The byte that beats the router. */
+      controller.enqueue(encoder.encode("\n"));
+      const beat = setInterval(() => {
+        try {
+          controller.enqueue(encoder.encode("\n"));
+        } catch {
+          /* Person closed the tab. Nothing to do; the work is discarded. */
+        }
+      }, HEARTBEAT_MS);
+
+      let payload: unknown;
+      try {
+        payload = await work();
+      } catch {
+        payload = { error: "Something went wrong. Your answers are safe." };
+      } finally {
+        clearInterval(beat);
+      }
+
+      try {
+        controller.enqueue(encoder.encode(`${JSON.stringify(payload)}\n`));
+      } catch {
+        /* Connection already gone. */
+      }
+      controller.close();
+    },
+  });
+
+  return new Response(body, {
+    headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Cache-Control": "no-store",
+      /* Answers pass through here. Nothing about this response may be held
+         anywhere, and buffering it would also re-create the H12 problem. */
+      "X-Accel-Buffering": "no",
+    },
+  });
+}
 
 export async function POST(request: Request) {
   let body: Payload;
   try {
     body = (await request.json()) as Payload;
   } catch {
-    return NextResponse.json({ error: 'Could not read the request.' }, { status: 400 });
+    return NextResponse.json(
+      { error: "Could not read the request." },
+      { status: 400 },
+    );
   }
 
   const answered = (body.answers ?? []).filter((a) => a.answer?.trim());
@@ -143,7 +224,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          'There isn’t quite enough here yet for an honest reflection. Answer a few more questions and come back — the mirror is only as true as what you put in front of it.',
+          "There isn’t quite enough here yet for an honest reflection. Answer a few more questions and come back — the mirror is only as true as what you put in front of it.",
       },
       { status: 400 },
     );
@@ -153,7 +234,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          'The synthesis engine isn’t configured yet. Set ANTHROPIC_API_KEY on the server and try again — your answers are saved and untouched.',
+          "The synthesis engine isn’t configured yet. Set ANTHROPIC_API_KEY on the server and try again — your answers are saved and untouched.",
       },
       { status: 503 },
     );
@@ -161,18 +242,18 @@ export async function POST(request: Request) {
 
   const transcript = [
     body.coreValues?.length
-      ? `CORE VALUES THEY CHOSE, in their own order of priority:\n${body.coreValues.join(', ')}`
-      : 'They have not yet narrowed to core values.',
-    '',
-    'HOW THEY DEFINED EACH CORE VALUE:',
+      ? `CORE VALUES THEY CHOSE, in their own order of priority:\n${body.coreValues.join(", ")}`
+      : "They have not yet narrowed to core values.",
+    "",
+    "HOW THEY DEFINED EACH CORE VALUE:",
     ...Object.entries(body.operationalized ?? {}).map(
       ([value, v]) =>
-        `${value}\n  What it means to me: ${v.definition || '(not yet answered)'}\n  Do's: ${v.dos || '(not yet answered)'}\n  Don'ts / boundaries: ${v.donts || '(not yet answered)'}`,
+        `${value}\n  What it means to me: ${v.definition || "(not yet answered)"}\n  Do's: ${v.dos || "(not yet answered)"}\n  Don'ts / boundaries: ${v.donts || "(not yet answered)"}`,
     ),
-    '',
-    'THEIR ANSWERS:',
+    "",
+    "THEIR ANSWERS:",
     ...answered.map((a) => `Q: ${a.question}\nA: ${a.answer}`),
-  ].join('\n');
+  ].join("\n");
 
   const userMessage = `Here is everything this person shared. Reflect it back to them.\n\n${transcript}`;
 
@@ -183,45 +264,62 @@ export async function POST(request: Request) {
 
   const client = new Anthropic();
 
-  try {
-    const response = await client.messages.create({
-      model: 'claude-opus-5',
-      max_tokens: 16000,
-      system: SYSTEM_PROMPT,
-      output_config: {
-        effort: 'high',
-        format: { type: 'json_schema', schema: SCHEMA },
-      },
-      messages: [{ role: 'user', content: userMessage }],
-    });
+  return streamed(async () => {
+    try {
+      /* Streamed for the same reason the HTTP response is: a non-streaming call
+       at this max_tokens risks the SDK's own HTTP timeout. .finalMessage()
+       gives back the assembled message, so nothing downstream changes.
 
-    /* A refusal is a judgment, not an outage — never route around it to a
+       max_tokens covers thinking AND the reflection together. This is a long
+       piece of writing — five prose sections — so the ceiling is generous on
+       purpose. A truncated reflection is invalid JSON, and the person is told
+       something went wrong for a reply that was nearly finished. */
+      const response = await client.messages
+        .stream({
+          model: "claude-opus-5",
+          max_tokens: 32000,
+          system: SYSTEM_PROMPT,
+          output_config: {
+            effort: "high",
+            format: { type: "json_schema", schema: SCHEMA },
+          },
+          messages: [{ role: "user", content: userMessage }],
+        })
+        .finalMessage();
+
+      /* A refusal is a judgment, not an outage — never route around it to a
        second model. Retrying a declined request elsewhere is exactly the
        behaviour the safety classifier exists to prevent. */
-    if (response.stop_reason === 'refusal') {
-      return NextResponse.json(
-        {
+      if (response.stop_reason === "refusal") {
+        return {
           error:
-            'We weren’t able to generate a reflection from this. Your answers are safe and unchanged — please try again, or reach out to a trusted person if something here feels heavy.',
-        },
-        { status: 422 },
-      );
-    }
+            "We weren’t able to generate a reflection from this. Your answers are safe and unchanged — please try again, or reach out to a trusted person if something here feels heavy.",
+        };
+      }
 
-    const text = response.content.find((b) => b.type === 'text');
-    if (!text || text.type !== 'text') {
-      return NextResponse.json({ error: 'The reflection came back empty. Please try again.' }, { status: 502 });
-    }
+      /* Ran out of room mid-sentence. Say that plainly rather than letting the
+       JSON.parse below fail into the generic outage message. */
+      if (response.stop_reason === "max_tokens") {
+        return {
+          error:
+            "The reflection was still being written when it ran out of room. Please try again — your answers are safe and unchanged.",
+        };
+      }
 
-    const synthesis = JSON.parse(text.text);
+      const text = response.content.find((b) => b.type === "text");
+      if (!text || text.type !== "text") {
+        return { error: "The reflection came back empty. Please try again." };
+      }
 
-    return NextResponse.json({
-      synthesis: { ...synthesis, generatedAt: new Date().toISOString() },
-      framing: MIRROR_FRAMING,
-      disclosure: LEGAL_DISCLOSURE,
-    });
-  } catch (error) {
-    /* ── RESILIENCE LANE ────────────────────────────────────────────────────
+      const synthesis = JSON.parse(text.text);
+
+      return {
+        synthesis: { ...synthesis, generatedAt: new Date().toISOString() },
+        framing: MIRROR_FRAMING,
+        disclosure: LEGAL_DISCLOSURE,
+      };
+    } catch (error) {
+      /* ── RESILIENCE LANE ────────────────────────────────────────────────────
        Claude failed. Rather than let the profile go dark, retry the same
        prompt on an open model. Inert unless OPENROUTER_API_KEY is set, so
        this changes nothing until it is deliberately switched on.
@@ -229,51 +327,59 @@ export async function POST(request: Request) {
        Deliberately NOT reached on a refusal — that returns above. A refusal is
        a judgment; routing around it to a second model is precisely what the
        classifier exists to prevent. This lane is for outages only. */
-    const fallback = await synthesizeViaFallback(SYSTEM_PROMPT, userMessage, schemaHint);
-    if (fallback) {
-      const s = fallback.synthesis as Record<string, unknown>;
+      const fallback = await synthesizeViaFallback(
+        SYSTEM_PROMPT,
+        userMessage,
+        schemaHint,
+      );
+      if (fallback) {
+        const s = fallback.synthesis as Record<string, unknown>;
 
-      /* Re-assert the guardrails on the way out. The fallback model's
+        /* Re-assert the guardrails on the way out. The fallback model's
          adherence to the empathy and never-diagnose rules is unverified, so
          nothing structural is taken on trust:
            - careFlag defaults to the safe value if absent or malformed, never
              to "none" by accident;
            - MIRROR_FRAMING and LEGAL_DISCLOSURE are appended by us below, as
              on the primary path, so they cannot be paraphrased away. */
-      const flag = s.careFlag;
-      s.careFlag =
-        flag === 'none' || flag === 'gentle' || flag === 'urgent' || flag === 'safety'
-          ? flag
-          : 'none';
+        const flag = s.careFlag;
+        s.careFlag =
+          flag === "none" ||
+          flag === "gentle" ||
+          flag === "urgent" ||
+          flag === "safety"
+            ? flag
+            : "none";
 
-      /* Missing prose is better than invented prose — a section the model
+        /* Missing prose is better than invented prose — a section the model
          omitted is left empty and simply does not render. */
-      return NextResponse.json({
-        synthesis: { ...s, generatedAt: new Date().toISOString() },
-        framing: MIRROR_FRAMING,
-        disclosure: LEGAL_DISCLOSURE,
-        /* Surfaced so a degraded reflection is identifiable after the fact
+        return {
+          synthesis: { ...s, generatedAt: new Date().toISOString() },
+          framing: MIRROR_FRAMING,
+          disclosure: LEGAL_DISCLOSURE,
+          /* Surfaced so a degraded reflection is identifiable after the fact
            rather than indistinguishable from a primary one. */
-        provider: 'openrouter',
-        model: fallback.model,
-      });
-    }
+          provider: "openrouter",
+          model: fallback.model,
+        };
+      }
 
-    if (error instanceof Anthropic.RateLimitError) {
-      return NextResponse.json(
-        { error: 'The engine is busy right now. Wait a moment and try again — nothing was lost.' },
-        { status: 429 },
-      );
+      if (error instanceof Anthropic.RateLimitError) {
+        return {
+          error:
+            "The engine is busy right now. Wait a moment and try again — nothing was lost.",
+        };
+      }
+      if (error instanceof Anthropic.AuthenticationError) {
+        return { error: "The synthesis engine is misconfigured." };
+      }
+      if (error instanceof Anthropic.APIError) {
+        return {
+          error:
+            "The reflection could not be generated right now. Your answers are safe.",
+        };
+      }
+      return { error: "Something went wrong. Your answers are safe." };
     }
-    if (error instanceof Anthropic.AuthenticationError) {
-      return NextResponse.json({ error: 'The synthesis engine is misconfigured.' }, { status: 503 });
-    }
-    if (error instanceof Anthropic.APIError) {
-      return NextResponse.json(
-        { error: 'The reflection could not be generated right now. Your answers are safe.' },
-        { status: 502 },
-      );
-    }
-    return NextResponse.json({ error: 'Something went wrong. Your answers are safe.' }, { status: 500 });
-  }
+  });
 }

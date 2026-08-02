@@ -21,7 +21,7 @@ import {
   isQuestionVisible,
   type ModuleId,
 } from "@/lib/method";
-import { clearProfile, downloadProfile } from "@/lib/store";
+import { clearProfile } from "@/lib/store";
 import { useProfile } from "@/lib/useProfile";
 
 export default function ReviewPage() {
@@ -183,13 +183,6 @@ export default function ReviewPage() {
             <Link className="btn btn-ghost btn-lg" href="/journey?m=values&s=0">
               Back to the journey
             </Link>
-            <button
-              type="button"
-              className="btn btn-ghost btn-lg"
-              onClick={() => downloadProfile(profile)}
-            >
-              Download my data
-            </button>
           </div>
 
           <div style={{ textAlign: "center", marginTop: 28 }}>

@@ -52,6 +52,32 @@ git push heroku claude/new-app-voice-input-0q1w0a:main
 4. **Memory is fine.** EZAITASK needed careful gunicorn tuning (1 worker, 4
    threads, `--preload`) to stay under the 512MB Eco limit. Next.js in
    production sits well below it — do not copy that tuning across.
+5. **The 30-second router timeout (H12) — this one already bit, on the first
+   real attempt to generate a profile (2026-08-02).** Heroku's router kills any
+   request that has not produced a **first byte** within 30 seconds and answers
+   the browser with its own **HTML** error page. A synthesis takes far longer
+   than 30 seconds, so the browser called `res.json()` on HTML, that threw, and
+   the person was told *"We couldn't reach the server"* — for a request the
+   server was still happily working on. The truest-sounding error message in the
+   app was the wrong one.
+
+   Two traps inside the one trap:
+
+   - **`export const maxDuration` does nothing here.** It is a Vercel directive.
+     Heroku ignores it completely, so the route looks protected and isn't.
+   - **After the first byte, the limit becomes 55 seconds of *idle*.** So the
+     fix is not one early byte — it is one early byte *and* a steady drip.
+
+   `app/api/synthesize/route.ts` now streams newline-delimited output: a newline
+   immediately, another every 10 seconds while the model works, and the real
+   payload as the final line. Verified against a deliberately hung upstream —
+   first byte at t+0.1s, still alive past 50s. Consequence to remember: **once
+   the stream opens the status is already 200**, so failures after that point
+   travel in the payload as `{ error }`, not as a status code. Any new client of
+   this route must check both.
+
+   Anything else long-running added later — match analysis, batch work — has the
+   same 30-second cliff. Stream it or move it off the request.
 
 ---
 

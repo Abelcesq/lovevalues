@@ -62,8 +62,45 @@ function Profile() {
         body: JSON.stringify({ coreValues, operationalized, answers }),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
+      /* The route answers with newline-delimited text: heartbeats first (they
+         keep Heroku's router from killing a long reflection — see the H12 note
+         in app/api/synthesize/route.ts), then the real payload on the last
+         line. Early validation errors are plain JSON, which is also a single
+         line, so one code path reads both.
+
+         Deliberately NOT res.json(). That was the bug the CEO hit on
+         2026-08-02: when the router timed out it returned an HTML error page,
+         res.json() threw on the HTML, and the catch below told him we couldn't
+         reach a server that was in fact still working. Anything unparseable
+         now says so honestly instead of blaming the network. */
+      const raw = await res.text();
+      const lastLine = raw
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean)
+        .pop();
+
+      let data: {
+        error?: string;
+        synthesis?: unknown;
+        provider?: string;
+        model?: string;
+      } | null = null;
+      if (lastLine) {
+        try {
+          data = JSON.parse(lastLine);
+        } catch {
+          data = null;
+        }
+      }
+
+      if (!data) {
+        setError(
+          "The reflection didn’t come back in one piece — the server may have taken too long. Please try again. Your answers are safe on this device.",
+        );
+        return;
+      }
+      if (!res.ok || data.error) {
         setError(data.error ?? "Something went wrong. Your answers are safe.");
         return;
       }
