@@ -283,9 +283,15 @@ rebuild.
 ### Checking it worked
 
 ```powershell
-heroku config:get DATABASE_URL -a lovevalues   # should print a postgres:// URL
-heroku pg:psql -a lovevalues -c "\dt"          # should list users, accounts, subscriptions...
+heroku run "npm run db:check" -a lovevalues
 ```
+
+Prints the tables, the number of accounts, and whether the privacy wall still
+holds. **Quote the whole command** — `heroku run npm run db:check` unquoted is
+split apart and fails with `run: command not found`.
+
+`heroku pg:psql` also works, but only if PostgreSQL is installed on your own
+machine; `db:check` needs nothing but the app itself.
 
 Then visit `/signup` and create an account. `heroku pg:psql -a lovevalues -c
 "SELECT email, name FROM users"` should show it — **and nothing resembling an
