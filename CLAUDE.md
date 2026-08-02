@@ -239,10 +239,18 @@ projects/               project.md = the container + dashboard
 - ✅ **Live at https://www.lovevalues.com** (2026-07-27). Heroku app `lovevalues`
   — NOT `lovevalues-app`, which is a leftover that receives no deploys and cost
   real time twice. HTTPS is forced in `middleware.ts` because the microphone
-  fails silently without it
-- ⬜ **The synthesis engine has still never produced a reflection for a real
-  person.** The key is set and valid; nobody has pressed Generate yet. Until
-  that happens the central claim of this product is unverified
+  fails silently without it. **Deploys come from GitHub automatically since
+  2026-08-02** — a push to the branch *is* the deploy; `git push heroku` is gone
+  and `DEPLOY.md` §4 explains why it had to go
+- ✅ **The synthesis engine has produced a reflection for a real person**
+  (2026-08-02, the CEO's own). The central claim of this product is no longer
+  unverified — the method survived contact with the engine, end to end, in
+  production. What it has *not* survived is contact with a stranger, which is
+  the next line down and still the only thing that matters
+- ⬜ **Nobody has read a reflection and said whether it was true.** Generating
+  one proves the pipeline; it does not prove the method. The resonance control
+  (Yes / Partly / No) exists precisely to capture that answer and has never
+  been used
 - ⬜ Accounts are `localStorage` only; payments inert until Stripe keys are set
 - ⬜ No match feature (Phase 2) and no privacy wall implementation yet
 - ⬜ Not tested on a single stranger — which is the only thing that matters next

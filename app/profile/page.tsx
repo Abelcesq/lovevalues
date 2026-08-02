@@ -133,7 +133,9 @@ function Profile() {
         <div className="wrap">
           <div className="module-open">
             <span className="eyebrow">Your living profile</span>
-            <h1>{s ? "Here is what the method sees" : "Ready when you are"}</h1>
+            <h1>
+              {s ? "Here is the Love Values analysis…" : "Ready when you are"}
+            </h1>
             {!s && (
               <p>
                 When you generate this, your answers are sent once to produce
