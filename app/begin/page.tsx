@@ -29,15 +29,15 @@ export default function Begin() {
               where your ways of loving began, how you actually show up, and
               what you reach for when things get hard.
             </p>
-            {/* CEO copy, 2026-08-02. Reproduced verbatim — his voice, like
-                PRE_JOURNEY_CARE. Sets the time expectation before anyone starts,
-                so nobody tries to finish this in a queue. */}
+            {/* CEO copy, revised 2026-08-02. Reproduced verbatim — his voice,
+                like PRE_JOURNEY_CARE. Sets the time expectation before anyone
+                starts, so nobody tries to finish this in a queue. */}
             <p>
               Please ensure to allow at least 30 minutes to about 120 minutes to
               give yourself the time and the space to reflect on the question
               and provide your most honest and genuine answers so that the
-              analysis provided provide you withe the substance you seek. We at
-              Love Values are excited for you and this journey of discovery!
+              analysis provided gives you the substance and clarity you seek. We
+              at Love Values are excited for you and this journey of discovery!
             </p>
           </div>
 
