@@ -13,8 +13,14 @@
  * understands why it's hard will sit with it instead of guessing.
  */
 
-import { useMemo } from "react";
-import { SORT_BUCKETS, VALUE_CARDS, type SortBucket } from "@/lib/method";
+import { useMemo, useState } from "react";
+import {
+  SORT_BUCKETS,
+  VALUE_CARDS,
+  allValueCards,
+  makeCustomValueId,
+  type SortBucket,
+} from "@/lib/method";
 import type { ProfileState } from "@/lib/store";
 import VoiceInput from "./VoiceInput";
 
@@ -27,7 +33,10 @@ type Props = {
 
 export default function ValuesCardSort({ profile, update, pass }: Props) {
   const veryImportant = useMemo(
-    () => VALUE_CARDS.filter((c) => profile.sort[c.id] === "very-important"),
+    () =>
+      allValueCards(profile.customValues).filter(
+        (c) => profile.sort[c.id] === "very-important",
+      ),
     [profile.sort],
   );
 
@@ -46,7 +55,26 @@ function PassSort({ profile, update }: Omit<Props, "pass">) {
   const setBucket = (id: string, bucket: SortBucket) =>
     update((p) => ({ ...p, sort: { ...p.sort, [id]: bucket } }));
 
-  const sorted = Object.keys(profile.sort).length;
+  /* Removing a custom value has to clear it from every list it reached, not
+     just the card grid. Left behind in topTen or coreValues it becomes an id
+     with no label — which renders as a blank row rather than an error. */
+  const removeCustom = (id: string) =>
+    update((p) => {
+      const { [id]: _dropped, ...sort } = p.sort;
+      return {
+        ...p,
+        customValues: (p.customValues ?? []).filter((c) => c.id !== id),
+        sort,
+        topTen: p.topTen.filter((v) => v !== id),
+        coreValues: p.coreValues.filter((v) => v !== id),
+        operationalized: Object.fromEntries(
+          Object.entries(p.operationalized).filter(([k]) => k !== id),
+        ),
+      };
+    });
+
+  const cards = allValueCards(profile.customValues);
+  const sorted = cards.filter((c) => profile.sort[c.id]).length;
 
   return (
     <div>
@@ -54,16 +82,27 @@ function PassSort({ profile, update }: Omit<Props, "pass">) {
         step="First pass"
         title="Sort each value"
         note="Go with your gut. You can change any of these later, and most people do."
-        progress={`${sorted} of ${VALUE_CARDS.length} sorted`}
+        progress={`${sorted} of ${cards.length} sorted`}
       />
 
       <div className="card-grid">
-        {VALUE_CARDS.map((card) => {
+        {cards.map((card) => {
           const chosen = profile.sort[card.id];
           return (
             <div key={card.id} className={`vcard ${chosen ? "vcard-set" : ""}`}>
               <h4>{card.label}</h4>
               <p>{card.hint}</p>
+              {card.id.startsWith("custom-") && (
+                <button
+                  type="button"
+                  className="vcard-remove"
+                  aria-label={`Remove ${card.label}`}
+                  title={`Remove ${card.label}`}
+                  onClick={() => removeCustom(card.id)}
+                >
+                  Remove
+                </button>
+              )}
               <div
                 className="vcard-buckets"
                 role="group"
@@ -84,6 +123,28 @@ function PassSort({ profile, update }: Omit<Props, "pass">) {
             </div>
           );
         })}
+      </div>
+
+      {/* "Other" — a value in the person's own word.
+
+          The 32 cards are a starting vocabulary, not the whole of what anyone
+          values. Someone whose most important word is not on the list would
+          otherwise sort 32 things that are not quite it and end up with a
+          profile built around the closest available approximation.
+
+          A custom value is a first-class citizen from here on: it sorts, it can
+          reach the top ten, it can be chosen as a core value, it gets
+          operationalised, and it reaches the synthesis engine like any other.
+          That only works because every downstream lookup goes through
+          allValueCards() rather than VALUE_CARDS. */}
+      <div className="other-value">
+        <h4>Something else?</h4>
+        <p>
+          These 32 are a starting point, not the whole list. If a word matters
+          to you and isn&apos;t here, add it — it counts exactly the same from
+          here on.
+        </p>
+        <AddValue profile={profile} update={update} />
       </div>
     </div>
   );
@@ -144,7 +205,9 @@ function PassTopTen({
 /* ---------------- Pass 3: the core 3–5 ---------------- */
 
 function PassCore({ profile, update }: Omit<Props, "pass">) {
-  const pool = VALUE_CARDS.filter((c) => profile.topTen.includes(c.id));
+  const pool = allValueCards(profile.customValues).filter((c) =>
+    profile.topTen.includes(c.id),
+  );
 
   const toggle = (id: string) =>
     update((p) => {
@@ -191,7 +254,9 @@ function PassCore({ profile, update }: Omit<Props, "pass">) {
 /* ---------------- Pass 4: value → behavior ---------------- */
 
 function PassOperationalize({ profile, update }: Omit<Props, "pass">) {
-  const core = VALUE_CARDS.filter((c) => profile.coreValues.includes(c.id));
+  const core = allValueCards(profile.customValues).filter((c) =>
+    profile.coreValues.includes(c.id),
+  );
 
   const set = (
     id: string,
@@ -277,6 +342,82 @@ function PassOperationalize({ profile, update }: Omit<Props, "pass">) {
           </section>
         );
       })}
+    </div>
+  );
+}
+
+/**
+ * The "Other" input.
+ *
+ * Kept deliberately small: one word or short phrase, no description field.
+ * Asking someone to also write a definition here would stall them at the exact
+ * moment they have momentum, and Pass 4 asks for the meaning properly anyway.
+ */
+function AddValue({ profile, update }: Omit<Props, "pass">) {
+  const [label, setLabel] = useState("");
+
+  const custom = profile.customValues ?? [];
+
+  function add() {
+    const clean = label.trim().replace(/\s+/g, " ").slice(0, 40);
+    if (!clean) return;
+
+    /* Don't let someone add a word that is already on a card — they would end
+       up rating the same value twice and wondering which one counted. */
+    const existing = allValueCards(custom).find(
+      (c) => c.label.toLowerCase() === clean.toLowerCase(),
+    );
+    if (existing) {
+      setLabel("");
+      return;
+    }
+
+    const id = makeCustomValueId(
+      clean,
+      custom.map((c) => c.id),
+    );
+    update((p) => ({
+      ...p,
+      customValues: [
+        ...(p.customValues ?? []),
+        { id, label: clean, hint: "Your own word." },
+      ],
+    }));
+    setLabel("");
+  }
+
+  return (
+    <div className="other-add">
+      <label htmlFor="other-value" className="sr-only">
+        Add a value in your own words
+      </label>
+      <input
+        id="other-value"
+        type="text"
+        value={label}
+        maxLength={40}
+        /* Deliberately NOT one of the 32. An example that is already a card
+           gets silently refused by the duplicate guard, which reads as the
+           feature being broken. */
+        placeholder="e.g. Playfulness"
+        onChange={(e) => setLabel(e.target.value)}
+        onKeyDown={(e) => {
+          /* Enter adds the value. Without this the key would submit whatever
+             form this sits inside, or do nothing, and people press Enter. */
+          if (e.key === "Enter") {
+            e.preventDefault();
+            add();
+          }
+        }}
+      />
+      <button
+        type="button"
+        className="btn btn-ghost"
+        onClick={add}
+        disabled={!label.trim()}
+      >
+        Add
+      </button>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * Review & Edit — every question, every answer, all in one place.
@@ -8,20 +8,21 @@
  * profile. Nothing is locked once submitted.
  */
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { Footer, Nav } from '@/components/Chrome';
-import QuestionField from '@/components/QuestionField';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Footer, Nav } from "@/components/Chrome";
+import QuestionField from "@/components/QuestionField";
 import {
   MODULES,
   QUESTIONS,
   VALUE_CARDS,
+  allValueCards,
   isQuestionVisible,
   type ModuleId,
-} from '@/lib/method';
-import { clearProfile, downloadProfile } from '@/lib/store';
-import { useProfile } from '@/lib/useProfile';
+} from "@/lib/method";
+import { clearProfile, downloadProfile } from "@/lib/store";
+import { useProfile } from "@/lib/useProfile";
 
 export default function ReviewPage() {
   const router = useRouter();
@@ -46,11 +47,16 @@ export default function ReviewPage() {
   }
 
   const answeredCount = QUESTIONS.filter(
-    (q) => isQuestionVisible(q, profile.answers) && profile.answers[q.id]?.trim(),
+    (q) =>
+      isQuestionVisible(q, profile.answers) && profile.answers[q.id]?.trim(),
   ).length;
-  const visibleCount = QUESTIONS.filter((q) => isQuestionVisible(q, profile.answers)).length;
+  const visibleCount = QUESTIONS.filter((q) =>
+    isQuestionVisible(q, profile.answers),
+  ).length;
 
-  const coreLabels = VALUE_CARDS.filter((c) => profile.coreValues.includes(c.id)).map((c) => c.label);
+  const coreLabels = allValueCards(profile.customValues)
+    .filter((c) => profile.coreValues.includes(c.id))
+    .map((c) => c.label);
 
   return (
     <>
@@ -61,12 +67,14 @@ export default function ReviewPage() {
             <span className="eyebrow">Your answers</span>
             <h1>Everything you&apos;ve said, in one place</h1>
             <p>
-              Change anything here, whenever you want, then regenerate your profile. This is a
-              living document — your clarity is allowed to grow as you do.
+              Change anything here, whenever you want, then regenerate your
+              profile. This is a living document — your clarity is allowed to
+              grow as you do.
             </p>
             <p className="pass-progress">
               {answeredCount} of {visibleCount} answered
-              {coreLabels.length > 0 && ` · Core values: ${coreLabels.join(', ')}`}
+              {coreLabels.length > 0 &&
+                ` · Core values: ${coreLabels.join(", ")}`}
             </p>
           </div>
 
@@ -77,14 +85,18 @@ export default function ReviewPage() {
           <div className="progress-grid">
             {MODULES.map((module) => {
               const qs = QUESTIONS.filter(
-                (q) => q.moduleId === module.id && isQuestionVisible(q, profile.answers),
+                (q) =>
+                  q.moduleId === module.id &&
+                  isQuestionVisible(q, profile.answers),
               );
-              const done = qs.filter((q) => profile.answers[q.id]?.trim()).length;
+              const done = qs.filter((q) =>
+                profile.answers[q.id]?.trim(),
+              ).length;
               const pct = qs.length ? Math.round((done / qs.length) * 100) : 0;
               return (
                 <Link
                   key={module.id}
-                  className={`progress-tile${pct === 100 ? ' full' : ''}`}
+                  className={`progress-tile${pct === 100 ? " full" : ""}`}
                   href={`/journey?m=${module.id}`}
                 >
                   <span className="n">{module.number}</span>
@@ -102,7 +114,9 @@ export default function ReviewPage() {
 
           {MODULES.map((module) => {
             const qs = QUESTIONS.filter(
-              (q) => q.moduleId === module.id && isQuestionVisible(q, profile.answers),
+              (q) =>
+                q.moduleId === module.id &&
+                isQuestionVisible(q, profile.answers),
             );
             return (
               <section key={module.id}>
@@ -111,10 +125,10 @@ export default function ReviewPage() {
                   <h2>{module.title}</h2>
                 </div>
 
-                {module.id === 'values' && <ValuesSummary profile={profile} />}
+                {module.id === "values" && <ValuesSummary profile={profile} />}
 
                 {qs.map((q) => {
-                  const answer = profile.answers[q.id] ?? '';
+                  const answer = profile.answers[q.id] ?? "";
                   const isEditing = editing === q.id;
                   return (
                     <div className="review-row" key={q.id}>
@@ -138,7 +152,7 @@ export default function ReviewPage() {
                           <span className="mod">{module.title}</span>
                           <p className="q">{q.prompt}</p>
                           {answer.trim() ? (
-                            <p style={{ whiteSpace: 'pre-wrap' }}>{answer}</p>
+                            <p style={{ whiteSpace: "pre-wrap" }}>{answer}</p>
                           ) : (
                             <p className="a-empty">Not answered yet.</p>
                           )}
@@ -148,7 +162,7 @@ export default function ReviewPage() {
                             style={{ marginTop: 14 }}
                             onClick={() => setEditing(q.id)}
                           >
-                            {answer.trim() ? 'Edit this answer' : 'Answer this'}
+                            {answer.trim() ? "Edit this answer" : "Answer this"}
                           </button>
                         </>
                       )}
@@ -160,7 +174,10 @@ export default function ReviewPage() {
           })}
 
           <div className="controls">
-            <Link className="btn btn-primary btn-lg" href="/profile?regenerate=1">
+            <Link
+              className="btn btn-primary btn-lg"
+              href="/profile?regenerate=1"
+            >
               Regenerate my profile
             </Link>
             <Link className="btn btn-ghost btn-lg" href="/journey?m=values&s=0">
@@ -175,22 +192,23 @@ export default function ReviewPage() {
             </button>
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: 28 }}>
+          <div style={{ textAlign: "center", marginTop: 28 }}>
             {confirmingDelete ? (
               <div className="notice" style={{ maxWidth: 520 }}>
                 <p style={{ marginBottom: 14 }}>
-                  This permanently erases every answer on this device. It cannot be undone.
+                  This permanently erases every answer on this device. It cannot
+                  be undone.
                 </p>
                 <button
                   type="button"
                   className="btn btn-primary"
                   onClick={() => {
                     clearProfile();
-                    router.push('/');
+                    router.push("/");
                   }}
                 >
                   Yes, delete everything
-                </button>{' '}
+                </button>{" "}
                 <button
                   type="button"
                   className="btn btn-ghost"
@@ -216,13 +234,23 @@ export default function ReviewPage() {
   );
 }
 
-function ValuesSummary({ profile }: { profile: ReturnType<typeof useProfile>['profile'] }) {
-  const core = VALUE_CARDS.filter((c) => profile.coreValues.includes(c.id));
+function ValuesSummary({
+  profile,
+}: {
+  profile: ReturnType<typeof useProfile>["profile"];
+}) {
+  const core = allValueCards(profile.customValues).filter((c) =>
+    profile.coreValues.includes(c.id),
+  );
   if (core.length === 0) {
     return (
       <div className="review-row">
         <p className="a-empty">You haven&apos;t chosen your core values yet.</p>
-        <Link className="btn btn-ghost" style={{ marginTop: 14 }} href="/journey?m=values&s=0">
+        <Link
+          className="btn btn-ghost"
+          style={{ marginTop: 14 }}
+          href="/journey?m=values&s=0"
+        >
           Do the card sort
         </Link>
       </div>
@@ -236,7 +264,9 @@ function ValuesSummary({ profile }: { profile: ReturnType<typeof useProfile>['pr
         return (
           <div key={c.id} style={{ marginBottom: 18 }}>
             <p className="q">{c.label}</p>
-            {v?.definition && <p style={{ whiteSpace: 'pre-wrap' }}>{v.definition}</p>}
+            {v?.definition && (
+              <p style={{ whiteSpace: "pre-wrap" }}>{v.definition}</p>
+            )}
             {v?.dos && (
               <p style={{ marginTop: 6 }}>
                 <strong className="op-inline">Do&apos;s: </strong>
@@ -252,7 +282,11 @@ function ValuesSummary({ profile }: { profile: ReturnType<typeof useProfile>['pr
           </div>
         );
       })}
-      <Link className="btn btn-ghost" style={{ marginTop: 6 }} href="/journey?m=values&s=2">
+      <Link
+        className="btn btn-ghost"
+        style={{ marginTop: 6 }}
+        href="/journey?m=values&s=2"
+      >
         Edit my values
       </Link>
     </div>

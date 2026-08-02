@@ -30,6 +30,7 @@ import {
   MODULES,
   QUESTIONS,
   VALUE_CARDS,
+  allValueCards,
   isQuestionVisible,
 } from "@/lib/method";
 import { downloadProfile } from "@/lib/store";
@@ -79,9 +80,9 @@ export default function Dashboard() {
     ? Math.round((answered / visible.length) * 100)
     : 0;
   const daysLeft = trialDaysLeft(account);
-  const coreLabels = VALUE_CARDS.filter((c) =>
-    profile.coreValues.includes(c.id),
-  ).map((c) => c.label);
+  const coreLabels = allValueCards(profile.customValues)
+    .filter((c) => profile.coreValues.includes(c.id))
+    .map((c) => c.label);
 
   return (
     <>

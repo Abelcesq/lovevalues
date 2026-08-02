@@ -1,19 +1,20 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Suspense, useCallback, useState } from 'react';
-import CarePrompt from '@/components/CarePrompt';
-import { Footer, Nav } from '@/components/Chrome';
-import VoiceInput from '@/components/VoiceInput';
+import Link from "next/link";
+import { Suspense, useCallback, useState } from "react";
+import CarePrompt from "@/components/CarePrompt";
+import { Footer, Nav } from "@/components/Chrome";
+import VoiceInput from "@/components/VoiceInput";
 import {
   LEGAL_DISCLOSURE,
   MIRROR_FRAMING,
   QUESTIONS,
   VALUE_CARDS,
+  allValueCards,
   isQuestionVisible,
-} from '@/lib/method';
-import { downloadProfile, type Synthesis } from '@/lib/store';
-import { useProfile } from '@/lib/useProfile';
+} from "@/lib/method";
+import { downloadProfile, type Synthesis } from "@/lib/store";
+import { useProfile } from "@/lib/useProfile";
 
 export default function ProfilePage() {
   return (
@@ -27,36 +28,43 @@ function Profile() {
   const { profile, hydrated, update } = useProfile();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [correction, setCorrection] = useState('');
+  const [correction, setCorrection] = useState("");
 
   const generate = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const answers = QUESTIONS.filter(
-        (q) => isQuestionVisible(q, profile.answers) && profile.answers[q.id]?.trim(),
+        (q) =>
+          isQuestionVisible(q, profile.answers) &&
+          profile.answers[q.id]?.trim(),
       ).map((q) => ({ question: q.prompt, answer: profile.answers[q.id] }));
 
-      const coreValues = VALUE_CARDS.filter((c) => profile.coreValues.includes(c.id)).map(
-        (c) => c.label,
-      );
+      const coreValues = allValueCards(profile.customValues)
+        .filter((c) => profile.coreValues.includes(c.id))
+        .map((c) => c.label);
 
-      const operationalized: Record<string, { definition: string; dos: string; donts: string }> = {};
+      const operationalized: Record<
+        string,
+        { definition: string; dos: string; donts: string }
+      > = {};
       for (const id of profile.coreValues) {
-        const label = VALUE_CARDS.find((c) => c.id === id)?.label ?? id;
+        const label =
+          allValueCards(profile.customValues).find((c) => c.id === id)?.label ??
+          id;
         const v = profile.operationalized[id];
         if (v) operationalized[label] = v;
       }
 
-      const res = await fetch('/api/synthesize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/synthesize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ coreValues, operationalized, answers }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? 'Something went wrong. Your answers are safe.');
+        setError(data.error ?? "Something went wrong. Your answers are safe.");
         return;
       }
       update((p) => ({
@@ -69,7 +77,9 @@ function Profile() {
         resonance: null,
       }));
     } catch {
-      setError('We couldn’t reach the server. Your answers are safe on this device.');
+      setError(
+        "We couldn’t reach the server. Your answers are safe on this device.",
+      );
     } finally {
       setLoading(false);
     }
@@ -86,11 +96,11 @@ function Profile() {
         <div className="wrap">
           <div className="module-open">
             <span className="eyebrow">Your living profile</span>
-            <h1>{s ? 'Here is what the method sees' : 'Ready when you are'}</h1>
+            <h1>{s ? "Here is what the method sees" : "Ready when you are"}</h1>
             {!s && (
               <p>
-                When you generate this, your answers are sent once to produce your reflection — and
-                are not stored on our servers.
+                When you generate this, your answers are sent once to produce
+                your reflection — and are not stored on our servers.
               </p>
             )}
           </div>
@@ -99,7 +109,9 @@ function Profile() {
 
           {loading && (
             <div className="loading">
-              <p style={{ marginBottom: 18 }}>Reading everything you wrote, carefully.</p>
+              <p style={{ marginBottom: 18 }}>
+                Reading everything you wrote, carefully.
+              </p>
               <span className="dot" />
               <span className="dot" />
               <span className="dot" />
@@ -108,7 +120,11 @@ function Profile() {
 
           {!s && !loading && (
             <div className="controls" style={{ border: 0 }}>
-              <button type="button" className="btn btn-primary btn-lg" onClick={generate}>
+              <button
+                type="button"
+                className="btn btn-primary btn-lg"
+                onClick={generate}
+              >
                 Generate my profile
               </button>
               <Link className="btn btn-ghost btn-lg" href="/review">
@@ -120,8 +136,12 @@ function Profile() {
           {s && !loading && (
             <>
               {/* Duty of care comes before the analysis, never after it. */}
-              {s.careFlag && s.careFlag !== 'none' && (
-                <CarePrompt level={s.careFlag} onDismiss={() => {}} persistent />
+              {s.careFlag && s.careFlag !== "none" && (
+                <CarePrompt
+                  level={s.careFlag}
+                  onDismiss={() => {}}
+                  persistent
+                />
               )}
 
               <div className="framing">{MIRROR_FRAMING}</div>
@@ -129,11 +149,13 @@ function Profile() {
               {/* /privacy promises a reflection written by the fallback engine
                   is marked. This is that mark — a claim on the privacy page
                   that the UI does not honour is worse than no claim. */}
-              {s.provider === 'openrouter' && (
-                <p className="save-note" style={{ margin: '-24px auto 40px' }}>
-                  Our usual engine was unavailable, so this reflection was written by an
-                  open-source model{s.model ? ` (${s.model})` : ''} instead. It may read
-                  differently. You can regenerate below to try the usual one again.
+              {s.provider === "openrouter" && (
+                <p className="save-note" style={{ margin: "-24px auto 40px" }}>
+                  Our usual engine was unavailable, so this reflection was
+                  written by an open-source model
+                  {s.model ? ` (${s.model})` : ""} instead. It may read
+                  differently. You can regenerate below to try the usual one
+                  again.
                 </p>
               )}
 
@@ -143,7 +165,9 @@ function Profile() {
                 {s.coreValues?.map((v, i) => (
                   <div className="syn-value" key={`${v.value}-${i}`}>
                     <h3>
-                      <span className="rank">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="rank">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
                       {v.value}
                     </h3>
                     <p>{v.whyItMatters}</p>
@@ -182,32 +206,39 @@ function Profile() {
               <div className="resonance">
                 <h2>Does this resonate?</h2>
                 <p>
-                  This is a mirror, not a verdict. If it&apos;s wrong, tell us what to correct — and
-                  the reflection changes with you.
+                  This is a mirror, not a verdict. If it&apos;s wrong, tell us
+                  what to correct — and the reflection changes with you.
                 </p>
                 <div className="resonance-choices">
-                  {(['yes', 'partly', 'no'] as const).map((verdict) => (
+                  {(["yes", "partly", "no"] as const).map((verdict) => (
                     <button
                       key={verdict}
                       type="button"
-                      className={`chip ${profile.resonance?.verdict === verdict ? 'sel' : ''}`}
+                      className={`chip ${profile.resonance?.verdict === verdict ? "sel" : ""}`}
                       onClick={() =>
                         update((p) => ({
                           ...p,
-                          resonance: { verdict, correction: p.resonance?.correction ?? '' },
+                          resonance: {
+                            verdict,
+                            correction: p.resonance?.correction ?? "",
+                          },
                         }))
                       }
                     >
-                      {verdict === 'yes' ? 'Yes' : verdict === 'partly' ? 'Partly' : 'No'}
+                      {verdict === "yes"
+                        ? "Yes"
+                        : verdict === "partly"
+                          ? "Partly"
+                          : "No"}
                     </button>
                   ))}
                 </div>
 
-                {profile.resonance && profile.resonance.verdict !== 'yes' && (
-                  <div style={{ textAlign: 'left', marginTop: 8 }}>
+                {profile.resonance && profile.resonance.verdict !== "yes" && (
+                  <div style={{ textAlign: "left", marginTop: 8 }}>
                     <p className="q-helper">
-                      What did we get wrong? Say it in your own words — then update the answers it
-                      came from and regenerate.
+                      What did we get wrong? Say it in your own words — then
+                      update the answers it came from and regenerate.
                     </p>
                     <VoiceInput
                       id="resonance-correction"
@@ -218,7 +249,10 @@ function Profile() {
                         setCorrection(next);
                         update((p) => ({
                           ...p,
-                          resonance: { verdict: p.resonance?.verdict ?? 'partly', correction: next },
+                          resonance: {
+                            verdict: p.resonance?.verdict ?? "partly",
+                            correction: next,
+                          },
                         }));
                       }}
                     />
@@ -230,7 +264,11 @@ function Profile() {
                 <Link className="btn btn-ghost btn-lg" href="/review">
                   Edit my answers
                 </Link>
-                <button type="button" className="btn btn-primary btn-lg" onClick={generate}>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-lg"
+                  onClick={generate}
+                >
                   Regenerate
                 </button>
                 <button
@@ -242,7 +280,10 @@ function Profile() {
                 </button>
               </div>
 
-              <p className="save-note" style={{ maxWidth: 720, margin: '28px auto 0' }}>
+              <p
+                className="save-note"
+                style={{ maxWidth: 720, margin: "28px auto 0" }}
+              >
                 {LEGAL_DISCLOSURE}
               </p>
             </>
@@ -254,14 +295,22 @@ function Profile() {
   );
 }
 
-function SynProse({ eyebrow, title, body }: { eyebrow: string; title: string; body?: string }) {
+function SynProse({
+  eyebrow,
+  title,
+  body,
+}: {
+  eyebrow: string;
+  title: string;
+  body?: string;
+}) {
   if (!body) return null;
   return (
     <section className="syn-section">
       <span className="eyebrow">{eyebrow}</span>
       <h2>{title}</h2>
       {body
-        .split('\n')
+        .split("\n")
         .filter((p) => p.trim())
         .map((p, i) => (
           <p key={i}>{p}</p>

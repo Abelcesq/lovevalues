@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * Local-first storage for the MVP.
@@ -11,13 +11,13 @@
  * is the single seam to replace.
  */
 
-import type { SortBucket } from './method';
+import type { SortBucket } from "./method";
 
-const KEY = 'lovevalues.profile.v1';
+const KEY = "lovevalues.profile.v1";
 
 export type Synthesis = {
   /** Duty-of-care routing set by the engine. See lib/care.ts. */
-  careFlag?: 'none' | 'gentle' | 'urgent' | 'safety';
+  careFlag?: "none" | "gentle" | "urgent" | "safety";
   /** Which engine wrote this. Present only when the resilience lane produced
       it — /privacy promises the user can tell, so this must be surfaced. */
   provider?: string;
@@ -31,6 +31,9 @@ export type Synthesis = {
 };
 
 export type ProfileState = {
+  /** Values the person typed themselves under "Other". They live alongside the
+      built-in cards everywhere downstream — see allValueCards() in method.ts. */
+  customValues: { id: string; label: string; hint: string }[];
   /** Pass 1 of the card sort. */
   sort: Record<string, SortBucket>;
   /** Pass 2 — up to 10 ids carried forward from "very important". */
@@ -38,16 +41,20 @@ export type ProfileState = {
   /** Pass 3 — the 3–5 that win when values collide. */
   coreValues: string[];
   /** Free-text operationalization, keyed by value id. */
-  operationalized: Record<string, { definition: string; dos: string; donts: string }>;
+  operationalized: Record<
+    string,
+    { definition: string; dos: string; donts: string }
+  >;
   /** All narrative answers, keyed by question id. */
   answers: Record<string, string>;
   synthesis: Synthesis | null;
   /** "Does this resonate?" — yes | partly | no, plus the correction. */
-  resonance: { verdict: 'yes' | 'partly' | 'no'; correction: string } | null;
+  resonance: { verdict: "yes" | "partly" | "no"; correction: string } | null;
   updatedAt: string;
 };
 
 export const EMPTY_PROFILE: ProfileState = {
+  customValues: [],
   sort: {},
   topTen: [],
   coreValues: [],
@@ -55,11 +62,11 @@ export const EMPTY_PROFILE: ProfileState = {
   answers: {},
   synthesis: null,
   resonance: null,
-  updatedAt: '',
+  updatedAt: "",
 };
 
 export function loadProfile(): ProfileState {
-  if (typeof window === 'undefined') return EMPTY_PROFILE;
+  if (typeof window === "undefined") return EMPTY_PROFILE;
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return EMPTY_PROFILE;
@@ -70,7 +77,7 @@ export function loadProfile(): ProfileState {
 }
 
 export function saveProfile(next: ProfileState): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(
       KEY,
@@ -82,17 +89,19 @@ export function saveProfile(next: ProfileState): void {
 }
 
 export function clearProfile(): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
   window.localStorage.removeItem(KEY);
 }
 
 /** Export everything as a file the user owns outright. */
 export function downloadProfile(profile: ProfileState): void {
-  const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(profile, null, 2)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
-  a.download = 'love-values-profile.json';
+  a.download = "love-values-profile.json";
   a.click();
   URL.revokeObjectURL(url);
 }

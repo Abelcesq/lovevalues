@@ -109,6 +109,39 @@ export const VALUE_DEFINITION =
 export type ValueCard = { id: string; label: string; hint: string };
 
 /** The master list for the card sort. Faith is present but never assumed. */
+/**
+ * Every value in play for a given person: the 32 built-in cards plus anything
+ * they added themselves under "Other".
+ *
+ * USE THIS, NOT `VALUE_CARDS`, anywhere you turn an id into a label. A custom
+ * value that is sorted, carried to the top ten, and chosen as a core value but
+ * is missing from a label lookup does not error — it silently renders as its
+ * raw id, or vanishes from a `.filter()`. The person would reach their profile
+ * and find the word they cared most about simply absent, with nothing
+ * explaining why.
+ */
+export function allValueCards(custom: ValueCard[] | undefined): ValueCard[] {
+  return custom && custom.length ? [...VALUE_CARDS, ...custom] : VALUE_CARDS;
+}
+
+/**
+ * A stable id for a value someone typed. Prefixed so it can never collide with
+ * a built-in id, and suffixed on collision so two different words that slugify
+ * the same ("Self respect" / "self-respect") stay distinct entries.
+ */
+export function makeCustomValueId(label: string, taken: string[]): string {
+  const slug =
+    label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 40) || "value";
+  let id = `custom-${slug}`;
+  let n = 2;
+  while (taken.includes(id)) id = `custom-${slug}-${n++}`;
+  return id;
+}
+
 export const VALUE_CARDS: ValueCard[] = [
   {
     id: "faith",
