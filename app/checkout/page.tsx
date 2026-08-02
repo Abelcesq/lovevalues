@@ -141,7 +141,7 @@ export default function Checkout() {
             </p>
             <p className="pay-body">
               We hand you to Stripe to enter your card — it never touches our
-              servers. You will come straight back here afterwards.
+              servers. You will come straight back here afterward.
             </p>
 
             {notice && <p className="pay-notice">{notice}</p>}

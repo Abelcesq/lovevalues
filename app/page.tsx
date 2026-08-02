@@ -111,7 +111,7 @@ export default function Splash() {
           <div className="wrap splash-inner">
             <h2>Need more information…</h2>
             <p>
-              If you are uncertain and need more information, that is ok. Some
+              If you are uncertain and need more information, that is OK. Some
               of us require time to prepare. Below is a link — “Read how it
               works” — that will provide more detailed information on the
               method, what it costs, the information you provide, and
@@ -130,7 +130,7 @@ export default function Splash() {
                 Read how it works <ArrowRight aria-hidden="true" />
               </Link>
               <Link className="textlink care-link" href="/support">
-                Reach out to an outside professional
+                Talk to an outside professional
               </Link>
             </div>
           </div>

@@ -79,13 +79,13 @@ export default function Terms() {
               </li>
             </ul>
             <p>
-              <b>Cancellation.</b> Cancelling prevents future charges and does
+              <b>Cancellation.</b> Canceling prevents future charges and does
               not remove time you have already been given or paid for. If you
               cancel before the end of the free 7 days, you are not charged at
               all. If a charge has already been processed, your membership
               continues to the end of that billed cycle and no further charge is
               taken. Reinstatement after cancellation requires your
-              authorisation.
+              authorization.
             </p>
             <p>Payment is not enabled yet in this build.</p>
           </section>

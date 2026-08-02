@@ -32,11 +32,11 @@
  * which of the two it means, or a reader will reasonably assume their
  * membership already covers match analysis. It does not.
  *
- * CANCELLATION. Cancelling stops FUTURE charges only; time already paid for is
+ * CANCELLATION. Canceling stops FUTURE charges only; time already paid for is
  * always honoured:
  *   · Cancel during the free 7 days → never charged, access ends at day 7.
  *   · Cancel after a charge → access runs to the end of the billed cycle, and
- *     nothing further is taken. Reinstating requires the member's authorisation.
+ *     nothing further is taken. Reinstating requires the member's authorization.
  * ─────────────────────────────────────────────────────────────────────────
  */
 

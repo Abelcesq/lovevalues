@@ -196,19 +196,36 @@ header.nav {
   font-weight: 800;
   letter-spacing: -0.03em;
 }
+/* The mark is now the logo artwork itself, so it carries no tile behind it —
+   the rounded square and its gradient live inside the SVG. Size is set here
+   and nowhere else; the SVG has no intrinsic dimensions. */
 .brand .mark {
   width: 30px;
   height: 30px;
   flex: 0 0 auto;
-  border-radius: 9px;
-  background: var(--color-brand);
-  color: var(--color-on-brand);
-  display: grid;
-  place-items: center;
+  display: block;
 }
 .brand .mark svg {
-  width: 17px;
-  height: 17px;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* THE HEADER LOCKUP, enlarged 2026-08-02 at the CEO's direction — at 30px the
+   logo "looked like a footnote" beside the nav links. Roughly 3x the mark, with
+   the wordmark brought up to match so the two read as one lockup rather than a
+   big picture next to small type.
+
+   Scoped to .navbar deliberately: the footer keeps the quiet version, because a
+   sign-off does not need to shout, and the two clamps below stop a 3x logo from
+   crowding out the care link on a phone. */
+.navbar .brand {
+  gap: clamp(10px, 2vw, 18px);
+  font-size: clamp(22px, 4.4vw, 32px);
+}
+.navbar .brand .mark {
+  width: clamp(48px, 9vw, 84px);
+  height: clamp(48px, 9vw, 84px);
 }
 .nav-actions {
   display: flex;

@@ -57,9 +57,9 @@
  * in distress right now, and an opening paragraph about "the process of
  * identifying values" would make them read past the thing they came for.
  */
-export const PRE_JOURNEY_CARE = `Although this process of identifying values is intended as a discovery and educational tool to discovery our values, it may be possible that feelings or insecurities may come up. Be mindful of the feelings and know that feelings regarding our experience is normal. When the feelings become uneasy or too much, know that there are resources to talk to someone which are available now. Please seek professional help if you feel you need to talk to someone. Our goal and purpose is to have you know that faith is not only believing in God but it is also believing and knowing that each of us is loved unconditionally and that God's love is freely given.  This is why a faith based approach to life can be such a powerful perspective.  Asking for guidance in moments of sadness, uncomfortable feelings or despair are concrete ways to practice self-love especially in these moments.`;
+export const PRE_JOURNEY_CARE = `Although this process of identifying values is intended as a discovery and educational tool to discover our values, it may be possible that feelings or insecurities may come up. Be mindful of the feelings and know that feelings regarding our experience are normal. When the feelings become uneasy or too much, know that there are resources to talk to someone that are available now. Please seek professional help if you feel you need to talk to someone. Our goal and purpose is to have you know that faith is not only believing in God but it is also believing and knowing that each of us is loved unconditionally and that God's love is freely given. This is why a faith-based approach to life can be such a powerful perspective. Asking for guidance in moments of sadness, uncomfortable feelings or despair is a concrete way to practice self-love, especially in these moments.`;
 
-export type CareLevel = 'none' | 'gentle' | 'urgent' | 'safety';
+export type CareLevel = "none" | "gentle" | "urgent" | "safety";
 
 export type Resource = {
   region: string;
@@ -72,57 +72,60 @@ export type Resource = {
 /** Immediate-crisis resources. */
 export const CRISIS_RESOURCES: Resource[] = [
   {
-    region: 'United States & Canada',
-    name: '988 Suicide & Crisis Lifeline',
-    contact: 'Call or text 988',
-    detail: 'Free, confidential, 24/7. You do not have to be suicidal to call — distress is enough.',
-    href: 'https://988lifeline.org',
+    region: "United States & Canada",
+    name: "988 Suicide & Crisis Lifeline",
+    contact: "Call or text 988",
+    detail:
+      "Free, confidential, 24/7. You do not have to be suicidal to call — distress is enough.",
+    href: "https://988lifeline.org",
   },
   {
-    region: 'United States',
-    name: 'Crisis Text Line',
-    contact: 'Text HOME to 741741',
-    detail: 'If speaking out loud feels like too much, this is text-only.',
-    href: 'https://www.crisistextline.org',
+    region: "United States",
+    name: "Crisis Text Line",
+    contact: "Text HOME to 741741",
+    detail: "If speaking out loud feels like too much, this is text-only.",
+    href: "https://www.crisistextline.org",
   },
   {
-    region: 'United Kingdom & Ireland',
-    name: 'Samaritans',
-    contact: 'Call 116 123',
-    detail: 'Free, 24/7. They will not judge you and they will not rush you.',
-    href: 'https://www.samaritans.org',
+    region: "United Kingdom & Ireland",
+    name: "Samaritans",
+    contact: "Call 116 123",
+    detail: "Free, 24/7. They will not judge you and they will not rush you.",
+    href: "https://www.samaritans.org",
   },
   {
-    region: 'Anywhere in the world',
-    name: 'Find a Helpline',
-    contact: 'findahelpline.com',
-    detail: 'A directory of free, confidential support lines in over 130 countries.',
-    href: 'https://findahelpline.com',
+    region: "Anywhere in the world",
+    name: "Find a Helpline",
+    contact: "findahelpline.com",
+    detail:
+      "A directory of free, confidential support lines in over 130 countries.",
+    href: "https://findahelpline.com",
   },
 ];
 
 /** Safety resources — for someone who may not be safe with another person. */
 export const SAFETY_RESOURCES: Resource[] = [
   {
-    region: 'United States',
-    name: 'National Domestic Violence Hotline',
-    contact: 'Call 1-800-799-7233, or text START to 88788',
-    detail: 'Free and confidential, 24/7. They can talk through options with you — you do not have to have decided anything.',
-    href: 'https://www.thehotline.org',
+    region: "United States",
+    name: "National Domestic Violence Hotline",
+    contact: "Call 1-800-799-7233, or text START to 88788",
+    detail:
+      "Free and confidential, 24/7. They can talk through options with you — you do not have to have decided anything.",
+    href: "https://www.thehotline.org",
   },
   {
-    region: 'United Kingdom',
+    region: "United Kingdom",
     name: "National Domestic Abuse Helpline",
-    contact: 'Call 0808 2000 247',
-    detail: 'Free, 24/7, run by Refuge.',
-    href: 'https://www.nationaldahelpline.org.uk',
+    contact: "Call 0808 2000 247",
+    detail: "Free, 24/7, run by Refuge.",
+    href: "https://www.nationaldahelpline.org.uk",
   },
   {
-    region: 'Anywhere in the world',
-    name: 'Find a Helpline',
-    contact: 'findahelpline.com',
-    detail: 'Search by country for domestic-violence and crisis support.',
-    href: 'https://findahelpline.com',
+    region: "Anywhere in the world",
+    name: "Find a Helpline",
+    contact: "findahelpline.com",
+    detail: "Search by country for domestic-violence and crisis support.",
+    href: "https://findahelpline.com",
   },
 ];
 
@@ -185,7 +188,7 @@ function normalize(text: string): string {
   return text
     .toLowerCase()
     .replace(/[‘’ʼ՚`´]/g, "'")
-    .replace(/\s+/g, ' ');
+    .replace(/\s+/g, " ");
 }
 
 /**
@@ -199,33 +202,33 @@ export function screenForDistress(text: string): CareLevel {
   /* No meaningful length floor. The shortest disclosures — "he hits me",
      "I want to die" — are the ones that matter most, and an earlier version of
      this function silently ignored both because it required 12 characters. */
-  if (!text || text.trim().length < 6) return 'none';
+  if (!text || text.trim().length < 6) return "none";
   const t = normalize(text);
 
-  if (URGENT_PATTERNS.some((re) => re.test(t))) return 'urgent';
-  if (SAFETY_PATTERNS.some((re) => re.test(t))) return 'safety';
-  if (GENTLE_PATTERNS.some((re) => re.test(t))) return 'gentle';
-  return 'none';
+  if (URGENT_PATTERNS.some((re) => re.test(t))) return "urgent";
+  if (SAFETY_PATTERNS.some((re) => re.test(t))) return "safety";
+  if (GENTLE_PATTERNS.some((re) => re.test(t))) return "gentle";
+  return "none";
 }
 
 /** The words shown for each level. Warm, unhurried, and never alarmed. */
 export const CARE_COPY: Record<
-  Exclude<CareLevel, 'none'>,
+  Exclude<CareLevel, "none">,
   { title: string; body: string; cta: string }
 > = {
   urgent: {
-    title: 'Before you go any further — please talk to a person.',
-    body: 'Something you wrote suggests you may be carrying more than anyone should carry alone. This is a piece of software, and there are moments it has no business being the thing you turn to. This is one of them. Nothing here is lost, and you can come back whenever you want.',
-    cta: 'Find someone to talk to',
+    title: "Before you go any further — please talk to a person.",
+    body: "Something you wrote suggests you may be carrying more than anyone should carry alone. This is a piece of software, and there are moments it has no business being the thing you turn to. This is one of them. Nothing here is lost, and you can come back whenever you want.",
+    cta: "Find someone to talk to",
   },
   safety: {
-    title: 'If you are not safe, that comes first.',
-    body: 'Something you wrote suggests you may not be safe with someone. That matters more than anything on this screen. There are people who will talk it through with you without pushing you toward any decision.',
-    cta: 'See confidential support',
+    title: "If you are not safe, that comes first.",
+    body: "Something you wrote suggests you may not be safe with someone. That matters more than anything on this screen. There are people who will talk it through with you without pushing you toward any decision.",
+    cta: "See confidential support",
   },
   gentle: {
-    title: 'This is heavy. You don’t have to carry it alone.',
-    body: 'These questions go to tender places, and it is completely reasonable for that to be hard. If it would help to say any of this to an actual person, there are people who will listen — free, confidential, and without judgment.',
-    cta: 'See who you can talk to',
+    title: "This is heavy. You don’t have to carry it alone.",
+    body: "These questions go to tender places, and it is completely reasonable for that to be hard. If it would help to say any of this to an actual person, there are people who will listen — free, confidential, and without judgment.",
+    cta: "See who you can talk to",
   },
 };

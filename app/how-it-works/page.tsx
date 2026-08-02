@@ -250,7 +250,7 @@ export default function HowItWorks() {
               </h2>
               <p>
                 Every answer field has a microphone. Tap it and speak; the words
-                appear as you go, and you can edit them afterwards like anything
+                appear as you go, and you can edit them afterward like anything
                 you typed. This matters more than it sounds — people write
                 carefully and speak honestly, and the questions here reward
                 honesty far more than they reward polish.
@@ -333,7 +333,7 @@ export default function HowItWorks() {
               </ul>
               <p className="note">
                 <b>
-                  Cancelling stops future charges and never takes away time you
+                  Canceling stops future charges and never takes away time you
                   have paid for.
                 </b>{" "}
                 Cancel during the free week and you are never charged. Cancel

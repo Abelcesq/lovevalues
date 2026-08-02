@@ -21,7 +21,7 @@ export const LEGAL_DISCLOSURE =
    without it, "not final" reads as a legal hedge instead of an invitation to
    come back. */
 export const MIRROR_FRAMING =
-  "Keep in mind that this analysis is not final assessment. It is simply a perspective assessed from the information provided so far. If the information changes, the analysis and outcome can change so changing habits, activities and practices and updating the responses will change the analysis. With that said, knowing where you are now can be key to choosing where you want to be and what you desire to create in your relationship.";
+  "Keep in mind that this analysis is not a final assessment. It is simply a perspective assessed from the information provided so far. If the information changes, the analysis and outcome can change so changing habits, activities and practices and updating the responses will change the analysis. With that said, knowing where you are now can be key to choosing where you want to be and what you desire to create in your relationship.";
 
 export const MIRROR_DISCLAIMER =
   "Read the mirror first, every time. Give the other person the same grace you'd want for your own inconsistency. Distinguish a genuine values mismatch (worth acting on) from a simple human imperfection (universal — extend grace). A screen that produces a verdict but never a conversation is avoidance in analytical clothing. This report's output is a question to raise together, not a sentence to carry out in silence.";
@@ -535,7 +535,7 @@ export const QUESTIONS: Question[] = [
     prompt:
       "And afterward — how did they come back to each other, if they did?",
     helper:
-      "Repair is the part of partnership most people never got to watch, and the part most couples most need. If you never saw it, that is worth knowing too.",
+      "Repair is the part of partnership most people never got to watch, and the part most couples need most. If you never saw it, that is worth knowing too.",
     placeholder: "What happened after the disagreement was over…",
   },
   {
@@ -582,7 +582,7 @@ export const QUESTIONS: Question[] = [
     moduleId: "roots",
     kind: "long-text",
     prompt:
-      "And the traits in them you believe were not conducive to relationship.",
+      "And the traits in them you believe were not conducive to a healthy relationship.",
     optional: true,
     placeholder: "What made partnership harder…",
   },
