@@ -19,6 +19,7 @@
  */
 
 import pg from 'pg';
+import { OUR_TABLES_CTE } from './our-tables.mjs';
 
 const url = process.env.DATABASE_URL;
 if (!url) {
@@ -33,9 +34,11 @@ const client = new pg.Client({
 });
 await client.connect();
 
+/* Only our own tables. Heroku's pg_stat_statements extension also lives in
+   `public`; see scripts/our-tables.mjs for why that matters. */
 const { rows: tables } = await client.query(`
-  SELECT table_name FROM information_schema.tables
-  WHERE table_schema = 'public' ORDER BY table_name
+  ${OUR_TABLES_CTE}
+  SELECT table_name FROM ours ORDER BY table_name
 `);
 console.log('\nTABLES');
 if (tables.length === 0) console.log('  (none — has the migration run?)');
@@ -52,14 +55,16 @@ try {
    all large enough to swallow a module's worth of writing; none of them may
    exist here. See db/001_init.sql. */
 const { rows: loose } = await client.query(`
-  SELECT table_name, column_name, data_type
-  FROM information_schema.columns
-  WHERE table_schema = 'public'
+  ${OUR_TABLES_CTE}
+  SELECT c.table_name, c.column_name, c.data_type
+  FROM information_schema.columns c
+  JOIN ours o ON o.table_name = c.table_name
+  WHERE c.table_schema = 'public'
     AND (
-      data_type IN ('text','json','jsonb','ARRAY','xml','bytea')
-      OR (data_type LIKE '%character%' AND character_maximum_length IS NULL)
+      c.data_type IN ('text','json','jsonb','ARRAY','xml','bytea')
+      OR (c.data_type LIKE '%character%' AND c.character_maximum_length IS NULL)
     )
-  ORDER BY table_name, column_name
+  ORDER BY c.table_name, c.column_name
 `);
 
 console.log('\nPRIVACY WALL');

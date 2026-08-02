@@ -86,11 +86,18 @@ if (!url) {
     'schema_migrations.applied_at',
   ]);
 
+  /* Restricted to OUR tables. Heroku installs pg_stat_statements into `public`
+     on every Postgres plan, and scanning it made this suite fail on production
+     for a column that is not ours and holds no user data. See
+     scripts/our-tables.mjs. */
+  const { OUR_TABLES_CTE } = await import('../scripts/our-tables.mjs');
   const { rows: columns } = await client.query(`
-    SELECT table_name, column_name, data_type, character_maximum_length
-    FROM information_schema.columns
-    WHERE table_schema = 'public'
-    ORDER BY table_name, ordinal_position
+    ${OUR_TABLES_CTE}
+    SELECT c.table_name, c.column_name, c.data_type, c.character_maximum_length
+    FROM information_schema.columns c
+    JOIN ours o ON o.table_name = c.table_name
+    WHERE c.table_schema = 'public'
+    ORDER BY c.table_name, c.ordinal_position
   `);
 
   test('the database has columns to inspect', () => {
