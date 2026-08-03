@@ -2986,3 +2986,11 @@ footer {
     display: none !important;
   }
 }
+
+/* The plain-language handle at the head of each point in the reflection.
+   See splitLabel() in app/profile/page.tsx. */
+.syn-point {
+  color: var(--color-ink);
+  font-weight: 700;
+  margin-right: 6px;
+}

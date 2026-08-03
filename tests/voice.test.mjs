@@ -44,15 +44,41 @@ const FORBIDDEN = [
   "Munger",
 ];
 
+/* Matched at a WORD BOUNDARY, not as a bare substring.
+   A plain `includes()` reads "abel" inside the word "label" and fails the
+   build for a sentence that names nobody — which it did, the moment VOICE
+   gained a section about labelling each point. A guard that cries wolf on
+   ordinary English gets weakened or deleted, and then it is not protecting
+   hard rule 1 at all. Leading boundary only, so "Calder" still catches
+   "Calderón". */
+const leaks = (haystack, needle) =>
+  new RegExp(
+    `\\b${needle.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}`,
+    "i",
+  ).test(haystack);
+
 test("VOICE names no source, author, book, or personal brand", () => {
-  const lower = VOICE.toLowerCase();
   for (const name of FORBIDDEN) {
     assert.equal(
-      lower.includes(name.toLowerCase()),
+      leaks(VOICE, name),
       false,
       `VOICE leaks "${name}" — hard rule 1 forbids naming a source or personal brand anywhere a user can reach.`,
     );
   }
+});
+
+test("the brand guard itself does not fire on ordinary English", () => {
+  // The regression that made this guard word-boundary aware: "label" contains
+  // "abel". If this ever fails, the guard has gone back to substring matching
+  // and will block innocent copy.
+  assert.equal(
+    leaks("Lead each point with a short plain label:", "Abel"),
+    false,
+  );
+  assert.equal(leaks("a syllable, a table, a fable", "Abel"), false);
+  // ...while still catching the real thing, in either spelling.
+  assert.equal(leaks("as Abel wrote", "Abel"), true);
+  assert.equal(leaks("Abel Calderón said", "Calder"), true);
 });
 
 test("VOICE instructs the model never to cite a source either", () => {

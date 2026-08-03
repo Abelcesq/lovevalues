@@ -89,17 +89,17 @@ const SCHEMA = {
     operatingSystem: {
       type: "string",
       description:
-        "How they appear to run underneath: inherited patterns, what they reach for under stress, what tends to set it off. Three to five short paragraphs. Roots, never blame. No diagnosis.",
+        "How they appear to run underneath: inherited patterns, what they reach for under stress, what tends to set it off. Three to five short paragraphs. Give each paragraph a short plain-language label naming the behaviour, then a colon, then the explanation — e.g. 'Reaching for work when things get tense:'. Plain English, no jargon, no undefined terms. The label describes what they DO; it is never a personality type, attachment style, or condition. Roots, never blame. No diagnosis.",
     },
     howYouPresent: {
       type: "string",
       description:
-        "How they show up in relationship — with particular attention to the gap between the terms they state and the terms they actually enforce. Two to four paragraphs, warm and direct.",
+        "How they show up in relationship, with particular attention to any distance between what they say they want and what they actually do. Two to four paragraphs, warm and direct. Give each paragraph a short plain-language label naming that specific behaviour, then a colon, then the explanation. Never open with an abstract noun the reader has not been given — do not write 'here is the gap' unless the sentence itself says plainly what the distance is between. Plain English. The label is never a personality type or diagnosis.",
     },
     lovingFeedback: {
       type: "string",
       description:
-        "What genuinely works about how they love, and why the harder patterns are there — traced to their origins with compassion. Lead with the real strengths; they are not a consolation prize. Three to five paragraphs.",
+        "What genuinely works about how they love, and why the harder patterns are there — traced to their origins with compassion. Lead with the real strengths; they are not a consolation prize. Three to five paragraphs, each opening with a short plain-language label and a colon. Plain English, concrete, tied to what they actually wrote. No personality types or diagnoses in the labels or anywhere else.",
     },
     growthPractices: {
       type: "array",

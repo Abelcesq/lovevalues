@@ -20,6 +20,7 @@ import {
   allValueCards,
   isQuestionVisible,
 } from "@/lib/method";
+import { splitLabel } from "@/lib/prose";
 import { type Synthesis } from "@/lib/store";
 import { useProfile } from "@/lib/useProfile";
 
@@ -576,9 +577,17 @@ function SynProse({
       {body
         .split("\n")
         .filter((p) => p.trim())
-        .map((p, i) => (
-          <p key={i}>{p}</p>
-        ))}
+        .map((p, i) => {
+          const point = splitLabel(p.trim());
+          return point ? (
+            <p key={i}>
+              <strong className="syn-point">{point.label}</strong>
+              {point.rest}
+            </p>
+          ) : (
+            <p key={i}>{p}</p>
+          );
+        })}
     </section>
   );
 }
