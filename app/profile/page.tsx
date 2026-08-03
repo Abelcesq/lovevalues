@@ -2,6 +2,7 @@
 
 import { Check, Printer } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Suspense,
   useCallback,
@@ -20,7 +21,15 @@ import {
   allValueCards,
   isQuestionVisible,
 } from "@/lib/method";
+import { PRICE_PROFILE_UPDATE, money } from "@/lib/plan";
 import { splitLabel } from "@/lib/prose";
+import {
+  canGenerate,
+  consumeCredit,
+  correctionIsIncluded,
+  reportKind,
+  reportPrice,
+} from "@/lib/reports";
 import { type Synthesis } from "@/lib/store";
 import { useProfile } from "@/lib/useProfile";
 
@@ -140,6 +149,7 @@ export default function ProfilePage() {
 }
 
 function Profile() {
+  const router = useRouter();
   const { profile, hydrated, update } = useProfile();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -218,7 +228,18 @@ function Profile() {
     [update],
   );
 
+  /* A re-run while they are still reading is part of the report they bought;
+     once the reading is confirmed, the next one is a new report. lib/reports.ts
+     carries the argument for that. */
+  const mayGenerate =
+    canGenerate(profile) ||
+    correctionIsIncluded(profile.synthesis !== null, allConfirmed);
+
   const generate = useCallback(async () => {
+    if (!mayGenerate) {
+      router.push("/unlock");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -313,15 +334,21 @@ function Profile() {
       /* A fresh reading is unconfirmed by definition: clearing the verdicts
          closes it back to the first section so the person reads what actually
          changed rather than scrolling past it to the end. */
-      update((p) => ({
-        ...p,
-        synthesis: {
-          ...(data.synthesis as Synthesis),
-          provider: data.provider,
-          model: data.model,
-        },
-        sectionResonance: {},
-      }));
+      /* The credit is spent HERE, on a reflection that actually arrived —
+         never when the request went out. Consuming it on send would charge
+         someone for a timeout. consumeCredit is a no-op when no credit is
+         held, which is what makes a correction re-run free. */
+      update((p) =>
+        consumeCredit({
+          ...p,
+          synthesis: {
+            ...(data.synthesis as Synthesis),
+            provider: data.provider,
+            model: data.model,
+          },
+          sectionResonance: {},
+        }),
+      );
       setDrafts({});
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
@@ -331,7 +358,7 @@ function Profile() {
     } finally {
       setLoading(false);
     }
-  }, [profile, update]);
+  }, [profile, update, mayGenerate, router]);
 
   if (!hydrated) return null;
 
@@ -368,7 +395,21 @@ function Profile() {
             </div>
           )}
 
-          {!s && !loading && (
+          {/* With no reflection and no credit, the button would fail the moment
+              it was pressed. Send them where the decision actually is, and say
+              the price rather than making them click to discover it. */}
+          {!s && !loading && !mayGenerate && (
+            <div className="controls" style={{ border: 0 }}>
+              <Link className="btn btn-primary btn-lg" href="/unlock">
+                {`See your reflection — ${money(reportPrice(reportKind(profile)))}`}
+              </Link>
+              <Link className="btn btn-ghost btn-lg" href="/review">
+                Review my answers first
+              </Link>
+            </div>
+          )}
+
+          {!s && !loading && mayGenerate && (
             <div className="controls" style={{ border: 0 }}>
               <button
                 type="button"
@@ -475,6 +516,19 @@ function Profile() {
                       Return to dashboard
                     </Link>
                   </div>
+
+                  {/* The reading is finished, so a re-run is a new report at
+                      the update price. Priced in the label rather than behind
+                      the click — this is the first moment the person could be
+                      charged again, and finding that out after pressing it is
+                      how a product loses trust it has just earned. */}
+                  <p className="save-note" style={{ marginTop: 4 }}>
+                    Your answers change as you do. When they have,{" "}
+                    <Link href="/unlock">
+                      generate an updated report for {money(PRICE_PROFILE_UPDATE)}
+                    </Link>
+                    . This one stays yours either way.
+                  </p>
                 </>
               )}
 

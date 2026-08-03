@@ -86,7 +86,10 @@ function Journey() {
     if (screenIndex < screens.length - 1) return go(module.id, screenIndex + 1);
     const upcoming = ORDER[moduleIdx + 1];
     if (upcoming) return go(upcoming, 0);
-    router.push("/profile");
+    /* End of Module 4. The report is charged here, at the moment someone asks
+       to see it (CEO, 2026-08-03) — /unlock waves through anyone who has
+       already paid, so this is not a toll booth for people coming back. */
+    router.push("/unlock");
   };
 
   if (!hydrated) return <Loading />;

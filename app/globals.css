@@ -1202,6 +1202,46 @@ input:focus-visible {
   flex: 0 0 auto;
 }
 
+/* ---- /unlock — the charge for the reflection ----
+   Reuses .pay-box so the second time someone sees a payment screen it looks
+   like the first one. The price is set as a number rather than lost inside the
+   uppercase eyebrow, because on this page the number IS the question. */
+.wrap-narrow {
+  max-width: 680px;
+}
+/* Tokens only, and only tokens that EXIST — an undefined custom property makes
+   the whole declaration invalid and the value silently inherits. This price
+   spent one build rendering at the eyebrow's 12px because it asked for a
+   --text-24 that the scale does not define. The scale is at the top of this
+   file: 12, 14, 16, 18, 22, 28, 32, 44. */
+.unlock-price {
+  font-size: var(--text-22);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--color-ink);
+}
+.unlock-list {
+  list-style: none;
+  display: grid;
+  gap: 11px;
+  margin: 18px 0 22px;
+}
+.unlock-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: var(--text-16);
+  color: var(--color-secondary);
+}
+.unlock-list svg {
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  color: var(--color-brand);
+  flex: 0 0 auto;
+}
+
 /* ---- the two later purchases ----
    Deliberately quieter than the membership card: they are disclosure, not a
    second thing to buy today. Nobody can purchase either of these yet — the

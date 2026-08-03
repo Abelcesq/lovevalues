@@ -21,16 +21,22 @@
  *
  *   2. VALUES REPORT — $29.99, once, and only once the four modules are done.
  *      The AI analysis of the person's own answers. Bought separately, on top
- *      of the membership. Not included in it.
+ *      of the membership. Not included in it. Charged at the moment they ask
+ *      to see it, which is the "See your reflection" button at the end of
+ *      Module 4 — see app/unlock/page.tsx.
  *
- *   3. MATCH ANALYSIS — $9.99 per report generated. Bought separately, each
+ *   3. UPDATED VALUES REPORT — $9.99. The SECOND and every later report the
+ *      same person generates about themselves, after their answers have
+ *      changed. (CEO, 2026-08-03.) Only the first one is $29.99.
+ *
+ *   4. MATCH ANALYSIS — $9.99 per report generated. Bought separately, each
  *      time. Editing answers is always free; it is GENERATING A REPORT that
  *      costs, and a second report costs again.
  *
- * Note that 1 and 3 are both $9.99 and are NOT the same thing — one is monthly
- * access, the other is per-report. Any copy naming a price must make clear
- * which of the two it means, or a reader will reasonably assume their
- * membership already covers match analysis. It does not.
+ * Note that 1, 3 and 4 are ALL $9.99 and are three different things — monthly
+ * access, a re-run of your own report, and one report about you and another
+ * person. Any copy naming $9.99 must say which, or a reader will reasonably
+ * assume their membership already covers the other two. It does not.
  *
  * CANCELLATION. Canceling stops FUTURE charges only; time already paid for is
  * always honoured:
@@ -50,7 +56,16 @@ export const PRICE_MONTHLY = 9.99;
 /** Product 2 — the values report. One-time, separate from membership. */
 export const PRICE_PROFILE = 29.99;
 
-/** Product 3 — one match analysis. Charged per report generated, every time. */
+/**
+ * Product 3 — a re-run of a person's OWN report, after the first one.
+ *
+ * The same number as the membership and as a match analysis, and none of the
+ * three is the other. lib/reports.ts is what decides which price a given
+ * person is looking at; nothing should compare prices to work that out.
+ */
+export const PRICE_PROFILE_UPDATE = 9.99;
+
+/** Product 4 — one match analysis. Charged per report generated, every time. */
 export const PRICE_MATCH = 9.99;
 
 /** Formats for display. Kept here so no page hard-codes a number that could
@@ -68,7 +83,7 @@ export const LATER_COSTS = [
     price: PRICE_PROFILE,
     title: "Your values and personality analysis",
     when: "Once you have completed the four-part discovery process",
-    body: "This cost is separate, and it generates your unique analysis of your values and personality — the clarity to communicate who you are and to seek a partner who will value and see all that you bring to the relationship.",
+    body: `This cost is separate, and it generates your unique analysis of your values and personality — the clarity to communicate who you are and to seek a partner who will value and see all that you bring to the relationship. It is charged when you ask to see your reflection, not before. Editing your answers is always free, and so is asking the analysis to reconsider a section while you are reading it; generating a fresh report later, once your answers have changed, is ${money(PRICE_PROFILE_UPDATE)}.`,
   },
   {
     id: "match",

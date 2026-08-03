@@ -25,7 +25,13 @@ import {
   trialDaysLeft,
   updateAccount,
 } from "@/lib/account";
-import { PRICE_MATCH, PRICE_MONTHLY, PRICE_PROFILE, money } from "@/lib/plan";
+import {
+  PRICE_MATCH,
+  PRICE_MONTHLY,
+  PRICE_PROFILE,
+  PRICE_PROFILE_UPDATE,
+  money,
+} from "@/lib/plan";
 import {
   MODULES,
   QUESTIONS,
@@ -175,9 +181,12 @@ export default function Dashboard() {
               </span>
               <h2>Your report</h2>
               <p>
+                {/* "Regenerate any time" was true when it was free. It now
+                    costs, so the price belongs in the same sentence as the
+                    invitation — not discovered on the next screen. */}
                 {profile.synthesis
-                  ? `Generated ${new Date(profile.synthesis.generatedAt).toLocaleDateString()}. Edit an answer and regenerate any time — it is a living document.`
-                  : "Not generated yet. Answer what you can, then the method will write your reflection."}
+                  ? `Generated ${new Date(profile.synthesis.generatedAt).toLocaleDateString()}. Editing your answers is always free; generating a fresh report once they have changed is ${money(PRICE_PROFILE_UPDATE)}.`
+                  : `Not generated yet. Answer what you can — your first report is ${money(PRICE_PROFILE)}, charged when you ask to see it.`}
               </p>
               <div className="c-actions">
                 <Link className="btn btn-ghost" href="/profile">
@@ -387,7 +396,9 @@ export default function Dashboard() {
                 </p>
                 <dl className="dash-dl">
                   <dt>Values analysis</dt>
-                  <dd>{`${money(PRICE_PROFILE)}, once — after the four parts are complete`}</dd>
+                  <dd>{`${money(PRICE_PROFILE)}, once — charged when you ask to see it, after the four parts are complete`}</dd>
+                  <dt>An updated values analysis</dt>
+                  <dd>{`${money(PRICE_PROFILE_UPDATE)} for each new one, once your answers have changed`}</dd>
                   <dt>Match analysis</dt>
                   <dd>{`${money(PRICE_MATCH)} for each report generated`}</dd>
                 </dl>

@@ -12,6 +12,7 @@
  */
 
 import type { SortBucket } from "./method";
+import type { ReportCredit } from "./reports";
 
 const KEY = "lovevalues.profile.v1";
 
@@ -70,6 +71,19 @@ export type ProfileState = {
     string,
     { verdict: "yes" | "partly" | "no"; correction: string }
   >;
+  /**
+   * How many reflections this person has generated. The first costs $29.99 and
+   * every one after it costs $9.99, so this number IS the price — see
+   * lib/reports.ts, which is the only place that should reason about it.
+   *
+   * Counted on success, never on request: a reflection that failed halfway
+   * must not push someone into update pricing for a report they never read.
+   */
+  reportsGenerated: number;
+  /** A paid-for, unspent right to generate one reflection. Null means the
+      next one has to be bought. See lib/reports.ts for why this is a display
+      decision and not a security boundary. */
+  reportCredit: ReportCredit | null;
   updatedAt: string;
 };
 
@@ -82,6 +96,8 @@ export const EMPTY_PROFILE: ProfileState = {
   answers: {},
   synthesis: null,
   sectionResonance: {},
+  reportsGenerated: 0,
+  reportCredit: null,
   updatedAt: "",
 };
 
@@ -90,7 +106,16 @@ export function loadProfile(): ProfileState {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return EMPTY_PROFILE;
-    return { ...EMPTY_PROFILE, ...(JSON.parse(raw) as Partial<ProfileState>) };
+    const saved = { ...EMPTY_PROFILE, ...(JSON.parse(raw) as Partial<ProfileState>) };
+    /* A profile written before reportsGenerated existed still has a reflection
+       in it. Left at zero, the meter would call that person's NEXT report their
+       first and charge them $29.99 for it — and everyone in that position
+       generated theirs when the whole thing was free. Count what is already on
+       the page. */
+    if (saved.synthesis && saved.reportsGenerated === 0) {
+      saved.reportsGenerated = 1;
+    }
+    return saved;
   } catch {
     return EMPTY_PROFILE;
   }
