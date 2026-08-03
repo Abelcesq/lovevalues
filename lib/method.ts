@@ -734,6 +734,39 @@ export const QUESTIONS: Question[] = [
       "Not what you believe you should do. What you do at 11pm on a bad night.",
     placeholder: "Withdraw, escalate, fix, go quiet, leave, over-explain…",
   },
+  /* The two questions below were added 2026-08-03, and they are the only ones
+     in the method aimed at what someone does in the sixty seconds that decide
+     a relationship. Everything above asks what a person is like; these ask
+     what they DO when it is going badly, which is the thing the reflection
+     could previously only guess at.
+
+     Both are deliberately about the ordinary case, not the worst one. Neither
+     asks what a partner did — that is not the subject and it is not what this
+     method is for. */
+  {
+    id: "patterns-repair",
+    moduleId: "patterns",
+    kind: "long-text",
+    prompt:
+      "After a fight, what actually brings you back together — and who usually moves first?",
+    /* The second half of the helper is doing the real work. People answer the
+       offering half readily and never think to mention the receiving half,
+       which is the one that more often decides how it goes. */
+    helper:
+      "Whether the reaching-out lands matters more than whether the fight happened. Include the times a partner reached out and you weren’t ready to take it.",
+    placeholder: "How it ends, how long it takes, and who reaches…",
+  },
+  {
+    id: "patterns-complaint",
+    moduleId: "patterns",
+    kind: "long-text",
+    prompt:
+      "When a partner tells you they’re unhappy with something you did, what happens in you?",
+    helper:
+      "The first few seconds, before you answer. That reaction decides most of what follows.",
+    placeholder:
+      "What you feel, what you want to say, and what you actually say…",
+  },
 
   /* ---------- MODULE 4: HABITS ---------- */
   {
