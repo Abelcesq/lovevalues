@@ -48,8 +48,24 @@ export type ProfileState = {
   /** All narrative answers, keyed by question id. */
   answers: Record<string, string>;
   synthesis: Synthesis | null;
-  /** "Does this resonate?" — yes | partly | no, plus the correction. */
-  resonance: { verdict: "yes" | "partly" | "no"; correction: string } | null;
+  /**
+   * "Does this resonate?" — asked once PER SECTION of the reflection, keyed by
+   * section id, not once for the whole document.
+   *
+   * It used to be a single verdict for the entire analysis, which asked someone
+   * to compress five distinct readings into one answer and gave them nowhere to
+   * say *which* part was wrong. Per section, a correction can be attached to the
+   * thing it corrects — and that is what makes regenerating meaningful, because
+   * these notes are sent to the engine (see /api/synthesize).
+   *
+   * Profiles saved under the old shape simply arrive with this empty; loadProfile
+   * merges against EMPTY_PROFILE, so nothing breaks and the person is asked
+   * again per section.
+   */
+  sectionResonance: Record<
+    string,
+    { verdict: "yes" | "partly" | "no"; correction: string }
+  >;
   updatedAt: string;
 };
 
@@ -61,7 +77,7 @@ export const EMPTY_PROFILE: ProfileState = {
   operationalized: {},
   answers: {},
   synthesis: null,
-  resonance: null,
+  sectionResonance: {},
   updatedAt: "",
 };
 

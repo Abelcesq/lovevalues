@@ -141,6 +141,17 @@ type Payload = {
     { definition: string; dos: string; donts: string }
   >;
   answers: { question: string; answer: string }[];
+  /**
+   * What the person said was wrong with the LAST reflection, per section.
+   *
+   * This closes a real hole. The UI has always invited people to say what a
+   * reflection got wrong, and that text was saved locally and never sent
+   * anywhere — so regenerating produced substantially the same document and the
+   * promise on screen ("tell us what to correct — and the reflection changes
+   * with you") was not true. Being asked what is wrong and then watching
+   * nothing change is worse than never being asked.
+   */
+  corrections?: { section: string; verdict: string; note: string }[];
 };
 
 /* ── WHY THIS ROUTE STREAMS ──────────────────────────────────────────────────
@@ -255,7 +266,33 @@ export async function POST(request: Request) {
     ...answered.map((a) => `Q: ${a.question}\nA: ${a.answer}`),
   ].join("\n");
 
-  const userMessage = `Here is everything this person shared. Reflect it back to them.\n\n${transcript}`;
+  /* Their corrections to the previous attempt, if this is a regeneration. The
+     instruction is deliberately strong: a person who tells you a reading is
+     wrong and receives the same reading back has been ignored, and they will
+     not bother telling you twice. */
+  const notes = (body.corrections ?? []).filter((c) => c?.note?.trim());
+  const correctionBlock = notes.length
+    ? [
+        "",
+        "───────────────────────────────────────────────",
+        "THEY HAVE ALREADY READ A REFLECTION AND TOLD YOU WHERE IT WAS WRONG.",
+        "",
+        "Their corrections are below, by section. Treat them as better evidence",
+        "than your previous reading — they know themselves and you were working",
+        "from a partial picture. Do not repeat what they rejected, do not defend",
+        "it, and do not simply soften it. Where a correction changes what a value",
+        "or a pattern means for them, follow that through into the other sections",
+        "too, because these readings depend on each other.",
+        "",
+        ...notes.map(
+          (c) =>
+            `SECTION: ${c.section}\nTHEIR VERDICT: ${c.verdict === "no" ? "This is not me." : "Partly right."}\nIN THEIR WORDS: ${c.note.trim()}`,
+        ),
+        "───────────────────────────────────────────────",
+      ].join("\n")
+    : "";
+
+  const userMessage = `Here is everything this person shared. Reflect it back to them.\n\n${transcript}${correctionBlock}`;
 
   /* The fallback provider has no server-side schema enforcement, so the shape
      has to travel in the prompt. Derived from SCHEMA rather than hand-written,
