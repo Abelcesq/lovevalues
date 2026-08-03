@@ -58,8 +58,10 @@ export default function Privacy() {
             <p>
               Because everything lives on your device, clearing your browser
               data will erase your profile — and we will not be able to recover
-              it. Use <strong>Download my profile</strong> on your profile page
-              to keep your own copy.
+              it. Use <strong>Export</strong> on your dashboard to keep your own
+              copy of everything, and <strong>Print or save my analysis</strong>{" "}
+              on your profile page if what you want is the reflection itself, as
+              a PDF or on paper.
             </p>
           </section>
 
@@ -112,10 +114,10 @@ export default function Privacy() {
             <p>
               The honest cost of that: signing in on a new phone restores your
               account and your subscription, not your writing. Clearing your
-              browser data is permanent. Use{" "}
-              <strong>Download my profile</strong> and keep your own copy — we
-              would rather say this plainly than let a sign-up screen imply a
-              safety net that isn&apos;t there.
+              browser data is permanent. Use <strong>Export</strong> on your
+              dashboard and keep your own copy — we would rather say this
+              plainly than let a sign-up screen imply a safety net that
+              isn&apos;t there.
             </p>
           </section>
 

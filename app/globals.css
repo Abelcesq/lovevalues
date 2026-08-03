@@ -2878,3 +2878,72 @@ footer {
     scroll-behavior: auto;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PRINT — "Print or save my analysis" on /profile.
+
+   The CEO's point, 2026-08-02: a downloaded JSON profile has no value to the
+   person; the analysis does. Print is how you keep something you can actually
+   read, and every browser's print dialog offers "Save as PDF", so this one
+   control covers both words he used.
+
+   What prints is the reflection and nothing else. Navigation, the resonance
+   buttons, and the controls themselves are all interface — on paper they are
+   dead weight, and a screenshot of a button in a PDF looks like a mistake.
+
+   The legal disclosure deliberately SURVIVES printing. Hard rule 6 says it
+   appears on every report; a printed report that has shed it is exactly the
+   artefact that gets forwarded to someone else without it.
+   ────────────────────────────────────────────────────────────────────────── */
+@media print {
+  .nav,
+  footer,
+  .controls,
+  .resonance,
+  .care-prompt,
+  .rail,
+  .toc {
+    display: none !important;
+  }
+
+  /* Paper is white and ink is expensive; the indigo canvas is neither. */
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .journey,
+  .wrap {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Keep a section's heading with its text rather than orphaning it at the
+     foot of a page. */
+  .syn-section,
+  .syn-value,
+  .syn-practice {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .syn-section h2,
+  .syn-value h3,
+  .syn-practice h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* The mirror framing and the disclosure are the two things that must never
+     be lost in the transfer to paper. */
+  .framing,
+  .save-note {
+    border: 1px solid #bbb;
+    color: #000;
+    background: #fff;
+  }
+
+  a {
+    text-decoration: none;
+    color: #000;
+  }
+}

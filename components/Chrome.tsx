@@ -1,35 +1,33 @@
-import Image from "next/image";
 import Link from "next/link";
 import { LEGAL_DISCLOSURE } from "@/lib/method";
 
 /**
- * The mark — the CEO's logo artwork, uploaded 2026-08-02 and living at
- * public/logo.png. This replaced both the original flat indigo compass tile and
- * the vector recreation that briefly stood in for it while the real file was
- * being uploaded; the recreation's italic-serif monogram could not reproduce
- * the calligraphic LV, which is the most distinctive thing about the mark.
+ * The mark — the CEO's revised logo, 2026-08-02, at public/logo.svg.
  *
- * It arrived in the repository ROOT, where Next.js does not serve static files,
- * and was moved here. Anything uploaded for the web has to sit under public/ or
- * it is simply not reachable — worth knowing before the next upload.
+ * Third version of this in one day, and the progression is worth recording
+ * because it is a real lesson about drawing for small canvases. The first PNG
+ * rendered the LV in a fine calligraphic hairline: beautiful at 512px, and by
+ * 48px on a phone the monogram had dissolved into texture while the heart
+ * carried on alone. The CEO redrew it with the letterforms as filled vector
+ * paths on much heavier strokes, which is exactly the right fix — weight is
+ * what survives being scaled down, not detail.
  *
- * Served through next/image rather than a bare <img> because the source is a
- * 512px, 120KB PNG being displayed at 30-84px. `sizes` is stated explicitly so
- * a phone downloads a ~48px-appropriate file instead of the full 512; without
- * it, next/image assumes 100vw and ships the whole thing. Dimensions come from
- * CSS, not from these props, so the header and footer can size it differently.
+ * Plain <img> rather than next/image. The optimiser exists to resize rasters,
+ * and this is 2.4KB of vector that is already resolution-independent — running
+ * it through the pipeline would add a request and buy nothing. The PNG stays in
+ * public/ because social previews cannot use SVG, so an og:image still needs it.
+ *
+ * Both uploads landed in the repository ROOT, where Next.js does not serve
+ * static files, and both were moved here. The filename also carried spaces,
+ * which do not belong in a URL. Uploading straight into public/ avoids both.
+ *
+ * Sizing lives entirely in CSS so the header and footer can differ.
  */
 export function Mark() {
   return (
     <span className="mark" aria-hidden="true">
-      <Image
-        src="/logo.png"
-        alt=""
-        width={512}
-        height={512}
-        priority
-        sizes="(max-width: 700px) 48px, 84px"
-      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo.svg" alt="" />
     </span>
   );
 }

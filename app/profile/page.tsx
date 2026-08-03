@@ -1,5 +1,6 @@
 "use client";
 
+import { Printer } from "lucide-react";
 import Link from "next/link";
 import { Suspense, useCallback, useState } from "react";
 import CarePrompt from "@/components/CarePrompt";
@@ -13,7 +14,7 @@ import {
   allValueCards,
   isQuestionVisible,
 } from "@/lib/method";
-import { downloadProfile, type Synthesis } from "@/lib/store";
+import { type Synthesis } from "@/lib/store";
 import { useProfile } from "@/lib/useProfile";
 
 export default function ProfilePage() {
@@ -299,6 +300,17 @@ function Profile() {
                 )}
               </div>
 
+              {/* "Download my profile" is gone, and what replaced it is not the
+                  same thing wearing a new label. That button saved a JSON file
+                  of every answer plus the reflection — a data-portability
+                  export, useful for not losing your work and useless to read.
+                  The thing a person actually wants to keep is the analysis, in
+                  a form they can hand to someone or put in a drawer. Print does
+                  that, and every browser's print dialog offers "Save as PDF",
+                  so one control covers both words the CEO used.
+
+                  The raw export still exists on the dashboard, where it belongs:
+                  it is the safety net for local-first storage, not a feature. */}
               <div className="controls">
                 <Link className="btn btn-ghost btn-lg" href="/review">
                   Edit my answers
@@ -313,9 +325,9 @@ function Profile() {
                 <button
                   type="button"
                   className="btn btn-ghost btn-lg"
-                  onClick={() => downloadProfile(profile)}
+                  onClick={() => window.print()}
                 >
-                  Download my profile
+                  <Printer aria-hidden="true" /> Print or save my analysis
                 </button>
               </div>
 
