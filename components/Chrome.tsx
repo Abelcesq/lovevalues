@@ -1,63 +1,35 @@
+import Image from "next/image";
 import Link from "next/link";
 import { LEGAL_DISCLOSURE } from "@/lib/method";
 
 /**
- * The mark — the CEO's logo, 2026-08-02.
+ * The mark — the CEO's logo artwork, uploaded 2026-08-02 and living at
+ * public/logo.png. This replaced both the original flat indigo compass tile and
+ * the vector recreation that briefly stood in for it while the real file was
+ * being uploaded; the recreation's italic-serif monogram could not reproduce
+ * the calligraphic LV, which is the most distinctive thing about the mark.
  *
- * Replaces the flat indigo compass tile. The earlier note here argued against a
- * heart on the grounds that it would file this next to every dating app; the
- * CEO chose one anyway, and the drawing answers the objection: an open outline
- * in gold-to-rose on deep indigo reads closer to a wedding invitation than to a
- * swipe app, and the LV monogram carries the name rather than the shape.
+ * It arrived in the repository ROOT, where Next.js does not serve static files,
+ * and was moved here. Anything uploaded for the web has to sit under public/ or
+ * it is simply not reachable — worth knowing before the next upload.
  *
- * Inline SVG rather than a PNG, on purpose. It is asked to render from ~28px in
- * the footer to ~84px in the header, and it must stay crisp on a retina phone
- * at every size in between; one vector does that with no @2x set and no extra
- * request. Sizing lives entirely in CSS — nothing here is fixed in pixels.
+ * Served through next/image rather than a bare <img> because the source is a
+ * 512px, 120KB PNG being displayed at 30-84px. `sizes` is stated explicitly so
+ * a phone downloads a ~48px-appropriate file instead of the full 512; without
+ * it, next/image assumes 100vw and ships the whole thing. Dimensions come from
+ * CSS, not from these props, so the header and footer can size it differently.
  */
 export function Mark() {
   return (
     <span className="mark" aria-hidden="true">
-      <svg viewBox="0 0 512 512" role="presentation" focusable="false">
-        <defs>
-          <linearGradient id="lv-tile" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#37276F" />
-            <stop offset="0.55" stopColor="#2A1E58" />
-            <stop offset="1" stopColor="#221741" />
-          </linearGradient>
-          {/* Gold at the top-left shoulder falling to rose at the point, which
-              is the direction the light runs in the CEO's original. */}
-          <linearGradient id="lv-heart" x1="0.1" y1="0" x2="0.85" y2="1">
-            <stop offset="0" stopColor="#F0CB8E" />
-            <stop offset="0.45" stopColor="#EFAE90" />
-            <stop offset="1" stopColor="#EE8FA0" />
-          </linearGradient>
-        </defs>
-
-        <rect width="512" height="512" rx="116" fill="url(#lv-tile)" />
-
-        <path
-          d="M256 414C256 414 92 316 92 204c0-54 42-92 92-92 34 0 60 20 72 42 12-22 38-42 72-42 50 0 92 38 92 92 0 112-164 210-164 210z"
-          fill="none"
-          stroke="url(#lv-heart)"
-          strokeWidth="24"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-
-        <text
-          x="256"
-          y="286"
-          textAnchor="middle"
-          fill="#F8F2E7"
-          fontSize="158"
-          fontStyle="italic"
-          fontFamily="Georgia, 'Times New Roman', 'Playfair Display', serif"
-          letterSpacing="-6"
-        >
-          LV
-        </text>
-      </svg>
+      <Image
+        src="/logo.png"
+        alt=""
+        width={512}
+        height={512}
+        priority
+        sizes="(max-width: 700px) 48px, 84px"
+      />
     </span>
   );
 }
