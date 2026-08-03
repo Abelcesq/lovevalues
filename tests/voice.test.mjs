@@ -42,6 +42,16 @@ const FORBIDDEN = [
   "Hill", // Napoleon Hill, via the board
   "Robbins",
   "Munger",
+  /* Added 2026-08-03 with the conflict, language and self-worth material. The
+     ideas are the product's; the names, the book titles and the branded
+     programme name are not, and an attribution is exactly the kind of thing a
+     later edit adds to sound authoritative. */
+  "Gottman",
+  "Rosenberg",
+  "Davenport",
+  "Nonviolent Communication",
+  "Seven Principles",
+  "Four Horsemen",
 ];
 
 /* Matched at a WORD BOUNDARY, not as a bare substring.
@@ -214,5 +224,144 @@ test("VOICE separates chosen values from inherited obligation", () => {
   assert.ok(
     /inherited obligation/i.test(VOICE),
     "VOICE must name inherited obligation explicitly",
+  );
+});
+
+/* ── The relationship mechanics, added 2026-08-03 ─────────────────────────────
+   Until this point VOICE could describe a person beautifully and still say
+   nothing about what either of them would DO on a bad Tuesday. These are the
+   behaviours that decide it, and each is here because it is observable,
+   teachable and checkable — which is also what keeps every one of them on the
+   right side of hard rule 2. A future edit that trims VOICE for length would
+   take these first; they are the newest and they read as optional. They are
+   not. */
+
+test("VOICE reads conflict as behaviour that can be described and changed", () => {
+  assert.match(VOICE, /WHAT ACTUALLY PREDICTS WHETHER A RELATIONSHIP HOLDS/);
+  assert.ok(
+    /Name the behaviour; never name the person/i.test(VOICE),
+    "the conflict lens is the likeliest place in the document to slide into typing someone",
+  );
+});
+
+test("VOICE names the four corrosive moves as things people do", () => {
+  const lower = VOICE.toLowerCase();
+  for (const move of ["contempt", "defending", "shutting down"]) {
+    assert.ok(lower.includes(move), `VOICE should name "${move}"`);
+  }
+  assert.ok(
+    /attacking the person instead of naming the behaviour/i.test(VOICE),
+    "the difference between a complaint and a character verdict is the whole point",
+  );
+  assert.ok(
+    /not kinds of people they are/i.test(VOICE),
+    "these must be framed as behaviours, or they become four new diagnoses",
+  );
+});
+
+test("VOICE keeps the break paired with coming back", () => {
+  // A break offered without the return is how someone learns to justify
+  // walking out. The two halves must never be separated.
+  assert.ok(/flooded/i.test(VOICE), "flooding must be named");
+  assert.ok(
+    /coming back is the part that matters/i.test(VOICE),
+    "the return is the load-bearing half of the twenty-minute break",
+  );
+});
+
+test("VOICE treats repair as the thing that separates couples who last", () => {
+  assert.ok(
+    /repair/i.test(VOICE),
+    "repair is the single most useful behaviour this document can name",
+  );
+  assert.ok(
+    /whether the other one takes it/i.test(VOICE),
+    "a repair has two sides; naming only the offering half misses half the pattern",
+  );
+});
+
+test("VOICE says that most problems are never solved", () => {
+  assert.ok(
+    /Most problems are never solved/i.test(VOICE),
+    "a person who believes every disagreement should resolve reads normal friction as failure",
+  );
+  assert.ok(
+    /what does this mean to you, and where does it come from/i.test(VOICE),
+    "the question that unsticks a gridlocked disagreement should be given verbatim",
+  );
+});
+
+test("VOICE teaches the four-part way of raising a hard thing", () => {
+  assert.match(VOICE, /THE LANGUAGE THAT MAKES ANY OF THAT POSSIBLE/);
+  assert.ok(
+    /the way a camera would record it/i.test(VOICE),
+    "observation without a verdict in it is the first of the four parts",
+  );
+  for (const part of [
+    /what it felt like/i,
+    /what they needed and were not getting/i,
+    /what they are asking for now/i,
+  ]) {
+    assert.ok(part.test(VOICE), `a part of the four-part shape is missing: ${part}`);
+  }
+});
+
+test("VOICE keeps the trigger-and-source distinction, and does not use it to deny harm", () => {
+  assert.ok(
+    /can be the trigger of a feeling/i.test(VOICE),
+    "the distinction between what set a feeling off and what it points at must be explicit",
+  );
+  assert.ok(
+    /This is not word games/i.test(VOICE),
+    "stated without that caveat, this reads as telling someone their feelings are their own fault",
+  );
+});
+
+test("VOICE gives the test that separates a request from a demand", () => {
+  assert.ok(
+    /what happens when the answer is no/i.test(VOICE),
+    "the no-test is what makes the request/demand distinction checkable rather than a matter of tone",
+  );
+});
+
+test("VOICE names the reflex to fix as a failure of listening", () => {
+  assert.ok(
+    /moves the attention off the person speaking/i.test(VOICE),
+    "fixing, reassuring and matching a story are the common ways help stops being help",
+  );
+});
+
+test("VOICE turns the same language inward, toward self-worth", () => {
+  assert.ok(
+    /unmet need wearing a blame costume/i.test(VOICE),
+    "self-blame has to be readable as an unmet need, or the inward turn becomes another verdict",
+  );
+  assert.ok(
+    /what the anger is protecting/i.test(VOICE),
+    "anger should be read for the need underneath it",
+  );
+});
+
+test("VOICE names the three borrowed sources of self-worth", () => {
+  assert.match(VOICE, /WHERE SELF-WORTH IS BORROWED FROM/);
+  assert.ok(
+    /three common lenders/i.test(VOICE),
+    "achievement, appearance and other people's opinion are the three, and they should be countable",
+  );
+  assert.ok(
+    /hold themselves warmly while looking straight at something they did badly/i.test(
+      VOICE,
+    ),
+    "this is the working test for real self-worth and the reason it belongs in a relationship product",
+  );
+});
+
+test("the self-worth section connects contempt inward and outward", () => {
+  // The one insight that ties this section to the conflict section: a person
+  // who needs someone beneath them to feel worth something will produce
+  // contempt at home. Losing either half loses the connection.
+  assert.ok(
+    /floor built out of contempt/i.test(VOICE),
+    "borrowed worth propped up by looking down on someone must be named",
   );
 });

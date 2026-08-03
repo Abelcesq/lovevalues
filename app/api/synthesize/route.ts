@@ -94,7 +94,7 @@ const SCHEMA = {
     howYouPresent: {
       type: "string",
       description:
-        "How they show up in relationship, with particular attention to any distance between what they say they want and what they actually do. Two to four paragraphs. EACH ONE NAMES THE TRAIT FIRST, then a colon, then 'This showed up in…' and the specific thing they wrote. Do not narrate an episode and leave the reader to infer the quality — name it. Never open with an abstract noun they have not been given: do not write 'here is the gap' unless the sentence says plainly what the distance is between. Plain English, warm and direct. The named trait describes behaviour and is never a personality type, attachment style, or diagnosis.",
+        "How they show up in relationship, with particular attention to any distance between what they say they want and what they actually do, and to the behaviours the voice guidance says decide whether a relationship holds: how they open a hard conversation, what they do when they are flooded, whether they repair and whether they take a repair when it is offered, and how much warmth surrounds the friction. Two to four paragraphs. EACH ONE NAMES THE TRAIT FIRST, then a colon, then 'This showed up in…' and the specific thing they wrote. Do not narrate an episode and leave the reader to infer the quality — name it. Never open with an abstract noun they have not been given: do not write 'here is the gap' unless the sentence says plainly what the distance is between. Plain English, warm and direct. The named trait describes behaviour and is never a personality type, attachment style, or diagnosis.",
     },
     lovingFeedback: {
       type: "string",
@@ -109,7 +109,7 @@ const SCHEMA = {
     growthPractices: {
       type: "array",
       description:
-        "Concrete, specific new habits — small enough to start this week. Not advice, not affirmations. If someone withdraws in silence, a practice might be naming the drop out loud in the moment to build the confidence that makes it possible.",
+        "Concrete, specific new habits — small enough to start this week. Not advice, not affirmations. Prefer a practice they could rehearse in an actual sentence over a disposition they are asked to have: the four-part way of raising a hard thing, the twenty-minute break that is followed by coming back, a specific complaint in place of a character verdict, one appreciation said out loud a day. If someone withdraws in silence, a practice might be naming the drop out loud in the moment to build the confidence that makes it possible.",
       items: {
         type: "object",
         properties: {
