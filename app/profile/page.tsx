@@ -118,7 +118,7 @@ const SECTIONS: Section[] = [
     has: (s) => (s.growthPractices?.length ?? 0) > 0,
     render: (s) => (
       <section className="syn-section">
-        <span className="eyebrow">Growth practices</span>
+        <span className="eyebrow">Options for growth practices</span>
         <h2>Small things, starting this week</h2>
         {s.growthPractices?.map((p, i) => (
           <div className="syn-practice" key={`${p.practice}-${i}`}>
