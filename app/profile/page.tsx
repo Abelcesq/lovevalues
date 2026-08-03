@@ -35,6 +35,11 @@ type Section = {
   id: string;
   /** Shown in the confirm prompt, so the question names what it is about. */
   label: string;
+  /** Whether this reflection actually has content for the section. Reflections
+      generated before a field existed, and anything the open-model fallback
+      omits, would otherwise render an empty heading with a confirm prompt
+      underneath it and stall the reader on nothing. */
+  has: (s: Synthesis) => boolean;
   render: (s: Synthesis) => React.ReactNode;
 };
 
@@ -42,6 +47,7 @@ const SECTIONS: Section[] = [
   {
     id: "coreValues",
     label: "your core values",
+    has: (s) => (s.coreValues?.length ?? 0) > 0,
     render: (s) => (
       <section className="syn-section">
         <span className="eyebrow">Your core values</span>
@@ -61,6 +67,7 @@ const SECTIONS: Section[] = [
   {
     id: "operatingSystem",
     label: "how you run underneath",
+    has: (s) => Boolean(s.operatingSystem?.trim()),
     render: (s) => (
       <SynProse
         eyebrow="Your operating system"
@@ -72,6 +79,7 @@ const SECTIONS: Section[] = [
   {
     id: "howYouPresent",
     label: "how you show up in relationship",
+    has: (s) => Boolean(s.howYouPresent?.trim()),
     render: (s) => (
       <SynProse
         eyebrow="In relationship"
@@ -83,6 +91,7 @@ const SECTIONS: Section[] = [
   {
     id: "lovingFeedback",
     label: "what works, and why the rest is there",
+    has: (s) => Boolean(s.lovingFeedback?.trim()),
     render: (s) => (
       <SynProse
         eyebrow="With love"
@@ -92,8 +101,21 @@ const SECTIONS: Section[] = [
     ),
   },
   {
+    id: "specialAttribute",
+    label: "the quality that is uniquely yours",
+    has: (s) => Boolean(s.specialAttribute?.trim()),
+    render: (s) => (
+      <SynProse
+        eyebrow="Your special attribute"
+        title="The one quality that is uniquely yours"
+        body={s.specialAttribute}
+      />
+    ),
+  },
+  {
     id: "growthPractices",
     label: "the practices suggested for you",
+    has: (s) => (s.growthPractices?.length ?? 0) > 0,
     render: (s) => (
       <section className="syn-section">
         <span className="eyebrow">Growth practices</span>
@@ -132,18 +154,26 @@ function Profile() {
      nobody reads the growth practices before agreeing what their values are.
      Deriving this from stored verdicts rather than holding it in state means a
      returning visitor picks up exactly where they stopped. */
+  const sections = useMemo(
+    () =>
+      profile.synthesis
+        ? SECTIONS.filter((x) => x.has(profile.synthesis!))
+        : [],
+    [profile.synthesis],
+  );
+
   const openIndex = useMemo(() => {
     let i = 0;
     while (
-      i < SECTIONS.length &&
-      profile.sectionResonance[SECTIONS[i].id]?.verdict === "yes"
+      i < sections.length &&
+      profile.sectionResonance[sections[i].id]?.verdict === "yes"
     ) {
       i += 1;
     }
     return i;
-  }, [profile.sectionResonance]);
+  }, [sections, profile.sectionResonance]);
 
-  const allConfirmed = openIndex >= SECTIONS.length;
+  const allConfirmed = sections.length > 0 && openIndex >= sections.length;
 
   /* Bring a newly opened section into view. Without this the page silently
      grows below the fold and "Yes" looks like it did nothing — the exact
@@ -390,7 +420,7 @@ function Profile() {
                   opens the next one. Partly or No opens a box for their own
                   words, and only there does regenerating make sense, because
                   only there is there something new to regenerate FROM. */}
-              {SECTIONS.map((section, i) => {
+              {sections.map((section, i) => {
                 if (i > openIndex) return null;
                 const verdict = profile.sectionResonance[section.id]?.verdict;
                 const isOpen = i === openIndex;

@@ -104,7 +104,26 @@ LEAD EACH POINT WITH A SHORT PLAIN LABEL. When a section makes several distinct 
 
 THE LABEL MUST NEVER BE A DIAGNOSIS OR A TYPE. This is where a plain-language label is most likely to go wrong, so it is worth being exact. Never label a person — not "avoidant personality", not "anxious attachment", not "people-pleaser", not any condition, disorder, attachment style, personality type, or category that sounds like something a clinician would write on a form. Those name a person as a kind of thing, which is the opposite of what this document does, and they are wrong far more often than they are right. Label the BEHAVIOUR and keep it in their own life: what they do, when they do it, and what it costs. "You go quiet when you are hurt" is a description they can check against Tuesday. "You are avoidant" is a verdict they cannot argue with.
 
-STAY CONCRETE. Every claim should point at something they actually wrote or did. Prefer the plain observation to the memorable phrase; if an image is doing more work than the fact underneath it, cut the image and keep the fact. A reader should never have to work out what you meant.`;
+STAY CONCRETE. Every claim should point at something they actually wrote or did. Prefer the plain observation to the memorable phrase; if an image is doing more work than the fact underneath it, cut the image and keep the fact. A reader should never have to work out what you meant.
+
+NAME THE QUALITY, THEN SHOW THE EVIDENCE — this is the method itself, not a formatting preference:
+Telling someone their own story back to them, however warmly and however well observed, gives them nothing they can carry. They already know what happened. What they do not have — and what this entire product exists to hand them — is the NAME of the quality underneath it.
+
+So never merely acknowledge. Work backwards from what they wrote to the trait or value it demonstrates, state that plainly first, and only then give the evidence.
+
+The shape is always the same:
+  · the qualities, named in a few plain words — then a colon —
+  · then "These were demonstrated by…" or "This showed up in…" —
+  · then the specific thing they wrote, quoting their own words wherever their words are stronger than yours.
+
+Name two to four qualities together where they genuinely cluster, rather than one thin trait per paragraph. A strength reads: "Hard working, determined, and able to carry a hard thing to completion: these were demonstrated by going back to school as an adult and finishing at thirty, and by a work ethic you did not borrow from anyone." A growth area takes exactly the same discipline, said kindly: "Overextending yourself: this showed up in the way you absorbed the whole cost of the trip rather than asking anyone to share it."
+
+Apply this to strengths and to growth areas alike. A section about what works must contain named qualities, not a warm retelling; a section about what gets in the way must name the trait, not just describe an episode. Acknowledgement without a named quality is flattery, however true it happens to be.
+
+The test for every paragraph: could this person repeat the quality out loud to a partner tomorrow, look for it in someone else, and check themselves against it next week? If not, you have described an event and called it insight.
+
+THE SPECIAL ATTRIBUTE — the one quality that is genuinely theirs:
+Somewhere in what they wrote there is usually one thing that is unusual, that they said without being asked, and that they would not think to claim as remarkable. Find it and give it its own place. Name it, show where it came from in their own words, say plainly why it is uncommon, and then say what it would make possible in a relationship if a partner met them in it. Never invent this to be flattering, and never reach for something everyone has — if nothing in their answers is genuinely distinctive, say so gently and point at the closest real thing instead.`;
 
 /**
  * What "value" means here — shown at the top of the card sort.

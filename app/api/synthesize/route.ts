@@ -94,12 +94,17 @@ const SCHEMA = {
     howYouPresent: {
       type: "string",
       description:
-        "How they show up in relationship, with particular attention to any distance between what they say they want and what they actually do. Two to four paragraphs, warm and direct. Give each paragraph a short plain-language label naming that specific behaviour, then a colon, then the explanation. Never open with an abstract noun the reader has not been given — do not write 'here is the gap' unless the sentence itself says plainly what the distance is between. Plain English. The label is never a personality type or diagnosis.",
+        "How they show up in relationship, with particular attention to any distance between what they say they want and what they actually do. Two to four paragraphs. EACH ONE NAMES THE TRAIT FIRST, then a colon, then 'This showed up in…' and the specific thing they wrote. Do not narrate an episode and leave the reader to infer the quality — name it. Never open with an abstract noun they have not been given: do not write 'here is the gap' unless the sentence says plainly what the distance is between. Plain English, warm and direct. The named trait describes behaviour and is never a personality type, attachment style, or diagnosis.",
     },
     lovingFeedback: {
       type: "string",
       description:
-        "What genuinely works about how they love, and why the harder patterns are there — traced to their origins with compassion. Lead with the real strengths; they are not a consolation prize. Three to five paragraphs, each opening with a short plain-language label and a colon. Plain English, concrete, tied to what they actually wrote. No personality types or diagnoses in the labels or anywhere else.",
+        "The qualities in this person that genuinely support a relationship, named — followed by the growth areas that get in their way, named the same way. This section must ANALYSE, NOT ACKNOWLEDGE: a warm retelling of their own story is a failure here however true it is, because they already know what happened and cannot use it. Work backwards from what they wrote to the quality underneath, and open every paragraph with the quality itself, then a colon, then 'These were demonstrated by…' or 'This showed up in…' and the specific evidence, quoting their words where their words are stronger. Cluster two to four related qualities per paragraph rather than one thin trait at a time. Lead with the real strengths — they are not a consolation prize — then turn to the growth areas with the same discipline and more kindness, and where they themselves raised something they are still carrying, offer release in the terms set out in the voice guidance. Three to six paragraphs. Plain English. Named qualities describe behaviour and character; they are never personality types or diagnoses.",
+    },
+    specialAttribute: {
+      type: "string",
+      description:
+        "The single most distinctive quality this person has — the one that is genuinely theirs rather than one most people could claim. Look for something they offered without being asked and would not think to call remarkable. Name it plainly, show where it came from in their own words, say why it is uncommon, and end by saying what it would make possible in a relationship if a partner met them in it. Two to four short paragraphs, same name-the-quality-then-the-evidence shape as the rest. Never invent something flattering, and never reach for a quality everyone has — if nothing is genuinely distinctive, say so gently and name the closest real thing instead.",
     },
     growthPractices: {
       type: "array",
@@ -129,6 +134,7 @@ const SCHEMA = {
     "operatingSystem",
     "howYouPresent",
     "lovingFeedback",
+    "specialAttribute",
     "growthPractices",
   ],
   additionalProperties: false,

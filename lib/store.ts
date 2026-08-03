@@ -26,6 +26,10 @@ export type Synthesis = {
   operatingSystem: string;
   howYouPresent: string;
   lovingFeedback: string;
+  /** Optional because reflections generated before 2026-08-02 do not have one,
+      and because the open-model fallback has no schema enforcing it. The page
+      skips a section with no content rather than showing an empty heading. */
+  specialAttribute?: string;
   growthPractices: { practice: string; why: string }[];
   generatedAt: string;
 };

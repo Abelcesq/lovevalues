@@ -69,8 +69,12 @@ export function splitLabel(
   paragraph: string,
 ): { label: string; rest: string } | null {
   const colon = paragraph.indexOf(":");
-  /* Too early to be a phrase, or too late to be a heading. */
-  if (colon < 3 || colon > 60) return null;
+  /* Too early to be a phrase, or too long to be a heading. The ceiling is
+     generous because a label often names several qualities at once — "Hard
+     working, determined, and able to carry a hard thing to completion:" is one
+     label, not a sentence. The sentence-opener guard below, not length, is what
+     keeps prose out. */
+  if (colon < 3 || colon > 90) return null;
 
   const label = paragraph.slice(0, colon).trim();
 
@@ -80,7 +84,7 @@ export function splitLabel(
   const words = label.split(/\s+/);
 
   /* Labels are phrases, not sentences. */
-  if (words.length > 8) return null;
+  if (words.length > 12) return null;
 
   /* The decisive test: does this read as the start of a sentence? */
   if (SENTENCE_OPENERS.has(words[0].toLowerCase().replace(/[^a-z]/g, ""))) {
