@@ -52,6 +52,14 @@ const FORBIDDEN = [
   "Nonviolent Communication",
   "Seven Principles",
   "Four Horsemen",
+  /* Added 2026-10-04 with the give/receive and unconditional-love material.
+     A 14th-century mystic is public domain and quotable; naming her in a
+     generated reflection would still breach the standalone-brand rule and
+     would only mean something to a reader who had read her. */
+  "Julian of Norwich",
+  "Norwich",
+  "Revelations of Divine Love",
+  "Warrack",
 ];
 
 /* Matched at a WORD BOUNDARY, not as a bare substring.
@@ -363,5 +371,93 @@ test("the self-worth section connects contempt inward and outward", () => {
   assert.ok(
     /floor built out of contempt/i.test(VOICE),
     "borrowed worth propped up by looking down on someone must be named",
+  );
+});
+
+/* ── Giving, receiving, and unconditional love, added 2026-10-04 ──────────────
+   VOICE has always said that someone who cannot offer themselves affection
+   cannot fully receive it from anyone else, and then never asked the engine to
+   look. These make the receiving side a thing the reflection actually reports
+   on, and they pin the one distinction that keeps a document about
+   unconditional love from becoming a document about endurance. */
+
+test("VOICE treats giving and receiving as two separate capacities", () => {
+  assert.match(VOICE, /TO LOVE AND TO BE LOVED ARE TWO DIFFERENT CAPACITIES/);
+  assert.ok(
+    /which of the two is their stronger side/i.test(VOICE),
+    "the reading has to come back with an answer, not a general observation",
+  );
+});
+
+test("VOICE knows a receiving problem does not feel like one", () => {
+  // The reason this needs saying at all: from the inside it reads as modesty
+  // or independence, so a reflection that waits to be told about it never
+  // hears about it.
+  assert.ok(
+    /modesty, or independence, or not wanting to be a burden/i.test(VOICE),
+    "the disguises receiving trouble wears should be named concretely",
+  );
+  assert.ok(
+    /turning a compliment into a joke/i.test(VOICE),
+    "the small refusals are the observable evidence; without them this is abstract",
+  );
+});
+
+test("VOICE names the cost of giving without receiving, and does not scold", () => {
+  assert.ok(
+    /ledger kept privately/i.test(VOICE),
+    "one-way giving should be named for what it becomes",
+  );
+  assert.ok(
+    /without making it a fault/i.test(VOICE),
+    "a person who over-gives has usually been praised for it their whole life",
+  );
+});
+
+test("VOICE separates unconditional regard from unconditional acceptance", () => {
+  // THE load-bearing test in this file. Written loosely, a section on
+  // unconditional love tells someone being treated badly that staying is what
+  // love looks like.
+  assert.match(VOICE, /UNCONDITIONAL LOVE, SAID PRECISELY/);
+  assert.ok(
+    /never unconditional acceptance of BEHAVIOUR/i.test(VOICE),
+    "regard for the person and acceptance of behaviour must be held apart",
+  );
+  assert.ok(
+    /the absence of a self/i.test(VOICE),
+    "the failure mode has to be named as plainly as the virtue",
+  );
+});
+
+test("VOICE gives a usable test for unconditional love", () => {
+  assert.ok(
+    /saying no, asking for something to change, or leaving/i.test(VOICE),
+    "the distinction is only useful if the person can check themselves against it",
+  );
+  assert.ok(
+    /fear of losing the relationship/i.test(VOICE),
+    "what love-that-cannot-say-no actually is should be named",
+  );
+});
+
+test("VOICE never recommends endurance", () => {
+  assert.ok(
+    /Never recommend endurance/i.test(VOICE),
+    "this is the sentence that keeps the section safe for someone being hurt",
+  );
+  assert.ok(
+    /never frame staying as evidence of love/i.test(VOICE),
+    "and the corollary, which is the form the error actually takes",
+  );
+  assert.ok(
+    /not a lesson about patience/i.test(VOICE),
+    "VOICE must say what NOT to write when someone describes being treated badly",
+  );
+});
+
+test("boundaries are framed as proof of a self, not as a limit on love", () => {
+  assert.ok(
+    /proof that there is a person there to do the loving/i.test(VOICE),
+    "framing boundaries as love's ceiling is how this section would go wrong quietly",
   );
 });
