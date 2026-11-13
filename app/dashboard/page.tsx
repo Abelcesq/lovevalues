@@ -476,7 +476,7 @@ export default function Dashboard() {
           </Link>
         </div>
       </main>
-      <Footer />
+      <Footer member />
     </>
   );
 }

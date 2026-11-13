@@ -251,6 +251,21 @@ projects/               project.md = the container + dashboard
   one proves the pipeline; it does not prove the method. The resonance control
   (Yes / Partly / No) exists precisely to capture that answer and has never
   been used
-- ⬜ Accounts are `localStorage` only; payments inert until Stripe keys are set
+- ✅ **The member area is actually gated** (2026-11-13). Until that date NOT
+  ONE page called `auth()`: `/dashboard`, `/review`, `/profile` and the whole
+  journey were reachable by typing the URL in any browser. `middleware.ts` now
+  holds the member-path list and `/api/me` refuses without a session. `/login`
+  signs in against the database instead of comparing a hash in the same
+  browser's localStorage, which is why signing in on a second device was
+  impossible by construction
+- ✅ **Member profile** — `db/002`, `/me`, view + edit. The first data stored
+  about a person beyond identity and billing, and the ground a values-matching
+  product needs. No bio column, no free text, nothing from the four modules
+- ⬜ **Matching is not built.** `visible_in_matching` is collected and honoured
+  as consent; nothing reads it yet. Blocking, reporting and a double-consent
+  handshake must exist BEFORE any member can see another member — see the
+  thedotx member area, which has all three
+- ⬜ Payments inert until Stripe keys are set; the report paywall is a browser
+  gate, not enforcement (`lib/reports.ts` says so at the top)
 - ⬜ No match feature (Phase 2) and no privacy wall implementation yet
 - ⬜ Not tested on a single stranger — which is the only thing that matters next

@@ -211,7 +211,7 @@ export default function Checkout() {
           </p>
         </div>
       </main>
-      <Footer />
+      <Footer member />
     </>
   );
 }

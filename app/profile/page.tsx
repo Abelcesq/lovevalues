@@ -542,7 +542,7 @@ function Profile() {
           )}
         </div>
       </main>
-      <Footer />
+      <Footer member />
     </>
   );
 }

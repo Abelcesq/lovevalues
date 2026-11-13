@@ -77,10 +77,13 @@ export function Nav({
             </>
           )}
 
+          {/* Member navigation, and ONLY on the 'app' variant. The splash
+              and the sign-up flow must never show a way into the portal:
+              see the note on Footer below for how that went wrong. */}
           {variant === "app" && (
             <>
-              <Link className="login" href="/review">
-                Your answers
+              <Link className="login" href="/me">
+                My profile
               </Link>
               <Link className="btn btn-ghost" href="/dashboard">
                 Dashboard
@@ -93,7 +96,24 @@ export function Nav({
   );
 }
 
-export function Footer() {
+/**
+ * WHY THE FOOTER TAKES A `member` FLAG (CEO, 2026-11-13).
+ *
+ * He hit /signup — not signed in, no account yet — and found "Your answers"
+ * sitting in the footer. His read was exactly right: a link to a member page
+ * on a page for people who are not members means the portal is not contained.
+ * It was rendered unconditionally on every page in the app, splash and login
+ * included.
+ *
+ * The link itself was never a data leak — /review reads localStorage, so a
+ * stranger clicking it saw nothing of anyone else's. It was worse than that
+ * in product terms: it advertised a door, and anyone who followed it from the
+ * sign-up page landed on an empty page with no idea why.
+ *
+ * Defaults to false. A new page that forgets to pass anything gets the
+ * public footer, which is the safe way round.
+ */
+export function Footer({ member = false }: { member?: boolean }) {
   return (
     <footer>
       <div className="wrap">
@@ -106,7 +126,8 @@ export function Footer() {
             <Link className="care-link" href="/support">
               Talk to an external resource
             </Link>
-            <Link href="/review">Your answers</Link>
+            {member && <Link href="/me">My profile</Link>}
+            {member && <Link href="/review">Your answers</Link>}
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
           </nav>

@@ -220,7 +220,7 @@ function Unlock() {
           </p>
         </div>
       </main>
-      <Footer />
+      <Footer member />
     </>
   );
 }

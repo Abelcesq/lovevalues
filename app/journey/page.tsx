@@ -183,7 +183,7 @@ function Journey() {
           </p>
         </div>
       </main>
-      <Footer />
+      <Footer member />
     </>
   );
 }

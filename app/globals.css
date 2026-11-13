@@ -3059,3 +3059,104 @@ footer {
   color: inherit;
   text-decoration: underline;
 }
+
+/* ---- /me — the member profile ----
+   Chips rather than selects for every single-choice question. On a profile
+   form, which options EXIST is part of what the product is saying to the
+   person filling it in — that there is a "prefer not to say", that "anyone"
+   is on the list — and a <select> hides all of that until tapped. */
+.profile-form .field { margin-bottom: 22px; }
+.field-hint {
+  margin-top: 6px;
+  font-size: var(--text-12);
+  color: var(--color-muted);
+}
+.field-count {
+  margin-left: 8px;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  background: var(--color-card);
+  font: inherit;
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+.chip:hover:not(:disabled) { border-color: var(--color-brand); }
+.chip.on {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+  color: #fff;
+}
+.chip:disabled { opacity: 0.4; cursor: not-allowed; }
+.chip.static { cursor: default; }
+.activity-group { margin-top: 14px; }
+.activity-head {
+  font-size: var(--text-12);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.switch-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
+  font-size: var(--text-14);
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+.switch-row input { margin-top: 3px; flex: 0 0 auto; }
+.switch-row strong { color: var(--color-ink); }
+
+.profile-view { margin: 8px 0 28px; }
+.profile-row {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-line);
+}
+.profile-row dt {
+  font-size: var(--text-12);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.profile-row dd { font-size: var(--text-16); color: var(--color-ink); }
+.profile-row .muted { color: var(--color-muted); }
+@media (max-width: 620px) {
+  .profile-row { grid-template-columns: 1fr; gap: 6px; }
+}
+
+.me-links { display: grid; gap: 12px; margin-top: 32px; }
+.me-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: var(--radius-tile);
+  background: var(--color-card);
+  text-decoration: none;
+  color: var(--color-secondary);
+  font-size: var(--text-14);
+}
+.me-link:hover { box-shadow: 0 2px 10px rgba(20, 16, 60, 0.08); }
+.me-link svg { width: 20px; height: 20px; color: var(--color-brand); flex: 0 0 auto; }
+.me-link svg:last-child { margin-left: auto; color: var(--color-muted); }
+.me-link span { display: grid; gap: 2px; }
+.me-link strong { color: var(--color-ink); font-size: var(--text-16); }
+.notice-ok { display: flex; align-items: center; gap: 8px; }
+.notice-ok svg { width: 18px; height: 18px; }

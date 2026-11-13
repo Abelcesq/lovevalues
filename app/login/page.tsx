@@ -2,8 +2,8 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useRef, useState } from "react";
 import Captcha, {
   BLOCKED_MESSAGE,
   type CaptchaHandle,
@@ -13,8 +13,37 @@ import PasswordField from "@/components/PasswordField";
 import SocialButtons from "@/components/SocialButtons";
 import { loadAccount, signIn } from "@/lib/account";
 
-export default function Login() {
+/**
+ * Sign in.
+ *
+ * WHAT WAS WRONG HERE (audit, 2026-11-13). This page never contacted the
+ * server. It compared the password against a hash in THIS browser's
+ * localStorage, so signing in on a second device was impossible by
+ * construction — and the page said so, in an error message that described
+ * the limitation as a beta policy rather than a bug. Meanwhile /signup had
+ * been creating real server accounts and opening real sessions for weeks.
+ * Signing up and signing in were two different systems.
+ *
+ * It now signs in through Auth.js against the database, which is what makes
+ * the member area in middleware.ts mean anything: a cookie you cannot get
+ * without a password the server checked.
+ *
+ * THE LOCAL CHECK IS STILL HERE, as a fallback for when there is no database
+ * configured at all. That path keeps a developer — and the site, if the
+ * add-on were ever detached — working rather than locked out, and matches
+ * how every other integration in this codebase degrades.
+ */
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <Login />
+    </Suspense>
+  );
+}
+
+function Login() {
   const router = useRouter();
+  const params = useSearchParams();
   const captcha = useRef<CaptchaHandle>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,6 +90,35 @@ export default function Login() {
       }
     }
 
+    /* Where they were going before the gate stopped them. Only ever a path
+       on this site: an absolute URL here would make the sign-in page an open
+       redirect, which is a credible phishing step on a product people reach
+       by link. */
+    const raw = params.get("next") ?? "";
+    const next = raw.startsWith("/") && !raw.startsWith("//") ? raw : "";
+
+    /* The server first. A session cookie is the only thing that opens the
+       member area. */
+    try {
+      const { signIn: authSignIn } = await import("next-auth/react");
+      const result = await authSignIn("credentials", {
+        email: email.trim(),
+        password,
+        redirect: false,
+      });
+      if (result?.ok) {
+        /* Keep the device record in step so the journey still knows their
+           name, exactly as /signup does. A failure here is not fatal — they
+           are signed in, and the local record rebuilds on next signup. */
+        await signIn(email, password).catch(() => null);
+        router.push(next || "/dashboard");
+        return;
+      }
+    } catch {
+      /* Auth.js unreachable or unconfigured — fall through to the device
+         check below rather than stranding them. */
+    }
+
     const account = await signIn(email, password);
     if (!account) {
       captcha.current?.reset();
@@ -76,7 +134,7 @@ export default function Login() {
       return;
     }
 
-    router.push(account.plan ? "/journey" : "/checkout");
+    router.push(next || (account.plan ? "/journey" : "/checkout"));
   }
 
   return (

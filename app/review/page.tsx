@@ -41,7 +41,7 @@ export default function ReviewPage() {
             <span className="dot" />
           </div>
         </main>
-        <Footer />
+        <Footer member />
       </>
     );
   }
@@ -222,7 +222,7 @@ export default function ReviewPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer member />
     </>
   );
 }

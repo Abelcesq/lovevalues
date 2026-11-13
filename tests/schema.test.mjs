@@ -82,6 +82,29 @@ if (!url) {
     'subscriptions.stripe_subscription_id',
     'subscriptions.created_at',
     'subscriptions.updated_at',
+    /* THE MEMBER PROFILE, added 2026-11-13 with db/002.
+       This is the first data about a person this database has ever held
+       beyond identity and billing, and it is here because matching members on
+       their values cannot work against data that lives in one browser.
+       Every entry is a fact someone would tell a stranger across a table.
+       There is deliberately no bio, no notes, and nothing from the four
+       modules — if a future diff adds one, this list is where it has to be
+       argued for. */
+    'member_profiles.user_id',
+    'member_profiles.display_name',
+    'member_profiles.gender',
+    'member_profiles.seeking',
+    'member_profiles.city',
+    'member_profiles.country',
+    'member_profiles.date_of_birth',
+    'member_profiles.religion',
+    'member_profiles.relationship_type',
+    'member_profiles.wants_children',
+    'member_profiles.visible_in_matching',
+    'member_profiles.created_at',
+    'member_profiles.updated_at',
+    'member_activities.user_id',
+    'member_activities.activity',
     'schema_migrations.filename',
     'schema_migrations.applied_at',
   ]);

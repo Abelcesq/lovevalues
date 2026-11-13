@@ -32,7 +32,42 @@ import type { NextRequest } from 'next/server';
 
 const LOCAL = new Set(['localhost', '127.0.0.1', '[::1]', '0.0.0.0']);
 
-export function middleware(request: NextRequest) {
+/**
+ * THE MEMBER AREA. Everything behind here needs a signed-in member.
+ *
+ * WHY THIS LIST EXISTS AT ALL (audit, 2026-11-13). Until today nothing in
+ * this app checked a session — not one page called `auth()`. The dashboard,
+ * the answers, the reflection and the whole four-module journey were reachable
+ * by typing the URL, from any browser, signed in or not. What looked like a
+ * member portal was a set of pages that read `localStorage` and redirected if
+ * they did not like what they found, which is a suggestion, not a gate.
+ *
+ * It is a prefix list rather than a decorator on each page deliberately: a
+ * new page under /dashboard is protected the moment it exists, whereas a
+ * per-page check protects only the pages someone remembered to add it to.
+ *
+ * NOT LISTED, ON PURPOSE: /, /how-it-works, /support, /privacy, /terms,
+ * /login, /signup. Someone in distress must reach /support without an
+ * account — hard rule 5 — and a crisis page behind a login is worse than no
+ * crisis page.
+ */
+const MEMBER_PREFIXES = [
+  '/dashboard',
+  '/me',
+  '/journey',
+  '/review',
+  '/profile',
+  '/begin',
+  '/unlock',
+  '/checkout',
+];
+
+const isMemberPath = (pathname: string) =>
+  MEMBER_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+
+export async function middleware(request: NextRequest) {
   const proto = request.headers.get('x-forwarded-proto');
   const rawHost = request.headers.get('host') ?? '';
   const host = rawHost.split(':')[0].toLowerCase();
@@ -52,6 +87,32 @@ export function middleware(request: NextRequest) {
     // A 302 on a POST silently downgrades it to GET — the same class of bug as
     // the GoDaddy apex-forwarding trap in skills/deploy-and-payments.
     return NextResponse.redirect(url, 308);
+  }
+
+  /* The member gate. HTTPS first, deliberately: redirecting to a sign-in page
+     over http would send the session cookie that follows it in the clear. */
+  const { pathname } = request.nextUrl;
+  if (isMemberPath(pathname)) {
+    /* Read the cookie rather than calling auth(). This file runs on the Edge
+       runtime, where the Auth.js adapter's Postgres driver cannot run at all
+       — importing `@/auth` here fails the build. The cookie's PRESENCE is
+       what is checked, and that is enough for a redirect: it is a signed
+       token, every route that returns real data verifies it properly through
+       auth(), and the worst a forged cookie buys is a page that then asks the
+       server for data and is told no. */
+    const signedIn =
+      request.cookies.has('authjs.session-token') ||
+      request.cookies.has('__Secure-authjs.session-token');
+
+    if (!signedIn) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      url.search = '';
+      /* Come back here after signing in, rather than dumping them on a
+         generic dashboard having forgotten what they were doing. */
+      url.searchParams.set('next', pathname);
+      return NextResponse.redirect(url);
+    }
   }
 
   return NextResponse.next();

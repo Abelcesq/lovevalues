@@ -126,7 +126,7 @@ export default function Begin() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer member />
     </>
   );
 }
