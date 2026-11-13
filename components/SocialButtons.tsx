@@ -3,49 +3,38 @@
 import { useState } from "react";
 
 /**
- * Google / Facebook / Instagram sign-in.
+ * Google sign-in.
  *
- * These are rendered but not yet connected, and they say so when tapped rather
- * than failing silently. Wiring them needs three things nobody has yet:
+ * FACEBOOK AND INSTAGRAM WERE REMOVED, 2026-11-13, at the CEO's instruction:
+ * they did not work. Both ran through Meta, both needed credentials nobody had
+ * registered, and both answered a tap with "isn't connected yet" — a button
+ * that cannot do the thing written on it, offered to someone at the exact
+ * moment they are deciding whether to trust this product. The honest notice
+ * underneath did not rescue it; it just explained the dead end politely. One
+ * working way in beats three doors where two are painted on.
  *
- *   · a registered OAuth app per provider (client id + secret + redirect URI),
- *   · a server-side session store, because an OAuth token cannot be validated
- *     in the browser alone,
- *   · a decision on `Open CEO decisions #5` — social sign-in means a real
- *     account, which means a real backend.
+ * To bring Meta back, restore the two entries in PROVIDERS, their glyphs, and
+ * the `meta` gate — authStatus in auth.ts still reports it, and the Facebook
+ * provider is still registered server-side, so nothing else has to change.
+ * Instagram and Facebook were deliberately one integration: standalone
+ * Instagram login no longer exists for a product like this, consumer login
+ * runs through Meta, and that one integration carries Meta's app review.
  *
- * A note on Instagram specifically: there is no standalone "log in with
- * Instagram" for a product like this any more. The Basic Display API was
- * retired, and consumer login now runs through Meta — so Instagram and
- * Facebook are one integration, not two, and it will carry Meta's app review.
+ * Google is kept and still gated: if AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET
+ * are unset it says so rather than failing silently. If it is still unset when
+ * a stranger arrives, it should come out too, by the same argument.
  *
- * The brand glyphs are inlined rather than imported: Lucide deliberately does
- * not ship company logos, and pulling in a second icon library for three marks
- * would break the one-system rule in skills/design-system.
+ * The brand glyph is inlined rather than imported: Lucide deliberately does
+ * not ship company logos, and a second icon library for one mark would break
+ * the one-system rule in skills/design-system.
  */
 
-/* `authProvider` is what Auth.js is asked to sign in with — note that
-   Instagram maps to `facebook`. That is not a shortcut: standalone Instagram
-   login no longer exists for a product like this, and consumer login runs
-   through Meta. One set of credentials, one review, two buttons. */
 const PROVIDERS = [
   {
     id: "google",
     label: "Continue with Google",
     authProvider: "google",
     gate: "google",
-  },
-  {
-    id: "facebook",
-    label: "Continue with Facebook",
-    authProvider: "facebook",
-    gate: "meta",
-  },
-  {
-    id: "instagram",
-    label: "Continue with Instagram",
-    authProvider: "facebook",
-    gate: "meta",
   },
 ] as const;
 
@@ -108,7 +97,7 @@ export default function SocialButtons({
   );
 }
 
-function Glyph({ id }: { id: "google" | "facebook" | "instagram" }) {
+function Glyph({ id }: { id: "google" }) {
   if (id === "google") {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -131,29 +120,5 @@ function Glyph({ id }: { id: "google" | "facebook" | "instagram" }) {
       </svg>
     );
   }
-  if (id === "facebook") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          fill="#1877F2"
-          d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"
-        />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <defs>
-        <linearGradient id="ig" x1="0" y1="24" x2="24" y2="0">
-          <stop offset="0" stopColor="#FDCB52" />
-          <stop offset="0.5" stopColor="#E1306C" />
-          <stop offset="1" stopColor="#833AB4" />
-        </linearGradient>
-      </defs>
-      <path
-        fill="url(#ig)"
-        d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 3.2A6.6 6.6 0 1 0 18.6 12 6.6 6.6 0 0 0 12 5.4zm0 10.9A4.3 4.3 0 1 1 16.3 12 4.3 4.3 0 0 1 12 16.3zm6.9-11.1a1.5 1.5 0 1 1-1.5-1.6 1.5 1.5 0 0 1 1.5 1.6z"
-      />
-    </svg>
-  );
+  return null;
 }

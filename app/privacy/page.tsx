@@ -74,6 +74,40 @@ export default function Privacy() {
             </p>
           </section>
 
+          {/* Added when reCAPTCHA went on the sign-up and sign-in forms.
+              Loading Google's script means Google sees that a browser visited
+              those two pages, and this page is only worth anything if it is
+              kept true the day the architecture changes — the same reason the
+              honesty block on /signup has two versions. */}
+          <section className="syn-section">
+            <h2>The security check on sign-up and sign-in</h2>
+            <p>
+              Our sign-up and sign-in pages use Google reCAPTCHA to keep
+              automated sign-ups out. It runs on those two pages only — not on
+              the method, not on your answers, and not on your profile. Google
+              sees that a browser visited one of those pages and the signals it
+              uses to judge whether that browser is a person. It is never sent
+              your name, your email, your password, or anything you write in
+              the method. Google&apos;s{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Policy
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://policies.google.com/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms of Service
+              </a>{" "}
+              apply to that check.
+            </p>
+          </section>
+
           <section className="syn-section">
             <h2>Your voice</h2>
             <p>

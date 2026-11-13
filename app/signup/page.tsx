@@ -3,7 +3,11 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Captcha, {
+  BLOCKED_MESSAGE,
+  type CaptchaHandle,
+} from "@/components/Captcha";
 import { Footer, Nav } from "@/components/Chrome";
 import PasswordField from "@/components/PasswordField";
 import SocialButtons from "@/components/SocialButtons";
@@ -22,6 +26,7 @@ import { LEGAL_DISCLOSURE } from "@/lib/method";
  */
 export default function SignUp() {
   const router = useRouter();
+  const captcha = useRef<CaptchaHandle>(null);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -80,12 +85,23 @@ export default function SignUp() {
       );
     }
 
+    /* Checked here, before setBusy, so the button never locks on a form the
+       person can still fix by ticking a box. */
+    const check = (await captcha.current?.getToken()) ?? { status: "off" };
+    if (check.status === "unsolved") {
+      return setError("Please tick the security check below.");
+    }
+    if (check.status === "blocked") {
+      return setError(BLOCKED_MESSAGE);
+    }
+    const captchaToken = check.status === "ok" ? check.token : undefined;
+
     setBusy(true);
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, captchaToken }),
       });
       const data = await res.json().catch(() => ({}));
 
@@ -115,12 +131,17 @@ export default function SignUp() {
         return;
       }
 
+      /* A spent token cannot be spent again. Without this reset the second
+         attempt fails with an expired-check error no matter what the person
+         fixes, which reads as "this site is broken". */
+      captcha.current?.reset();
       setError(
         data.error ??
           "Something went wrong creating your account. Please try again.",
       );
       setBusy(false);
     } catch {
+      captcha.current?.reset();
       setError(
         "We couldn’t reach the server. Please check your connection and try again.",
       );
@@ -177,6 +198,8 @@ export default function SignUp() {
               autoComplete="new-password"
               hint="At least 10 characters. A short phrase works well."
             />
+
+            <Captcha ref={captcha} action="signup" />
 
             {error && <p className="field-error">{error}</p>}
 

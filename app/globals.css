@@ -3034,3 +3034,28 @@ footer {
   font-weight: 700;
   margin-right: 6px;
 }
+
+/* ---- reCAPTCHA ----
+   Google's v2 widget ships at a fixed 304px and cannot be restyled — their
+   terms forbid it and the iframe would ignore us anyway. So the job here is
+   only to seat it in the form: same rhythm as a field, and allowed to shrink
+   on a narrow phone, where 304px is wider than the gutter leaves. */
+.captcha {
+  margin: 4px 0 18px;
+  display: flex;
+  justify-content: center;
+}
+.captcha > div {
+  max-width: 100%;
+  overflow: hidden;
+}
+.captcha-note {
+  margin: 4px 0 18px;
+  font-size: var(--text-12);
+  color: var(--color-muted);
+  text-align: center;
+}
+.captcha-note a {
+  color: inherit;
+  text-decoration: underline;
+}

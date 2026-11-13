@@ -10,6 +10,7 @@
  */
 
 import { NextResponse } from "next/server";
+import { clientIp, verifyCaptcha } from "@/lib/captcha";
 import { dbConfigured } from "@/lib/db";
 import { createUser, startTrial } from "@/lib/users";
 import { TRIAL_DAYS } from "@/lib/plan";
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
     lastName?: string;
     email?: string;
     password?: string;
+    captchaToken?: string;
   };
   try {
     body = await request.json();
@@ -71,6 +73,21 @@ export async function POST(request: Request) {
       {
         error: `Please use at least ${MIN_PASSWORD} characters. A short phrase works well.`,
       },
+      { status: 400 },
+    );
+  }
+
+  /* AFTER the field checks and BEFORE the expensive work, and both halves of
+     that matter. A reCAPTCHA token is single-use: verify it first and then
+     reject the request for a mistyped email, and the person's next submit
+     fails with an expired-token error they cannot interpret and did not
+     cause. Verifying here also means a bot never reaches bcrypt, which is
+     deliberately slow and is the only costly thing on this path. */
+  const captcha = await verifyCaptcha(body.captchaToken, clientIp(request));
+  if (!captcha.ok) {
+    console.warn("signup: captcha rejected", captcha.reason);
+    return NextResponse.json(
+      { error: captcha.message, code: "captcha" },
       { status: 400 },
     );
   }

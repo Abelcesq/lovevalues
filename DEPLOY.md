@@ -306,6 +306,43 @@ The buttons switch themselves on as soon as each pair of keys exists — the
 signup page asks `/api/auth-status` at runtime, so this needs a restart, not a
 rebuild.
 
+### Turn on the captcha (sign-up and sign-in)
+
+Two config vars, from the reCAPTCHA admin console:
+
+```powershell
+heroku config:set RECAPTCHA_SITE_KEY=6Lxxxxx -a lovevalues
+heroku config:set RECAPTCHA_SECRET_KEY=6Lxxxxx -a lovevalues
+```
+
+**Both keys must come from the SAME reCAPTCHA registration.** A site key from
+one and a secret from another is the single easiest mistake to make here — the
+widget renders perfectly, the person ticks the box, and every verification
+comes back `invalid-input-secret`, so nobody can sign up. The two keys for one
+registration share their opening characters; if yours do not match, you are
+looking at two different keys. Check the logs for `captcha rejected` and the
+code will be in there.
+
+**If you registered a v3 (invisible) key, add a third var.** Nothing in a key
+says which version it is, so the code assumes v2 — the "I'm not a robot"
+checkbox:
+
+```powershell
+heroku config:set RECAPTCHA_VERSION=v3 -a lovevalues
+```
+
+**The SITE key is read at BUILD time, not at boot.** It is compiled into the
+browser bundle, so setting the var is not enough on its own — you need a new
+deploy afterwards. Push any commit, or hit "Deploy Branch" in the Heroku
+dashboard. The SECRET key is read at runtime and only needs a restart.
+
+Unset both and the forms go back to working exactly as they did before, with
+no captcha. That is deliberate: a half-configured check must never be the
+thing that stops someone creating an account.
+
+Domains to list in the reCAPTCHA console: `www.lovevalues.com`, and
+`localhost` if you want it to work while developing.
+
 ### Checking it worked
 
 ```powershell

@@ -32,8 +32,19 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: 'Love Values',
     type: 'website',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Love Values' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Love Values — know what you value, be truly seen',
+    images: ['/og.png'],
   },
 };
+/* The tab icon and the home-screen icon come from app/icon.png and
+   app/apple-icon.png, which Next finds by filename — there is no `icons` key
+   here on purpose, because adding one OVERRIDES the file convention and is
+   the usual reason a favicon stops appearing after someone "fixes" it.
+   Regenerate all three from public/logo.png if the mark ever changes. */
 
 export const viewport: Viewport = {
   themeColor: '#ffffff',
