@@ -92,6 +92,10 @@ if (!url) {
        argued for. */
     'member_profiles.user_id',
     'member_profiles.display_name',
+    /* db/003. The one free-text column, varchar(400) — small enough that a
+       person's written answers cannot fit. A SECOND free-text column is how a
+       bounded schema stops being one; argue for it in the migration. */
+    'member_profiles.about_me',
     'member_profiles.gender',
     'member_profiles.seeking',
     'member_profiles.city',

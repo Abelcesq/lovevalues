@@ -22,5 +22,10 @@ export async function GET() {
     google: authStatus.google,
     meta: authStatus.meta,
     database: authStatus.database,
+    /* Booleans only. See the note on authStatus.sessionSecret: this exists so
+       a "Configuration" error can be diagnosed with one request instead of a
+       guess, and `false` here is almost always the whole answer. */
+    sessionSecret: authStatus.sessionSecret,
+    signInWorks: authStatus.sessionSecret && authStatus.database,
   });
 }

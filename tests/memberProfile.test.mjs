@@ -25,6 +25,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   ACTIVITIES,
+  MAX_ABOUT_ME,
   EMPTY_MEMBER_PROFILE,
   GENDERS,
   MAX_ACTIVITIES,
@@ -131,6 +132,36 @@ test("long text is truncated rather than rejected", () => {
   assert.ok(r.ok && r.value.displayName.length <= 60);
 });
 
+test("about me is capped at the column width, not rejected", () => {
+  // The column is varchar(400). An untruncated 500-character value would be a
+  // Postgres error rather than a message, so the cap happens before the write
+  // — and someone who wrote a little too much keeps everything else they
+  // filled in rather than losing the save.
+  const r = validateProfile({ aboutMe: "x".repeat(900) });
+  assert.equal(r.ok, true);
+  assert.equal(r.ok && r.value.aboutMe.length, MAX_ABOUT_ME);
+});
+
+test("about me stays small enough that answers cannot fit in it", () => {
+  // The whole privacy argument in db/001 is that a person's written work does
+  // not FIT anywhere in this database. A later "let's make it 4000" would
+  // quietly end that, so the ceiling is asserted rather than assumed.
+  assert.ok(
+    MAX_ABOUT_ME <= 500,
+    "a free-text field this big stops being a profile field and starts being a store",
+  );
+});
+
+test("about me is trimmed and counts toward completeness", () => {
+  const r = validateProfile({ aboutMe: "  Hello.  " });
+  assert.equal(r.ok && r.value.aboutMe, "Hello.");
+  assert.equal(
+    missingFields({ ...EMPTY_MEMBER_PROFILE, aboutMe: "Hello." }),
+    10,
+    "filling about me should reduce the missing count by one",
+  );
+});
+
 test("matching visibility is opt-in and cannot be set by accident", () => {
   // Being listed to strangers is a separate decision from filling in a
   // profile. Anything other than a literal true means no.
@@ -187,9 +218,9 @@ test("labels resolve, and an unknown id resolves to nothing", () => {
 });
 
 test("an empty profile is counted as entirely incomplete", () => {
-  assert.equal(missingFields(EMPTY_MEMBER_PROFILE), 10);
+  assert.equal(missingFields(EMPTY_MEMBER_PROFILE), 11);
   assert.equal(
     missingFields({ ...EMPTY_MEMBER_PROFILE, city: "Pasadena" }),
-    9,
+    10,
   );
 });

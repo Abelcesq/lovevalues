@@ -47,8 +47,29 @@ function Login() {
   const captcha = useRef<CaptchaHandle>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  /**
+   * Auth.js sends people here with ?error=... when a sign-in fails, because
+   * auth.ts names /login as its error page. Until now this page ignored that
+   * parameter completely, so a configuration failure rendered a blank sign-in
+   * form with nothing to read — which is how a missing AUTH_SECRET turns into
+   * twenty minutes of guessing.
+   *
+   * "Configuration" never means the person did anything wrong. It means the
+   * server is not set up, so it says so plainly rather than implying they
+   * mistyped something.
+   */
+  const authError = params.get("error");
+  const [error, setError] = useState<string | null>(
+    authError === "Configuration"
+      ? "Sign-in isn’t available right now — this is a problem on our side, not with your details. Please try again shortly."
+      : authError === "CredentialsSignin"
+        ? "That email and password don’t match an account."
+        : authError
+          ? "We couldn’t sign you in. Please try again."
+          : null,
+  );
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

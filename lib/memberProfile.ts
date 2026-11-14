@@ -148,8 +148,14 @@ export const MAX_ACTIVITIES = 12;
 /** The minimum age to hold a profile. Not negotiable and not configurable. */
 export const MIN_AGE = 18;
 
+/** The cap on "about me". Mirrors varchar(400) in db/003 — see that file for
+    why it is small, and why it is the only free-text field there is. */
+export const MAX_ABOUT_ME = 400;
+
 export type MemberProfile = {
   displayName: string;
+  /** A short self-description. The ONLY free text on a member profile. */
+  aboutMe: string;
   gender: string;
   seeking: string;
   city: string;
@@ -165,6 +171,7 @@ export type MemberProfile = {
 
 export const EMPTY_MEMBER_PROFILE: MemberProfile = {
   displayName: "",
+  aboutMe: "",
   gender: "",
   seeking: "",
   city: "",
@@ -294,6 +301,10 @@ export function validateProfile(
     ok: true,
     value: {
       displayName: str(raw.displayName, 60),
+      /* Truncated, never rejected. Someone who writes 420 characters should
+         not lose the whole save — and the column is varchar(400), so an
+         untruncated value would be a database error rather than a message. */
+      aboutMe: str(raw.aboutMe, MAX_ABOUT_ME),
       gender: oneOf(raw.gender, GENDER_IDS),
       seeking: oneOf(raw.seeking, SEEKING_IDS),
       city: str(raw.city, 80),
@@ -314,10 +325,11 @@ export function labelFor(list: Option[], id: string): string {
 }
 
 /** Which of the listed fields are still blank, for the "complete your
-    profile" nudge. Activities count as one. */
+    profile" nudge. Activities count as one, and so does About me. */
 export function missingFields(p: MemberProfile): number {
   const checks = [
     p.displayName,
+    p.aboutMe,
     p.gender,
     p.seeking,
     p.city,

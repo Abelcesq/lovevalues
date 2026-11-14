@@ -8,6 +8,7 @@ import {
   ACTIVITY_GROUPS,
   EMPTY_MEMBER_PROFILE,
   GENDERS,
+  MAX_ABOUT_ME,
   MAX_ACTIVITIES,
   type MemberProfile,
   type Option,
@@ -171,6 +172,31 @@ export default function MePage() {
                 onChange={(v) => set("displayName", v)}
               />
 
+              <div className="field">
+                <label htmlFor="aboutMe">
+                  About me{" "}
+                  <span className="field-count">
+                    {draft.aboutMe.length} / {MAX_ABOUT_ME}
+                  </span>
+                </label>
+                <textarea
+                  id="aboutMe"
+                  rows={4}
+                  maxLength={MAX_ABOUT_ME}
+                  value={draft.aboutMe}
+                  onChange={(e) => set("aboutMe", e.target.value)}
+                  placeholder="A few sentences about who you are and what matters to you…"
+                />
+                {/* The limit is the schema's, and it is deliberately small —
+                    see db/003. Saying so here stops it reading as an
+                    arbitrary restriction. */}
+                <p className="field-hint">
+                  A short paragraph. This is the only free text on your
+                  profile — what you wrote in the method stays on your device
+                  and never appears here.
+                </p>
+              </div>
+
               <Choice
                 label="My gender"
                 options={GENDERS}
@@ -315,6 +341,7 @@ export default function MePage() {
 
               <dl className="profile-view">
                 <Row label="Name" value={profile.displayName} />
+                <Row label="About me" value={profile.aboutMe} />
                 <Row label="My gender" value={labelFor(GENDERS, profile.gender)} />
                 <Row
                   label="Seeking"

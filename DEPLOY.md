@@ -343,6 +343,40 @@ thing that stops someone creating an account.
 Domains to list in the reCAPTCHA console: `www.lovevalues.com`, and
 `localhost` if you want it to work while developing.
 
+### When sign-in fails with "Configuration"
+
+Auth.js answers every broken sign-in with the single word `Configuration` and
+nothing else — deliberately, so an attacker cannot learn which part of the
+setup is missing. The cost is that you cannot either, and it looks identical
+to a wrong password. Ask the app instead:
+
+```powershell
+curl https://www.lovevalues.com/api/auth-status
+```
+
+Booleans only, no secrets. `sessionSecret: false` means `AUTH_SECRET` is not
+set on the app serving traffic; `database: false` means `DATABASE_URL` is not,
+which leaves **zero** sign-in providers registered and fails every attempt.
+`signInWorks: false` is the one to read first. The dyno log says the same at
+boot — `heroku logs -a lovevalues | findstr AUTH:`.
+
+### Pin the site's own address
+
+```powershell
+heroku config:set AUTH_URL=https://www.lovevalues.com -a lovevalues
+```
+
+Without it, Auth.js works out its own URL from the incoming request, and a
+dyno's socket reports `localhost:<random port>` — so a redirect can land the
+visitor on `localhost:16050`, which their browser reports as
+ERR_CONNECTION_REFUSED with nothing pointing at the cause. The `www.` is
+load-bearing here for the same reason as the OAuth callbacks above.
+
+**This is the same trap three times now** — the middleware HTTPS redirect, the
+member gate, and Auth.js. On Heroku the host is in the `Host` /
+`X-Forwarded-Host` header and NEVER in the URL the server sees. Any code that
+builds an absolute URL has to read the header.
+
 ### Checking it worked
 
 ```powershell

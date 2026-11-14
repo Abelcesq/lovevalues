@@ -17,6 +17,7 @@ import {
 
 type Row = {
   display_name: string | null;
+  about_me: string | null;
   gender: string | null;
   seeking: string | null;
   city: string | null;
@@ -45,8 +46,9 @@ function isoDate(value: Date | string | null): string {
 
 export async function getMemberProfile(userId: number): Promise<MemberProfile> {
   const { rows } = await pool.query<Row>(
-    `SELECT display_name, gender, seeking, city, country, date_of_birth,
-            religion, relationship_type, wants_children, visible_in_matching
+    `SELECT display_name, about_me, gender, seeking, city, country,
+            date_of_birth, religion, relationship_type, wants_children,
+            visible_in_matching
        FROM member_profiles WHERE user_id = $1`,
     [userId],
   );
@@ -65,6 +67,7 @@ export async function getMemberProfile(userId: number): Promise<MemberProfile> {
 
   return {
     displayName: row.display_name ?? "",
+    aboutMe: row.about_me ?? "",
     gender: row.gender ?? "",
     seeking: row.seeking ?? "",
     city: row.city ?? "",
@@ -105,11 +108,13 @@ export async function saveMemberProfile(
     await client.query("BEGIN");
     await client.query(
       `INSERT INTO member_profiles
-         (user_id, display_name, gender, seeking, city, country, date_of_birth,
-          religion, relationship_type, wants_children, visible_in_matching, updated_at)
-       VALUES ($1,$2,$3,$4,$5,$6,NULLIF($7,'')::date,$8,$9,$10,$11,NOW())
+         (user_id, display_name, about_me, gender, seeking, city, country,
+          date_of_birth, religion, relationship_type, wants_children,
+          visible_in_matching, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,NULLIF($8,'')::date,$9,$10,$11,$12,NOW())
        ON CONFLICT (user_id) DO UPDATE SET
          display_name        = EXCLUDED.display_name,
+         about_me            = EXCLUDED.about_me,
          gender              = EXCLUDED.gender,
          seeking             = EXCLUDED.seeking,
          city                = EXCLUDED.city,
@@ -123,6 +128,7 @@ export async function saveMemberProfile(
       [
         userId,
         p.displayName,
+        p.aboutMe,
         p.gender,
         p.seeking,
         p.city,

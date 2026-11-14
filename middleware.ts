@@ -111,6 +111,22 @@ export async function middleware(request: NextRequest) {
       /* Come back here after signing in, rather than dumping them on a
          generic dashboard having forgotten what they were doing. */
       url.searchParams.set('next', pathname);
+
+      /* THE SAME TRAP AS THE HTTPS BLOCK ABOVE, and it was shipped once.
+         `request.nextUrl` is built from the server's own socket, so on Heroku
+         it reads `localhost:<dyno port>` — a port only the dyno can reach.
+         The first version of this gate sent every signed-out member straight
+         to `http://localhost:16050/login`, which the browser reports as
+         ERR_CONNECTION_REFUSED with nothing pointing at a redirect.
+
+         Port cleared BEFORE the hostname, for the reason the block above
+         explains: per the URL spec a bare hostname leaves the old port in
+         place. */
+      if (host && !LOCAL.has(host)) {
+        url.port = '';
+        url.hostname = host;
+        url.protocol = 'https:';
+      }
       return NextResponse.redirect(url);
     }
   }

@@ -31,6 +31,21 @@ import { verifyCredentials } from "@/lib/users";
  *  this so its buttons can tell the truth instead of failing on click. */
 export const authStatus = {
   database: dbConfigured,
+  /**
+   * Is AUTH_SECRET set?
+   *
+   * A BOOLEAN, NEVER THE VALUE, and it is here because of what its absence
+   * looks like from outside: Auth.js refuses every sign-in with the single
+   * word "Configuration" and no further detail, by design — it will not tell
+   * an attacker which part of the setup is missing. The cost is that it will
+   * not tell the operator either, and the symptom is identical to a wrong
+   * password, a missing database, and a provider that was never registered.
+   *
+   * Reporting the boolean through /api/auth-status turns a cryptic error into
+   * a one-request diagnosis. It leaks nothing: that a site has a session
+   * secret configured is not a secret.
+   */
+  sessionSecret: Boolean(process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET),
   google: Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET),
   /* One integration, not two. Standalone Instagram login no longer exists for
      a product like this — consumer login runs through Meta, so the Instagram
@@ -89,6 +104,23 @@ if (authStatus.database) {
         };
       },
     }),
+  );
+}
+
+/* Say so at boot, loudly, in the places that produce "Configuration" and
+   nothing else. These lines are the difference between reading the dyno log
+   and guessing. */
+if (!authStatus.sessionSecret) {
+  console.error(
+    'AUTH: AUTH_SECRET is not set. Every sign-in will fail with "Configuration". ' +
+      'Set it on the app that actually serves traffic and restart.',
+  );
+}
+if (providers.length === 0) {
+  console.error(
+    'AUTH: no sign-in providers are configured, so every sign-in will fail ' +
+      'with "Configuration". Email/password needs DATABASE_URL; Google needs ' +
+      'AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET.',
   );
 }
 
