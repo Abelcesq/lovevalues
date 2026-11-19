@@ -1,5 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { dbConfigured } from "@/lib/db";
+import { rateLimit } from "@/lib/rateLimit";
 import { synthesizeViaFallback } from "@/lib/llm";
 import { LEGAL_DISCLOSURE, MIRROR_FRAMING, VOICE } from "@/lib/method";
 
@@ -225,7 +228,68 @@ function streamed(work: () => Promise<unknown>): Response {
   });
 }
 
+/* Caps on what one request may contain. The method has about forty questions;
+   a long answer runs to a few thousand characters. These are several times
+   the honest maximum, and they exist because without them the input side of
+   the bill is unbounded too: a single request could carry a megabyte of text
+   straight into a frontier model. */
+const MAX_ANSWERS = 80;
+const MAX_ANSWER_CHARS = 8_000;
+const MAX_CORRECTIONS = 20;
+
+/* Reflections per person per hour. Generous for anyone genuinely iterating on
+   their own reading, and far below what is needed to run up a bill. */
+const SYNTHESIS_LIMIT = 6;
+const SYNTHESIS_WINDOW_MS = 60 * 60 * 1000;
+
 export async function POST(request: Request) {
+  /**
+   * ── WHO IS ASKING ──────────────────────────────────────────────────────
+   * This route had NO AUTHENTICATION, NO RATE LIMIT AND NO SIZE CAP while
+   * calling a frontier model with a 32,000 token ceiling, on a public site.
+   * Anyone who found the URL could run it in a loop and spend the project's
+   * entire model budget as fast as the network allowed. Nothing would have
+   * broken; the bill would simply have arrived.
+   *
+   * Two defences, because either alone is insufficient. A session stops
+   * anonymous abuse — accounts need a captcha to create. A per-user rate
+   * limit stops one account doing the same thing more slowly.
+   *
+   * The session is required only when accounts are actually possible. With no
+   * database there is no session to have, and demanding one would break the
+   * local-only mode the rest of this app preserves — so that path falls back
+   * to rate limiting alone, keyed on the caller's address.
+   */
+  let rateKey: string;
+  if (dbConfigured) {
+    const session = await auth();
+    const userId = Number((session?.user as { id?: string } | undefined)?.id);
+    if (!Number.isInteger(userId) || userId <= 0) {
+      return NextResponse.json(
+        { error: "Please sign in to generate your reflection." },
+        { status: 401 },
+      );
+    }
+    rateKey = `syn:user:${userId}`;
+  } else {
+    /* Spoofable, and said so out loud. It is the only key available without
+       accounts, and a weak limit beats none on an endpoint that spends
+       money. */
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    rateKey = `syn:ip:${ip ?? "unknown"}`;
+  }
+
+  const verdict = rateLimit(rateKey, SYNTHESIS_LIMIT, SYNTHESIS_WINDOW_MS);
+  if (!verdict.ok) {
+    return NextResponse.json(
+      {
+        error:
+          "You’ve generated several reflections in a short time. Please wait a little and try again — your answers are safe.",
+      },
+      { status: 429, headers: { "Retry-After": String(verdict.retryAfter) } },
+    );
+  }
+
   let body: Payload;
   try {
     body = (await request.json()) as Payload;
@@ -236,7 +300,19 @@ export async function POST(request: Request) {
     );
   }
 
-  const answered = (body.answers ?? []).filter((a) => a.answer?.trim());
+  /* Truncate rather than reject. Someone who wrote a very long answer should
+     get a reflection, not a rejection — and the model does not need the
+     tail of a 50,000 character block to read a person. */
+  const answered = (body.answers ?? [])
+    .filter((a) => a?.answer?.trim())
+    .slice(0, MAX_ANSWERS)
+    .map((a) => ({
+      question: String(a.question ?? "").slice(0, 500),
+      answer: String(a.answer).slice(0, MAX_ANSWER_CHARS),
+    }));
+  if (Array.isArray(body.corrections)) {
+    body.corrections = body.corrections.slice(0, MAX_CORRECTIONS);
+  }
   if (answered.length < 3) {
     return NextResponse.json(
       {
