@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { dbConfigured } from "@/lib/db";
 import { verifyStripeSignature } from "@/lib/stripe";
 import {
+  grantReportCredit,
   mapStatus,
   periodEndFrom,
   upsertSubscription,
@@ -122,13 +123,24 @@ export async function POST(request: Request) {
             stripeSubscriptionId: subscriptionId,
           });
         } else {
-          /* A one-off payment — the values report or an update. The customer
-             id is still worth keeping so later events can be matched.
-             NOTE: the report entitlement itself is still granted in the
-             browser (lib/reports.ts says so at the top). Moving it here is
-             the next piece of work, and this is where it belongs. */
+          /* A one-off payment — the values report, or an update to it. THIS
+             is where the entitlement is created, because this is the first
+             moment anything can prove money changed hands. It used to be
+             granted in the browser, where anyone could grant it to
+             themselves.
+
+             The kind is taken from the amount rather than guessed: a $29.99
+             first report and a $9.99 update are different products and the
+             row has to say which was bought, or it cannot be reconciled
+             against Stripe later. */
+          const total = num(object.amount_total);
+          const kind = total !== null && total < 2000 ? "update" : "first";
           await upsertSubscription({ userId, stripeCustomerId: customerId });
-          console.info("stripe webhook: one-off payment recorded", { userId });
+          await grantReportCredit(userId, kind, str(object.id));
+          console.info("stripe webhook: report credit granted", {
+            userId,
+            kind,
+          });
         }
         break;
       }

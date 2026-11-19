@@ -1,8 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { dbConfigured } from "@/lib/db";
+import { dbConfigured, pool } from "@/lib/db";
+import { stripeConfigured } from "@/lib/stripe";
 import { rateLimit } from "@/lib/rateLimit";
+import { consumeReportCredit } from "@/lib/subscriptions";
 import { synthesizeViaFallback } from "@/lib/llm";
 import { LEGAL_DISCLOSURE, MIRROR_FRAMING, VOICE } from "@/lib/method";
 
@@ -261,6 +263,8 @@ export async function POST(request: Request) {
    * to rate limiting alone, keyed on the caller's address.
    */
   let rateKey: string;
+  /* Remembered so a failure can put it back. */
+  let creditSpentFor: number | null = null;
   if (dbConfigured) {
     const session = await auth();
     const userId = Number((session?.user as { id?: string } | undefined)?.id);
@@ -271,6 +275,39 @@ export async function POST(request: Request) {
       );
     }
     rateKey = `syn:user:${userId}`;
+
+    /**
+     * ── AND HAVE THEY PAID ─────────────────────────────────────────────
+     * The paywall, enforced where it cannot be edited. Until now it was a
+     * value in localStorage — lib/reports.ts says so at the top and called
+     * it an MVP position until something could verify a payment. The Stripe
+     * webhook can, so the credit is now a row this route spends.
+     *
+     * SPENT BEFORE THE MODEL RUNS, not after, because the alternative is
+     * worse in exactly one direction: a crash between the call and the
+     * write would hand out a free reflection every time it happened. The
+     * cost of this order is that a failed generation can burn a credit —
+     * so it is restored below if the work does not produce a reflection.
+     *
+     * ENFORCED ONLY WHEN STRIPE IS CONFIGURED. With no payments switched
+     * on there is nothing to have paid, and refusing everybody would block
+     * the stranger test behind a till that cannot take money — the same
+     * posture /checkout has always had.
+     */
+    if (stripeConfigured) {
+      const paid = await consumeReportCredit(userId);
+      if (!paid) {
+        return NextResponse.json(
+          {
+            error:
+              "Your reflection hasn’t been paid for yet. Your answers are safe — open your profile to continue.",
+            code: "payment_required",
+          },
+          { status: 402 },
+        );
+      }
+      creditSpentFor = userId;
+    }
   } else {
     /* Spoofable, and said so out loud. It is the only key available without
        accounts, and a weak limit beats none on an endpoint that spends
@@ -384,6 +421,38 @@ export async function POST(request: Request) {
   const client = new Anthropic();
 
   return streamed(async () => {
+    /**
+     * PUT THE CREDIT BACK IF NOTHING WAS PRODUCED.
+     *
+     * The credit is spent before the model runs, because a crash between the
+     * call and the write would otherwise hand out free reflections. The cost
+     * of that order is this: a generation that fails has already taken the
+     * payment. Charging someone $29.99 for a server error is the single worst
+     * outcome on this path, so every failure route below refunds.
+     *
+     * Deliberately best-effort and swallowed — if the refund itself fails,
+     * the person still gets their error message, and the loss is one credit
+     * recoverable by hand rather than a second error on top of the first.
+     */
+    const refund = async () => {
+      if (creditSpentFor === null) return;
+      try {
+        await pool.query(
+          `UPDATE report_credits SET consumed_at = NULL
+            WHERE id = (
+              SELECT id FROM report_credits
+               WHERE user_id = $1 AND consumed_at IS NOT NULL
+               ORDER BY consumed_at DESC
+               LIMIT 1
+            )`,
+          [creditSpentFor],
+        );
+        console.warn("synthesize: credit refunded after failure", creditSpentFor);
+      } catch (error) {
+        console.error("synthesize: REFUND FAILED — credit lost", creditSpentFor, error);
+      }
+    };
+
     try {
       /* Streamed for the same reason the HTTP response is: a non-streaming call
        at this max_tokens risks the SDK's own HTTP timeout. .finalMessage()
@@ -410,6 +479,10 @@ export async function POST(request: Request) {
        second model. Retrying a declined request elsewhere is exactly the
        behaviour the safety classifier exists to prevent. */
       if (response.stop_reason === "refusal") {
+        /* Refunded too. A refusal is the engine declining, not the person
+           getting what they paid for — charging for it would be charging
+           someone for being told no. */
+        await refund();
         return {
           error:
             "We weren’t able to generate a reflection from this. Your answers are safe and unchanged — please try again, or reach out to a trusted person if something here feels heavy.",
@@ -419,6 +492,7 @@ export async function POST(request: Request) {
       /* Ran out of room mid-sentence. Say that plainly rather than letting the
        JSON.parse below fail into the generic outage message. */
       if (response.stop_reason === "max_tokens") {
+        await refund();
         return {
           error:
             "The reflection was still being written when it ran out of room. Please try again — your answers are safe and unchanged.",
@@ -427,6 +501,7 @@ export async function POST(request: Request) {
 
       const text = response.content.find((b) => b.type === "text");
       if (!text || text.type !== "text") {
+        await refund();
         return { error: "The reflection came back empty. Please try again." };
       }
 
@@ -484,20 +559,24 @@ export async function POST(request: Request) {
       }
 
       if (error instanceof Anthropic.RateLimitError) {
+        await refund();
         return {
           error:
             "The engine is busy right now. Wait a moment and try again — nothing was lost.",
         };
       }
       if (error instanceof Anthropic.AuthenticationError) {
+        await refund();
         return { error: "The synthesis engine is misconfigured." };
       }
       if (error instanceof Anthropic.APIError) {
+        await refund();
         return {
           error:
             "The reflection could not be generated right now. Your answers are safe.",
         };
       }
+      await refund();
       return { error: "Something went wrong. Your answers are safe." };
     }
   });

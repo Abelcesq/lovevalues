@@ -292,6 +292,9 @@ function Login() {
           </form>
 
           <p className="auth-alt">
+            <Link href="/forgot">Forgot your password?</Link>
+          </p>
+          <p className="auth-alt">
             New here? <Link href="/signup">Create an account</Link>
           </p>
         </div>

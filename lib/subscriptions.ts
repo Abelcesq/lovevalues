@@ -161,3 +161,62 @@ export function periodEndFrom(object: Record<string, unknown>): Date | null {
 }
 const str = (v: unknown): string | null =>
   typeof v === "string" && v ? v : null;
+
+/* ── REPORT CREDITS ───────────────────────────────────────────────────────
+   The right to generate one reflection. It lived in localStorage, where
+   anyone could grant themselves one from devtools; lib/reports.ts said so at
+   the top and called it an MVP position pending something that could verify a
+   payment. The webhook can now, so it lives here. */
+
+/**
+ * Record a paid report. Called ONLY from the Stripe webhook.
+ *
+ * ON CONFLICT DO NOTHING against the unique stripe_session_id is what makes
+ * the webhook safe to retry: Stripe delivers at least once and resends after
+ * a timeout, and without this one payment could mint two credits.
+ */
+export async function grantReportCredit(
+  userId: number,
+  kind: "first" | "update",
+  stripeSessionId: string | null,
+): Promise<void> {
+  await pool.query(
+    `INSERT INTO report_credits (user_id, kind, reason, stripe_session_id)
+     VALUES ($1, $2, 'paid', $3)
+     ON CONFLICT (stripe_session_id) DO NOTHING`,
+    [userId, kind, stripeSessionId],
+  );
+}
+
+/** How many unspent credits this person holds. */
+export async function reportCreditsFor(userId: number): Promise<number> {
+  const { rows } = await pool.query<{ n: number }>(
+    `SELECT COUNT(*)::int AS n FROM report_credits
+      WHERE user_id = $1 AND consumed_at IS NULL`,
+    [userId],
+  );
+  return rows[0]?.n ?? 0;
+}
+
+/**
+ * Spend one credit. Returns false when there was none to spend.
+ *
+ * The UPDATE both selects and marks in one statement, so two requests
+ * arriving together cannot spend the same credit twice — the same reason
+ * consumeReset is written that way. `LIMIT 1` via a subquery because Postgres
+ * has no LIMIT on UPDATE.
+ */
+export async function consumeReportCredit(userId: number): Promise<boolean> {
+  const { rowCount } = await pool.query(
+    `UPDATE report_credits SET consumed_at = NOW()
+      WHERE id = (
+        SELECT id FROM report_credits
+         WHERE user_id = $1 AND consumed_at IS NULL
+         ORDER BY granted_at
+         FOR UPDATE SKIP LOCKED
+         LIMIT 1
+      )`,
+    [userId],
+  );
+  return (rowCount ?? 0) > 0;
+}

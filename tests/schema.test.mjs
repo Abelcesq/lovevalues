@@ -111,6 +111,22 @@ if (!url) {
     'member_profiles.visible_in_matching',
     'member_profiles.created_at',
     'member_profiles.updated_at',
+    /* db/005 — the way back in. A HASH of the reset token, never the token:
+       the table must be worthless to anyone who reads it. */
+    'password_resets.token_hash',
+    'password_resets.user_id',
+    'password_resets.expires_at',
+    'password_resets.used_at',
+    'password_resets.created_at',
+    /* db/006 — the right to generate one reflection, moved off the browser
+       and onto the server where the payment is actually confirmed. */
+    'report_credits.id',
+    'report_credits.user_id',
+    'report_credits.kind',
+    'report_credits.reason',
+    'report_credits.stripe_session_id',
+    'report_credits.granted_at',
+    'report_credits.consumed_at',
     'member_activities.user_id',
     'member_activities.activity',
     'schema_migrations.filename',

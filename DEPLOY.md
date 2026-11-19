@@ -437,6 +437,26 @@ symptoms are all silent:
   in two records nothing joins — and the portal, which takes one id, shows
   half their history.
 
+### Switch on password reset (email)
+
+Without this, anyone who forgets their password is locked out permanently.
+The flow is built; it needs a way to deliver the link.
+
+1. Create a Resend account, verify the **lovevalues.com** domain (Resend walks
+   you through the DNS records), then create an API key.
+
+```powershell
+heroku config:set RESEND_API_KEY=re_... -a lovevalues
+heroku config:set EMAIL_FROM="Love Values <noreply@lovevalues.com>" -a lovevalues
+```
+
+`EMAIL_FROM` must be on a domain verified in Resend. An unverified sender is
+rejected with an error that reads exactly like a bad API key.
+
+Until the key is set, `/forgot` tells people plainly that reset is not
+switched on rather than promising an email that will never arrive. That is
+deliberate — the alternative is someone refreshing their inbox for an hour.
+
 ### When sign-in fails with "Configuration"
 
 Auth.js answers every broken sign-in with the single word `Configuration` and
