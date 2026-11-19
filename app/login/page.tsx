@@ -12,6 +12,13 @@ import { Footer, Nav } from "@/components/Chrome";
 import PasswordField from "@/components/PasswordField";
 import SocialButtons from "@/components/SocialButtons";
 import { loadAccount, signIn } from "@/lib/account";
+import { TimeoutError, withTimeout } from "@/lib/timeout";
+
+/* Ceilings, not guesses. The captcha check talks to Google with its own 5s
+   budget, so 12s covers it with room. Sign-in does a database round trip;
+   past 20s nobody is still waiting hopefully, they are reloading the page. */
+const CAPTCHA_TIMEOUT_MS = 12_000;
+const SIGN_IN_TIMEOUT_MS = 20_000;
 
 /**
  * Sign in.
@@ -85,77 +92,109 @@ function Login() {
 
     setBusy(true);
 
-    /* Verified on the server, because the secret key lives there and a
-       browser that says "I passed" is a browser saying anything it likes.
-       See app/api/captcha/route.ts for the honest limits of what this
-       protects while sign-in is still a local check. */
-    if (check.status === "ok") {
-      try {
-        const res = await fetch("/api/captcha", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: check.token }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.ok) {
-          captcha.current?.reset();
-          setBusy(false);
-          return setError(
-            data.error ?? "The security check didn’t pass. Please try again.",
-          );
-        }
-      } catch {
-        /* The check could not be reached. Matching the server's own
-           fail-open rule: a network blip must not lock someone out of their
-           own account. */
-      }
-    }
+    /* EVERYTHING FROM HERE IS INSIDE try/finally, AND THAT IS THE WHOLE POINT.
+       The first version of this handler had no finally, so setBusy(false) ran
+       only on the paths someone remembered. In production the button went
+       disabled and stayed that way — no error, nothing to click, the form
+       apparently dead. The CEO's words were "nothing happens, this page
+       freezes", and that is exactly what an unsettled promise looks like from
+       the other side of the screen.
 
-    /* Where they were going before the gate stopped them. Only ever a path
-       on this site: an absolute URL here would make the sign-in page an open
-       redirect, which is a credible phishing step on a product people reach
-       by link. */
-    const raw = params.get("next") ?? "";
-    const next = raw.startsWith("/") && !raw.startsWith("//") ? raw : "";
-
-    /* The server first. A session cookie is the only thing that opens the
-       member area. */
+       Awaiting anything without a ceiling can do it: a database query that
+       never returns, a request nobody answers, a library that quietly gives
+       up. So every wait below has a timeout, and the button is released no
+       matter which way this ends. */
     try {
-      const { signIn: authSignIn } = await import("next-auth/react");
-      const result = await authSignIn("credentials", {
-        email: email.trim(),
-        password,
-        redirect: false,
-      });
-      if (result?.ok) {
-        /* Keep the device record in step so the journey still knows their
-           name, exactly as /signup does. A failure here is not fatal — they
-           are signed in, and the local record rebuilds on next signup. */
-        await signIn(email, password).catch(() => null);
-        router.push(next || "/dashboard");
+      /* Verified on the server, because the secret key lives there and a
+         browser that says "I passed" is a browser saying anything it likes.
+         See app/api/captcha/route.ts for the honest limits of what this
+         protects while sign-in is still a local check. */
+      if (check.status === "ok") {
+        try {
+          const res = await withTimeout(
+            fetch("/api/captcha", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token: check.token }),
+            }),
+            CAPTCHA_TIMEOUT_MS,
+            "the security check",
+          );
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || !data.ok) {
+            captcha.current?.reset();
+            setError(
+              data.error ?? "The security check didn’t pass. Please try again.",
+            );
+            return;
+          }
+        } catch {
+          /* Unreachable or slow. Matching the server's own fail-open rule: a
+             network blip must not lock someone out of their own account. */
+        }
+      }
+
+      /* Where they were going before the gate stopped them. Only ever a path
+         on this site: an absolute URL here would make the sign-in page an
+         open redirect, which is a credible phishing step on a product people
+         reach by link. */
+      const raw = params.get("next") ?? "";
+      const next = raw.startsWith("/") && !raw.startsWith("//") ? raw : "";
+
+      /* The server first. A session cookie is the only thing that opens the
+         member area. */
+      let timedOut = false;
+      try {
+        const { signIn: authSignIn } = await import("next-auth/react");
+        const result = await withTimeout(
+          authSignIn("credentials", {
+            email: email.trim(),
+            password,
+            redirect: false,
+          }),
+          SIGN_IN_TIMEOUT_MS,
+          "sign-in",
+        );
+        /* `ok` MEANS THE REQUEST SUCCEEDED, NOT THE SIGN-IN. Auth.js v5
+           answers a rejected credential with ok:true, status:200 and an
+           `error` field — so checking ok alone treats a wrong password as a
+           success. What followed was worse than an error message: this pushed
+           to /dashboard, the middleware found no session cookie and bounced
+           it back here, and the person was returned to a login page with
+           nothing on it to read. "Nothing happens" was the report, and that
+           is precisely what it looks like. Both must be true. */
+        if (result?.ok && !result?.error) {
+          /* Keep the device record in step so the journey still knows their
+             name, exactly as /signup does. A failure here is not fatal — they
+             are signed in, and the local record rebuilds on next signup. */
+          await signIn(email, password).catch(() => null);
+          router.push(next || "/dashboard");
+          return;
+        }
+      } catch (err) {
+        /* A TIMEOUT IS NOT A WRONG PASSWORD and must not be reported as one.
+           Telling someone their details are wrong when the server never
+           answered sends them to reset a password that was fine. */
+        timedOut = err instanceof TimeoutError;
+      }
+
+      const account = await signIn(email, password).catch(() => null);
+      if (account) {
+        router.push(next || (account.plan ? "/journey" : "/checkout"));
         return;
       }
-    } catch {
-      /* Auth.js unreachable or unconfigured — fall through to the device
-         check below rather than stranding them. */
-    }
 
-    const account = await signIn(email, password);
-    if (!account) {
       captcha.current?.reset();
-      setBusy(false);
-      // Deliberately vague about which half was wrong — the usual reason is
-      // security, but here it is simply true: on this device we may have no
-      // account at all, and "no account on this device" is the likeliest case.
       setError(
-        loadAccount()
-          ? "That email and password don’t match the account on this device."
-          : "There’s no account saved in this browser yet. Accounts don’t sync between devices during the beta.",
+        timedOut
+          ? "The server didn’t answer in time. Your details are probably fine — please try again in a moment."
+          : loadAccount()
+            ? "That email and password don’t match the account on this device."
+            : "That email and password didn’t match an account.",
       );
-      return;
+    } finally {
+      setBusy(false);
     }
-
-    router.push(next || (account.plan ? "/journey" : "/checkout"));
   }
 
   return (

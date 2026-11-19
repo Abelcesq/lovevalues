@@ -51,3 +51,41 @@ if (process.env.NODE_ENV !== "production") globalForDb.lvPool = pool;
  *  accounts when it is not, so that a missing DATABASE_URL never presents as a
  *  crash on a page a visitor is looking at. */
 export const dbConfigured = Boolean(url);
+
+/**
+ * Can this app actually talk to its database right now?
+ *
+ * WHY A SEPARATE FUNCTION FROM `dbConfigured`. That constant answers "is
+ * DATABASE_URL set", which is a question about our configuration, not about
+ * the database. The two came apart in production: /api/auth-status reported
+ * every light green while sign-in hung, because the URL was set and the
+ * server could not reach the database behind it.
+ *
+ * BOUNDED, because an unbounded health check has the same disease as the bug
+ * it is diagnosing. `pool.query` waits for a free connection, and when the
+ * pool is exhausted — which is one of the things this is meant to catch — it
+ * waits indefinitely. A health check that hangs reports nothing.
+ */
+export async function dbReachable(
+  timeoutMs = 4000,
+): Promise<{ ok: boolean; ms: number; error?: string }> {
+  const started = Date.now();
+  try {
+    await Promise.race([
+      pool.query("SELECT 1"),
+      new Promise((_, reject) =>
+        setTimeout(
+          () => reject(new Error(`no answer within ${timeoutMs}ms`)),
+          timeoutMs,
+        ),
+      ),
+    ]);
+    return { ok: true, ms: Date.now() - started };
+  } catch (error) {
+    return {
+      ok: false,
+      ms: Date.now() - started,
+      error: error instanceof Error ? error.message : "unknown error",
+    };
+  }
+}
