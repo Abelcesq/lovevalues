@@ -343,6 +343,72 @@ thing that stops someone creating an account.
 Domains to list in the reCAPTCHA console: `www.lovevalues.com`, and
 `localhost` if you want it to work while developing.
 
+### Connect Stripe
+
+Four config vars, and a webhook. **Do the webhook — without it a payment
+succeeds at Stripe and this app never finds out.**
+
+**1. In the Stripe dashboard, create three prices** (Products → + Add product):
+
+| Product | Price | Billing |
+|---|---|---|
+| Love Values membership | $9.99 | Recurring, monthly |
+| Values report | $29.99 | One time |
+| Updated values report | $9.99 | One time |
+
+Copy each `price_…` id — not the product id. They are different, and a
+product id here fails with an unhelpful Stripe error.
+
+**2. Set the keys:**
+
+```powershell
+heroku config:set STRIPE_SECRET_KEY=sk_live_... -a lovevalues
+heroku config:set STRIPE_PRICE_MONTHLY=price_... -a lovevalues
+heroku config:set STRIPE_PRICE_ONCE=price_... -a lovevalues
+heroku config:set STRIPE_PRICE_REPORT_UPDATE=price_... -a lovevalues
+```
+
+**3. Add the webhook** (Developers → Webhooks → Add endpoint):
+
+```
+https://lovevalues.com/api/stripe/webhook
+```
+
+⚠️ **The host matters.** Use the one people actually reach. `www` currently
+redirects to the apex, and a redirect turns Stripe's POST into a GET with the
+body gone — the event arrives empty and the signature cannot match. This is
+the same trap as the OAuth callbacks below, and it has now bitten three
+different features.
+
+Send these events, and only these:
+
+```
+checkout.session.completed
+customer.subscription.created
+customer.subscription.updated
+customer.subscription.deleted
+invoice.payment_failed
+```
+
+**4. Copy the signing secret** Stripe shows (`whsec_…`):
+
+```powershell
+heroku config:set STRIPE_WEBHOOK_SECRET=whsec_... -a lovevalues
+```
+
+Without it the endpoint answers 503 and refuses every event, which is
+deliberate: an unverified webhook is a URL that hands out subscriptions.
+
+**5. Check it.** Stripe's webhook page has a "Send test event" button. A
+`checkout.session.completed` should come back **200**. Then:
+
+```powershell
+heroku run "npm run db:check" -a lovevalues
+```
+
+**Test mode first.** Use `sk_test_…` keys and Stripe's `4242 4242 4242 4242`
+card before going near live keys.
+
 ### When sign-in fails with "Configuration"
 
 Auth.js answers every broken sign-in with the single word `Configuration` and

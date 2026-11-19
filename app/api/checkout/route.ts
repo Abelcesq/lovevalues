@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@/auth';
 import { TRIAL_DAYS } from '@/lib/plan';
 
 /**
@@ -80,7 +81,45 @@ export async function POST(req: Request) {
     cancel_url: `${origin}${spec.back.split('?')[0]}?cancelled=1`,
   });
 
-  if (email) body.set('customer_email', email);
+  /**
+   * WHO IS PAYING — taken from the SESSION, never from the request body.
+   *
+   * This is the only link between a Stripe payment and an account in this
+   * database. The webhook reads it back on checkout.session.completed and
+   * every later subscription event is matched through it.
+   *
+   * It was missing entirely until the webhook was built, which meant a
+   * successful payment carried nothing to attach it to. Email is not a
+   * substitute: a payer can type any address into Stripe Checkout, and
+   * matching on it would attach their subscription to someone else's account.
+   *
+   * Read server-side because a client-supplied id is a request to upgrade
+   * whichever account the caller names.
+   */
+  const session = await auth();
+  const userId = Number((session?.user as { id?: string } | undefined)?.id);
+  if (Number.isInteger(userId) && userId > 0) {
+    body.set('client_reference_id', String(userId));
+    /* Also on the subscription, so an event that arrives without the
+       Checkout Session still carries it. */
+    if (spec.mode === 'subscription') {
+      body.set('subscription_data[metadata][userId]', String(userId));
+    }
+  } else {
+    /* No session. Stripe would still take the money and the webhook would
+       have nothing to credit, so refuse rather than collect. */
+    return NextResponse.json(
+      {
+        error: 'not_signed_in',
+        message: 'Please sign in again before paying — we need to know whose account this is.',
+      },
+      { status: 401 },
+    );
+  }
+
+  /* Prefer the signed-in address over whatever the page passed. */
+  const payerEmail = session?.user?.email ?? email;
+  if (payerEmail) body.set('customer_email', payerEmail);
   // A trial only exists on a subscription. A report is charged now.
   if (spec.mode === 'subscription') {
     body.set('subscription_data[trial_period_days]', String(TRIAL_DAYS));
