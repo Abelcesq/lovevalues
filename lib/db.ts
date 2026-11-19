@@ -68,11 +68,25 @@ export const dbConfigured = Boolean(url);
  */
 export async function dbReachable(
   timeoutMs = 4000,
-): Promise<{ ok: boolean; ms: number; error?: string }> {
+): Promise<{ ok: boolean; ms: number; error?: string; tables?: boolean }> {
   const started = Date.now();
   try {
-    await Promise.race([
-      pool.query("SELECT 1"),
+    /* NOT `SELECT 1`. A brand-new, EMPTY database answers SELECT 1 perfectly,
+       so a check built on it reports a healthy green while every sign-in
+       fails with "relation users does not exist" — connected, and useless.
+       That gap is not hypothetical: it is where this check stood while the
+       sign-in bug was being hunted. Ask for something the app actually needs. */
+    const probe = await Promise.race([
+      /* Probe the OLDEST and the NEWEST table the app needs, not just one.
+         Checking `users` alone passes on a database that has had 001 applied
+         and nothing since — which is exactly the state production was found
+         in: sign-in worked against `users` while /me had no table at all.
+         One probe per migration generation catches a half-migrated database,
+         which is the shape this failure actually takes. */
+      pool.query(
+        `SELECT to_regclass('public.users')            IS NOT NULL AS has_users,
+                to_regclass('public.member_profiles')  IS NOT NULL AS has_profiles`,
+      ),
       new Promise((_, reject) =>
         setTimeout(
           () => reject(new Error(`no answer within ${timeoutMs}ms`)),
@@ -80,7 +94,28 @@ export async function dbReachable(
         ),
       ),
     ]);
-    return { ok: true, ms: Date.now() - started };
+    const row = (
+      probe as { rows?: { has_users?: boolean; has_profiles?: boolean }[] }
+    )?.rows?.[0];
+    const hasUsers = row?.has_users === true;
+    const hasProfiles = row?.has_profiles === true;
+    const tables = hasUsers && hasProfiles;
+
+    /* Reachable, half-migrated and fully migrated are three different states
+       needing three different actions, and they were one green light before.
+       Name which migration is missing rather than saying "run them" — the
+       runner skips what is already applied, so the instruction is the same
+       either way, but the diagnosis should not be guesswork. */
+    return {
+      ok: true,
+      ms: Date.now() - started,
+      tables,
+      error: tables
+        ? undefined
+        : hasUsers
+          ? "connected, but behind on migrations (member_profiles is missing) — run npm run db:migrate"
+          : "connected, but empty — no tables at all. Run npm run db:migrate",
+    };
   } catch (error) {
     return {
       ok: false,

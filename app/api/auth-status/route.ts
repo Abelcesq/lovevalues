@@ -39,10 +39,13 @@ export async function GET() {
        infrastructure — a host that refused, a pool with nothing free — and
        never anything about a person or their data. */
     databaseError: db.error ?? null,
+    /* Reachable is not the same as ready. Answering queries while holding no
+       tables is a state that reads as healthy and lets nobody in. */
+    tablesReady: db.tables === true,
     /* Booleans only. See the note on authStatus.sessionSecret: this exists so
        a "Configuration" error can be diagnosed with one request instead of a
        guess, and `false` here is almost always the whole answer. */
     sessionSecret: authStatus.sessionSecret,
-    signInWorks: authStatus.sessionSecret && db.ok,
+    signInWorks: authStatus.sessionSecret && db.ok && db.tables === true,
   });
 }
