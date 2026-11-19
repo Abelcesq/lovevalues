@@ -48,6 +48,43 @@ export default function LoginPage() {
   );
 }
 
+/**
+ * Ask the server whether sign-in is possible at all, and turn a false into a
+ * sentence. Returns null when the server is fine — in which case the failure
+ * really was the credentials.
+ *
+ * Never throws and never blocks for long: this runs after a sign-in has
+ * already failed, and a diagnosis that hangs is worse than no diagnosis.
+ */
+async function serverSideReason(): Promise<string | null> {
+  try {
+    const res = await withTimeout(
+      fetch("/api/auth-status", { cache: "no-store" }),
+      4000,
+      "the status check",
+    );
+    const s = (await res.json()) as {
+      signInWorks?: boolean;
+      sessionSecret?: boolean;
+      database?: boolean;
+      tablesReady?: boolean;
+    };
+    if (s.signInWorks) return null;
+    if (s.sessionSecret === false) {
+      return "Sign-in isn’t set up on the server yet. This is our problem, not your details.";
+    }
+    if (s.database === false) {
+      return "We can’t reach our database right now, so nobody can sign in. Your details are fine — please try again shortly.";
+    }
+    if (s.tablesReady === false) {
+      return "Our database is mid-setup, so sign-in isn’t available yet. This is our problem, not your details.";
+    }
+    return "Sign-in isn’t available right now. This is our problem, not your details.";
+  } catch {
+    return null;
+  }
+}
+
 function Login() {
   const router = useRouter();
   const params = useSearchParams();
@@ -185,12 +222,27 @@ function Login() {
       }
 
       captcha.current?.reset();
+
+      /* BEFORE BLAMING THE PERSON, CHECK WHETHER THE SERVER CAN SIGN ANYONE
+         IN AT ALL. A failed credential and a server that is not set up are
+         indistinguishable from the form's side, and the default guess —
+         "your details are wrong" — is the one that sends someone off to
+         reset a password that was always fine. It is also the guess that
+         hides a real outage: every person affected quietly concludes they
+         forgot something.
+
+         /api/auth-status answers in booleans and knows the difference:
+         no session secret, a database that does not answer, a schema behind
+         on migrations. When it says sign-in cannot work, say THAT. */
+      const reason = timedOut ? null : await serverSideReason();
+
       setError(
-        timedOut
-          ? "The server didn’t answer in time. Your details are probably fine — please try again in a moment."
-          : loadAccount()
-            ? "That email and password don’t match the account on this device."
-            : "That email and password didn’t match an account.",
+        reason ??
+          (timedOut
+            ? "The server didn’t answer in time. Your details are probably fine — please try again in a moment."
+            : loadAccount()
+              ? "That email and password don’t match the account on this device."
+              : "That email and password didn’t match an account."),
       );
     } finally {
       setBusy(false);
