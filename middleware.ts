@@ -72,40 +72,23 @@ export async function middleware(request: NextRequest) {
   const rawHost = request.headers.get('host') ?? '';
   const host = rawHost.split(':')[0].toLowerCase();
 
-  /**
-   * THE BARE APEX MUST NEVER SERVE A PAGE. Send it to www first.
-   *
-   * lovevalues.com is forwarded to the app through the registrar, and that
-   * forwarding TURNS A POST INTO A GET — the trap DEPLOY.md has carried since
-   * July about OAuth callbacks. It is not only callbacks: ANY form submitted
-   * from a page served on the apex arrives as a GET with its body gone. The
-   * sign-in POST is one of those.
-   *
-   * What that looks like to a person is the reason this is worth a redirect
-   * rather than a note: the CEO filled in the form on lovevalues.com/login,
-   * pressed the button, and was returned to the login page with nothing to
-   * read. Correct password, correct account, nothing wrong with the browser —
-   * the request simply stopped being a sign-in somewhere in the DNS.
-   *
-   * Redirecting here means nobody can reach a form on the apex at all, so the
-   * body cannot be dropped. 308 preserves the method; the host comes from the
-   * header for the reason the block below explains.
-   */
-  const canonical = (process.env.NEXT_PUBLIC_SITE_URL ?? '')
-    .replace(/^https?:\/\//, '')
-    .replace(/\/$/, '')
-    .toLowerCase();
-  if (
-    canonical.startsWith('www.') &&
-    host === canonical.slice(4) &&
-    !LOCAL.has(host)
-  ) {
-    const url = request.nextUrl.clone();
-    url.protocol = 'https:';
-    url.port = '';
-    url.hostname = canonical;
-    return NextResponse.redirect(url, 308);
-  }
+  /* NO APEX -> WWW REDIRECT HERE, AND THAT IS A DECISION. One was added on
+     2026-11-19 and removed within the hour, unshipped to anyone.
+
+     The reasoning was that the apex is forwarded by the registrar and that
+     forwarding turns a POST into a GET, so a form served from the apex loses
+     its body. The first half is true and is why DEPLOY.md warns about OAuth
+     callbacks. The second half did not apply: a form on an apex page POSTs to
+     the apex directly, with no forwarding in between.
+
+     And the direction was wrong. www.lovevalues.com currently redirects TO
+     the apex, upstream of this app. An apex -> www rule here would have met
+     that head on and produced an infinite redirect — not a bug on one page,
+     an outage on every page.
+
+     If the canonical host is ever settled, do it in DNS where one side can
+     see the other, not in middleware where this file only ever sees its own
+     half of the loop. */
 
   if (proto === 'http' && host && !LOCAL.has(host) && !host.endsWith('.local')) {
     const url = request.nextUrl.clone();

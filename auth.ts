@@ -107,38 +107,21 @@ if (authStatus.database) {
   );
 }
 
-/**
- * Tell Auth.js what this site's address is, from the value that is already
- * set correctly.
- *
- * WHY THIS IS IN CODE RATHER THAN A CONFIG VAR. Auth.js works out its own
- * base URL from the incoming request when AUTH_URL is unset. On Heroku the
- * request's own URL is the dyno's socket, so it can read
- * `localhost:<random port>` — and a visitor gets redirected somewhere only
- * the dyno can reach, which their browser reports as ERR_CONNECTION_REFUSED
- * with nothing pointing at the cause. The documented fix is to set AUTH_URL.
- *
- * But NEXT_PUBLIC_SITE_URL already holds exactly that value, is already set,
- * and is already the canonical origin for the metadata base and the Stripe
- * return URLs. Asking an operator to set the same string twice under two
- * names is a step that will be missed, and the failure it causes looks like a
- * browser problem rather than a missing variable. One source, used everywhere.
- *
- * PRODUCTION ONLY. Locally, NEXT_PUBLIC_SITE_URL is usually still the
- * production host, and pinning Auth.js to it would send every local sign-in
- * to the live site. Development keeps inferring from the request, where the
- * request is right.
- *
- * An explicit AUTH_URL still wins, so nothing here removes the escape hatch.
- */
-if (
-  process.env.NODE_ENV === "production" &&
-  !process.env.AUTH_URL &&
-  !process.env.NEXTAUTH_URL &&
-  process.env.NEXT_PUBLIC_SITE_URL
-) {
-  process.env.AUTH_URL = process.env.NEXT_PUBLIC_SITE_URL;
-}
+/* NO AUTH_URL IS DERIVED HERE, AND THAT IS THE SECOND DECISION ON THIS.
+   A previous version set AUTH_URL from NEXT_PUBLIC_SITE_URL in production, so
+   an operator would not have to set the same string under two names. It was
+   wrong for a reason that is worth keeping written down: NEXT_PUBLIC_SITE_URL
+   said www.lovevalues.com while www REDIRECTS TO THE APEX, so the value being
+   copied was not the host anyone was actually on. Pinning Auth.js to a host
+   the browser never visits puts the session cookie on the wrong domain, and
+   the symptom is a sign-in that appears to work and lands you back on the
+   login page.
+
+   `trustHost: true` already does the right thing: Auth.js takes the host from
+   the forwarded header, which IS whatever the person is really using,
+   apex or www, by construction. A constant cannot be more correct than that,
+   and it can be — and was — more wrong. Leave AUTH_URL unset unless something
+   specific needs pinning. */
 
 /* Say so at boot, loudly, in the places that produce "Configuration" and
    nothing else. These lines are the difference between reading the dyno log
