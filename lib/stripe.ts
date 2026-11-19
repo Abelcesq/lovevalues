@@ -27,6 +27,21 @@
 
 import { createHmac, timingSafeEqual } from "node:crypto";
 
+/**
+ * PIN THE API VERSION. Stripe rolls accounts forward, and a version change
+ * moves fields: 2026-04-22.dahlia took `current_period_end` off the
+ * Subscription root and put it on each subscription item. The EZAITASK build
+ * hit exactly that in production, and the symptom is not an error — it is a
+ * field quietly reading null while everything else looks fine.
+ *
+ * Pinning means our requests get a shape we have actually tested. Webhook
+ * EVENTS still arrive in whatever version the endpoint is set to in the
+ * dashboard, which is why the webhook reads both locations regardless.
+ *
+ * Raise this deliberately, with the changelog open, never incidentally.
+ */
+export const STRIPE_API_VERSION = "2026-04-22.dahlia";
+
 export const stripeConfigured = Boolean(process.env.STRIPE_SECRET_KEY);
 export const webhookConfigured = Boolean(process.env.STRIPE_WEBHOOK_SECRET);
 

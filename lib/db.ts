@@ -41,9 +41,37 @@ export const pool =
        and a Next.js app can hold several dynos' worth of pools open. Keeping
        this small leaves headroom for migrations and for `heroku pg:psql`. */
     max: 5,
+    /* Shorter than the window in which Heroku drops an idle connection, so
+       this pool closes its own clients before the server closes them under
+       it — the difference between a tidy reconnect and a query that fails on
+       a socket nobody noticed had gone. */
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,
+    /* TCP keepalives on top of that, for the connections that are checked
+       out and quiet. Without them a half-open socket is only discovered when
+       a query is already waiting on it. */
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10_000,
   });
+
+/**
+ * AN IDLE CLIENT THAT ERRORS MUST NOT TAKE THE DYNO WITH IT.
+ *
+ * `pg.Pool` emits 'error' for a client sitting idle in the pool — and in Node
+ * an 'error' event with no listener is rethrown as an uncaught exception,
+ * which kills the process. One dropped connection and the whole app restarts,
+ * mid-request, for everybody.
+ *
+ * It is not a rare event here. Heroku Postgres closes idle connections
+ * aggressively, which is a documented bite from the EZAITASK build: without
+ * connection health checks its login pages started H12-timing-out once a dyno
+ * had been idle. The pool discards the broken client by itself; all this
+ * listener does is stop the crash and leave a trace, so a run of them is
+ * visible rather than silent.
+ */
+pool.on("error", (error) => {
+  console.error("db: idle client error (connection discarded)", error.message);
+});
 
 if (process.env.NODE_ENV !== "production") globalForDb.lvPool = pool;
 

@@ -80,6 +80,10 @@ if (!url) {
     'subscriptions.current_period_end',
     'subscriptions.stripe_customer_id',
     'subscriptions.stripe_subscription_id',
+    /* db/004 — Stripe's "paid until a date, then it stops" state, which is
+       not the same as canceled. lib/plan.ts promises that time already paid
+       for is honoured; this is what keeps that true. */
+    'subscriptions.cancel_at_period_end',
     'subscriptions.created_at',
     'subscriptions.updated_at',
     /* THE MEMBER PROFILE, added 2026-11-13 with db/002.

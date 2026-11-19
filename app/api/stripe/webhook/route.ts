@@ -3,6 +3,7 @@ import { dbConfigured } from "@/lib/db";
 import { verifyStripeSignature } from "@/lib/stripe";
 import {
   mapStatus,
+  periodEndFrom,
   upsertSubscription,
   userIdForStripe,
 } from "@/lib/subscriptions";
@@ -43,6 +44,9 @@ export const runtime = "nodejs";
 /* Never prerender or cache: this is a POST target with side effects. */
 export const dynamic = "force-dynamic";
 
+const str = (v: unknown): string | null =>
+  typeof v === "string" && v ? v : null;
+
 type StripeEvent = {
   id?: string;
   type?: string;
@@ -51,8 +55,6 @@ type StripeEvent = {
 
 const num = (v: unknown): number | null =>
   typeof v === "number" && Number.isFinite(v) ? v : null;
-const str = (v: unknown): string | null =>
-  typeof v === "string" && v ? v : null;
 
 export async function POST(request: Request) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
@@ -148,7 +150,6 @@ export async function POST(request: Request) {
           break;
         }
 
-        const periodEnd = num(object.current_period_end);
         await upsertSubscription({
           userId,
           plan: "monthly",
@@ -156,7 +157,12 @@ export async function POST(request: Request) {
             event.type === "customer.subscription.deleted"
               ? "canceled"
               : mapStatus(str(object.status) ?? undefined),
-          currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+          currentPeriodEnd: periodEndFrom(object),
+          /* Mirrored from Stripe rather than inferred from our own cancel
+             action, so the billing page can say "ends on the 14th, reactivate
+             before then" even when the cancellation happened in Stripe's
+             portal and this app never saw it. */
+          cancelAtPeriodEnd: object.cancel_at_period_end === true,
           stripeCustomerId: customerId,
           stripeSubscriptionId: subscriptionId,
         });

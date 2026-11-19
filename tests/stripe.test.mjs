@@ -19,7 +19,7 @@ import {
   signPayload,
   verifyStripeSignature,
 } from "../lib/stripe.ts";
-import { mapStatus } from "../lib/subscriptions.ts";
+import { mapStatus, periodEndFrom } from "../lib/subscriptions.ts";
 
 const SECRET = "whsec_test_secret_value";
 const BODY = JSON.stringify({ id: "evt_1", type: "checkout.session.completed" });
@@ -138,5 +138,47 @@ test("an unknown status grants nothing", () => {
   // fall to the side that gives no access.
   for (const unknown of ["something_new", "", undefined, "paused"]) {
     assert.equal(mapStatus(unknown), "none", `${unknown} must not grant access`);
+  }
+});
+
+/* ── Where the renewal date lives ────────────────────────────────────────────
+   Stripe's 2026-04-22.dahlia API moved current_period_end off the Subscription
+   root and onto each subscription item. Code that reads only the root does not
+   throw — it reads null, stores no renewal date, and looks fine until someone
+   asks when they are next charged. This bit the EZAITASK build in production
+   and is the reason these tests exist. */
+
+test("the renewal date is read from the subscription ITEM", () => {
+  const at = periodEndFrom({ items: { data: [{ current_period_end: 1800000000 }] } });
+  assert.equal(at?.getTime(), 1800000000 * 1000);
+});
+
+test("a legacy root field still works, for replayed older events", () => {
+  // The fallback is not redundant: an event replayed from an older API
+  // version carries the old shape.
+  const at = periodEndFrom({ current_period_end: 1900000000 });
+  assert.equal(at?.getTime(), 1900000000 * 1000);
+});
+
+test("the item wins when both are present", () => {
+  const at = periodEndFrom({
+    current_period_end: 1,
+    items: { data: [{ current_period_end: 1800000000 }] },
+  });
+  assert.equal(at?.getTime(), 1800000000 * 1000, "the newer location is authoritative");
+});
+
+test("a missing or malformed renewal date is null, never a wrong date", () => {
+  // Storing epoch-zero, or NaN, would be worse than storing nothing: the
+  // billing page would confidently show 1970.
+  for (const shape of [
+    {},
+    { items: { data: [] } },
+    { items: {} },
+    { items: { data: [{}] } },
+    { current_period_end: "soon" },
+    { current_period_end: null },
+  ]) {
+    assert.equal(periodEndFrom(shape), null, JSON.stringify(shape));
   }
 });

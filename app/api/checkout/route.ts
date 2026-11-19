@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { TRIAL_DAYS } from '@/lib/plan';
+import { STRIPE_API_VERSION } from '@/lib/stripe';
+import { stripeCustomerFor } from '@/lib/subscriptions';
 
 /**
  * Creates a Stripe Checkout Session and hands back its URL.
@@ -117,9 +119,26 @@ export async function POST(req: Request) {
     );
   }
 
-  /* Prefer the signed-in address over whatever the page passed. */
-  const payerEmail = session?.user?.email ?? email;
-  if (payerEmail) body.set('customer_email', payerEmail);
+  /**
+   * REUSE THE STRIPE CUSTOMER IF THERE IS ONE.
+   *
+   * Passing customer_email a second time makes Stripe create a SECOND
+   * customer for the same person. Stripe allows that, and once it happens
+   * their subscriptions, invoices and saved cards are split across two
+   * records that nothing joins back together — and the billing portal, which
+   * takes one customer id, shows only half their history. EZAITASK guards the
+   * same thing with _ensure_customer(): stored id first, create only once.
+   *
+   * customer and customer_email are mutually exclusive at Stripe, so this is
+   * one or the other, never both.
+   */
+  const existingCustomer = await stripeCustomerFor(userId);
+  if (existingCustomer) {
+    body.set('customer', existingCustomer);
+  } else {
+    const payerEmail = session?.user?.email ?? email;
+    if (payerEmail) body.set('customer_email', payerEmail);
+  }
   // A trial only exists on a subscription. A report is charged now.
   if (spec.mode === 'subscription') {
     body.set('subscription_data[trial_period_days]', String(TRIAL_DAYS));
@@ -131,6 +150,8 @@ export async function POST(req: Request) {
       headers: {
         Authorization: `Bearer ${key}`,
         'Content-Type': 'application/x-www-form-urlencoded',
+        /* Pinned — see lib/stripe.ts. */
+        'Stripe-Version': STRIPE_API_VERSION,
       },
       body,
     });

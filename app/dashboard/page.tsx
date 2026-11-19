@@ -18,7 +18,6 @@ import { Footer, Nav } from "@/components/Chrome";
 import {
   TRIAL_DAYS,
   type Account,
-  cancelPlan,
   displayName,
   loadAccount,
   signOut,
@@ -64,7 +63,31 @@ export default function Dashboard() {
   const [account, setAccount] = useState<Account | null>(null);
   const [ready, setReady] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [portalBusy, setPortalBusy] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
+
+  /* Hand them to Stripe. Everything about a subscription that a person might
+     want to change is there, and none of it has to be rebuilt or kept right
+     here. A failure says what happened rather than leaving a dead button. */
+  async function openPortal() {
+    setPortalBusy(true);
+    setPortalError(null);
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      setPortalError(
+        data.message ?? "We couldn’t open billing just now. Please try again.",
+      );
+    } catch {
+      setPortalError("We couldn’t reach the payment provider. Nothing changed.");
+    } finally {
+      setPortalBusy(false);
+    }
+  }
 
   useEffect(() => {
     const found = loadAccount();
@@ -327,51 +350,36 @@ export default function Dashboard() {
                     </dd>
                   </dl>
 
-                  {confirmCancel ? (
+                  {/* REAL BILLING MANAGEMENT, through Stripe's own portal.
+                      What stood here edited localStorage: it cleared the plan
+                      on one device, told the person they had cancelled, and
+                      left the Stripe subscription billing them every month.
+                      This file's own header calls that the worst bug this
+                      product could ship, and it had shipped. Cancel, restart,
+                      change card and invoices all live in the portal now —
+                      billing UI that has to be right, hosted by the people
+                      whose job that is. */}
+                  {portalError && (
                     <div className="notice" style={{ margin: "4px 0 14px" }}>
-                      <p style={{ marginBottom: 12 }}>
-                        Billing is not switched on yet, so this only clears the
-                        membership saved in this browser — there is nothing to
-                        charge and nothing to stop. When payments go live,
-                        cancelling will happen through Stripe, and it will stop
-                        future charges only: if you are still inside your free{" "}
-                        {TRIAL_DAYS} days you are never charged, and if you have
-                        already been billed your membership runs to the end of
-                        that month.
-                      </p>
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => {
-                          const next = cancelPlan();
-                          setAccount(next);
-                          setConfirmCancel(false);
-                        }}
-                      >
-                        I understand — cancel
-                      </button>{" "}
-                      <button
-                        type="button"
-                        className="btn btn-ghost"
-                        onClick={() => setConfirmCancel(false)}
-                      >
-                        Keep my plan
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="c-actions">
-                      <Link className="btn btn-ghost" href="/checkout">
-                        Manage membership
-                      </Link>
-                      <button
-                        type="button"
-                        className="btn btn-ghost"
-                        onClick={() => setConfirmCancel(true)}
-                      >
-                        Cancel membership
-                      </button>
+                      {portalError}
                     </div>
                   )}
+                  <div className="c-actions">
+                    <button
+                      type="button"
+                      className="btn btn-ghost"
+                      disabled={portalBusy}
+                      onClick={openPortal}
+                    >
+                      <CreditCard aria-hidden="true" />
+                      {portalBusy ? "Opening…" : "Manage or cancel membership"}
+                    </button>
+                  </div>
+                  <p className="later-cost-note" style={{ marginTop: 10 }}>
+                    Cancelling stops future charges only. Inside your free{" "}
+                    {TRIAL_DAYS} days you are never charged; after that your
+                    membership runs to the end of the month you have paid for.
+                  </p>
                 </>
               ) : (
                 <>

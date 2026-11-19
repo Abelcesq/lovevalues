@@ -406,8 +406,36 @@ deliberate: an unverified webhook is a URL that hands out subscriptions.
 heroku run "npm run db:check" -a lovevalues
 ```
 
+**6. Switch on the Customer Portal** (Settings → Billing → Customer portal →
+Activate). The dashboard's "Manage or cancel membership" button opens it, and
+without activation Stripe refuses the session with an error that reads like a
+bug in this app. Allow at minimum: cancel subscription, update payment method,
+invoice history.
+
 **Test mode first.** Use `sk_test_…` keys and Stripe's `4242 4242 4242 4242`
-card before going near live keys.
+card before going near live keys. The portal is activated separately in test
+and live mode — switching one on does not switch on the other.
+
+#### Gotchas carried over from the EZAITASK build
+
+That project runs this flow in live mode and documented what bit it. Three
+apply here and are already handled in code; they are written down because the
+symptoms are all silent:
+
+- **`current_period_end` moved.** Stripe's 2026-04-22.dahlia API took it off
+  the Subscription root and onto each subscription item. Reading only the root
+  does not error — it reads null and stores no renewal date. The webhook reads
+  the item first and falls back to the root, because a replayed older event
+  still carries the old shape.
+- **Requests pin `Stripe-Version`** (`lib/stripe.ts`) so a rolled-forward
+  account cannot change the shape underneath us. Webhook EVENTS arrive in
+  whatever version the endpoint is set to, which is why the handler accepts
+  both.
+- **One customer per person.** Checkout passes the stored `customer` id when
+  there is one, never the email again. A second `customer_email` makes a
+  second Stripe customer, and their invoices, cards and subscriptions then sit
+  in two records nothing joins — and the portal, which takes one id, shows
+  half their history.
 
 ### When sign-in fails with "Configuration"
 

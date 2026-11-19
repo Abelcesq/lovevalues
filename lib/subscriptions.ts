@@ -38,6 +38,8 @@ type SubscriptionPatch = {
   currentPeriodEnd?: Date | null;
   stripeCustomerId?: string | null;
   stripeSubscriptionId?: string | null;
+  /** Mirrored from Stripe. See db/004. */
+  cancelAtPeriodEnd?: boolean | null;
 };
 
 /**
@@ -52,8 +54,8 @@ export async function upsertSubscription(p: SubscriptionPatch): Promise<void> {
   await pool.query(
     `INSERT INTO subscriptions
        ("userId", plan, status, current_period_end,
-        stripe_customer_id, stripe_subscription_id, updated_at)
-     VALUES ($1, COALESCE($2,'none'), COALESCE($3,'none'), $4, $5, $6, NOW())
+        stripe_customer_id, stripe_subscription_id, cancel_at_period_end, updated_at)
+     VALUES ($1, COALESCE($2,'none'), COALESCE($3,'none'), $4, $5, $6, COALESCE($7,FALSE), NOW())
      ON CONFLICT ("userId") DO UPDATE SET
        /* THE PARAMETERS, NOT EXCLUDED, and the difference is a real bug that
           an end-to-end run caught. EXCLUDED holds what the INSERT would have
@@ -69,6 +71,7 @@ export async function upsertSubscription(p: SubscriptionPatch): Promise<void> {
        current_period_end     = COALESCE(EXCLUDED.current_period_end,     subscriptions.current_period_end),
        stripe_customer_id     = COALESCE(EXCLUDED.stripe_customer_id,     subscriptions.stripe_customer_id),
        stripe_subscription_id = COALESCE(EXCLUDED.stripe_subscription_id, subscriptions.stripe_subscription_id),
+       cancel_at_period_end   = COALESCE($7, subscriptions.cancel_at_period_end),
        updated_at             = NOW()`,
     [
       p.userId,
@@ -77,6 +80,7 @@ export async function upsertSubscription(p: SubscriptionPatch): Promise<void> {
       p.currentPeriodEnd ?? null,
       p.stripeCustomerId ?? null,
       p.stripeSubscriptionId ?? null,
+      p.cancelAtPeriodEnd ?? null,
     ],
   );
 }
@@ -110,3 +114,50 @@ export async function userIdForStripe(
   }
   return null;
 }
+
+/**
+ * The Stripe customer this user already has, if any.
+ *
+ * Passing it to Checkout instead of an email is what stops a second payment
+ * creating a SECOND customer for the same person. Stripe will happily hold
+ * two customers with one email address, and once that has happened their
+ * subscriptions, invoices and payment methods are split across two records
+ * that nothing joins back together — the EZAITASK build guards the same thing
+ * with _ensure_customer(), reusing the stored id before ever creating one.
+ */
+export async function stripeCustomerFor(userId: number): Promise<string | null> {
+  const { rows } = await pool.query<{ id: string | null }>(
+    `SELECT stripe_customer_id AS id FROM subscriptions WHERE "userId" = $1`,
+    [userId],
+  );
+  return rows[0]?.id ?? null;
+}
+
+const num = (v: unknown): number | null =>
+  typeof v === "number" && Number.isFinite(v) ? v : null;
+
+/**
+ * When does this subscription next renew?
+ *
+ * STRIPE MOVED THIS FIELD. As of API version 2026-04-22.dahlia,
+ * `current_period_end` is no longer on the Subscription root — it lives on
+ * each subscription item. Code that reads only the root gets null on any
+ * current API version and silently stores no renewal date at all, which is
+ * the kind of bug that shows up weeks later as "the billing page says
+ * nothing about when I am charged".
+ *
+ * Learned from the EZAITASK build, which hit it in production and documented
+ * it. Their handler reads the item first and falls back to the root, and so
+ * does this: the fallback is not redundant, because a REPLAYED event from an
+ * older API version still carries the legacy shape.
+ */
+export function periodEndFrom(object: Record<string, unknown>): Date | null {
+  const items = (object.items as { data?: unknown[] } | undefined)?.data;
+  const first = Array.isArray(items)
+    ? (items[0] as Record<string, unknown> | undefined)
+    : undefined;
+  const seconds = num(first?.current_period_end) ?? num(object.current_period_end);
+  return seconds ? new Date(seconds * 1000) : null;
+}
+const str = (v: unknown): string | null =>
+  typeof v === "string" && v ? v : null;
