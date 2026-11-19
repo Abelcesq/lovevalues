@@ -127,6 +127,12 @@ if (!url) {
     'report_credits.stripe_session_id',
     'report_credits.granted_at',
     'report_credits.consumed_at',
+    /* db/007 — the safety layer, built before anyone can see anyone. */
+    'connections.id','connections.requester_id','connections.addressee_id',
+    'connections.status','connections.created_at','connections.responded_at',
+    'blocks.blocker_id','blocks.blocked_id','blocks.created_at',
+    'reports.id','reports.reporter_id','reports.reported_id','reports.reason',
+    'reports.detail','reports.status','reports.created_at','reports.resolved_at',
     'member_activities.user_id',
     'member_activities.activity',
     'schema_migrations.filename',
