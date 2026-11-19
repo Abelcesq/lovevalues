@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "db:migrate": "node scripts/migrate.mjs",
-    "db:check": "node scripts/db-check.mjs"
+    "db:check": "node scripts/db-check.mjs",
+    "db:prune": "node scripts/db-prune.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
